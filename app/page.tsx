@@ -1,10 +1,16 @@
 import { Navbar } from '@/components/navbar';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
-const Home = () => {
+const Home = async () => {
+    const session = await getServerSession(authOptions);
+
     return (
         <div className="min-h-screen bg-background">
-            <Navbar />
+            <Navbar 
+                isAuthenticated={!!session}
+            />
             
             <main>
                 <section className="container mx-auto px-4 py-20 text-center">

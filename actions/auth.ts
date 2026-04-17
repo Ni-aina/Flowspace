@@ -1,7 +1,6 @@
 "use server";
 
 import { 
-  SigninFormSchema,
   SignupFormSchema, 
   FormState 
 } from '@/lib/definitions';
@@ -9,41 +8,20 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
  
-export async function signin(state: FormState, formData: FormData) {
-  const validatedFields = SigninFormSchema.safeParse({
-      email: formData.get('email'),
-      password: formData.get('password')
-  })
-  
-  if (!validatedFields.success) {
-      return {
-      errors: validatedFields.error.flatten().fieldErrors
-      }
-  }
-  
-  const { email, password } = validatedFields.data;
-  
+export async function findUser(email: string) {
+    if (!email) {
+        return null;
+    }
   const user = await prisma.user.findUnique({
-      where: {
-          email
-      }
+    where: {
+      email
+    }
   })
-  
-  if (!user) {
-      return {
-          message: 'User not found.',
-      }
-  }
-  
-  const isPasswordValid = await bcrypt.compare(password, user.password)
-  
-  if (!isPasswordValid) {
-      return {
-          message: 'Invalid password.'
-      }
-  }
-  
-  redirect('/dashboard')
+  return user;
+}
+
+export async function checkPassword(password: string, hashedPassword: string) {
+  return await bcrypt.compare(password, hashedPassword);
 }
 
 export async function signup(state: FormState, formData: FormData) {
