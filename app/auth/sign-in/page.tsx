@@ -4,20 +4,15 @@ import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Eye, EyeOff } from "lucide-react"
+import InputPassword from "@/components/ui/inputPassword"
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   })
-  const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
-
-  const handleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -109,42 +104,12 @@ export default function SignIn() {
           }
         </div>
 
-        <div className="flex flex-col space-y-1">
-          <label htmlFor="password" className="text-sm font-medium">
-            Password
-          </label>
-          <div className="flex items-center border rounded-lg gap-2 px-2">
-            <input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              className="w-full h-10 outline-none text-sm"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              disabled={isLoading}
-              aria-invalid={!!errors.password}
-            />
-            {
-              showPassword ?
-              <Eye
-                size={18}
-                className="text-muted-foreground cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              />
-              :
-              <EyeOff
-                size={18}
-                className="text-muted-foreground cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              />
-            }
-          </div>
-          {
-            errors.password && 
-            <p className="text-sm text-destructive">{errors.password}</p>
-          }
-        </div>
+        <InputPassword
+          label="Password"
+          defaultValue={formData.password}
+          onChange={handleChange}
+          error={errors.password}
+        />
 
         {
           errors.general && 
