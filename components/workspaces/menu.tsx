@@ -61,7 +61,6 @@ const Menu = () => {
                             `
                                 ${activeBar === index ? "block" : "hidden"}
                                 text-sm font-medium
-                                animate-wiggle
                             `
                         }>
                             {displayedLabel}

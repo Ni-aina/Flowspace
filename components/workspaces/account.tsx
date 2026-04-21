@@ -3,13 +3,31 @@
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Modal } from "./modal";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Account = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const accountRef = useRef<HTMLDivElement>(null);
     
+    useEffect(()=> {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
+        
+        document.addEventListener("mousedown", handleClickOutside);
+        
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [])
+
     return(
-        <div className="relative">
+        <div 
+            className="relative"
+            ref={accountRef}
+        >
             <div 
                 className="p-2 hover:bg-primary/5 rounded-sm cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
@@ -34,7 +52,9 @@ export const Account = () => {
                     </div>
                 </div>
             </div>  
-            <Modal isOpen={isOpen} />
+            <Modal 
+                isOpen={isOpen} 
+            />
         </div>
     )
 }

@@ -19,8 +19,8 @@ export function AppSidebar() {
           <Menu />
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="flex justify-end">
-        <SignOut />
+      <SidebarFooter>
+        
       </SidebarFooter>
     </Sidebar>
   )
