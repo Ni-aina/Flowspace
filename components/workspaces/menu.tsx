@@ -36,7 +36,7 @@ const Menu = () => {
         const timeout = setTimeout(() => {
             setDisplayedLabel(prev => prev + currentLabel[currentIndex]);
             setCurrentIndex(prev => prev + 1);
-        }, 15);
+        }, 20);
 
         return () => clearTimeout(timeout);
     }, [currentIndex])
