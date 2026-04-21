@@ -5,7 +5,7 @@ import { ChevronDown, House } from "lucide-react";
 export const Account = () => {
     
     return(
-        <div className="p-2 hover:bg-primary/10 rounded-sm cursor-pointer">
+        <div className="p-2 hover:bg-primary/5 rounded-sm cursor-pointer">
             <div className="flex items-center gap-2">
                 <House size={18}/>
                 <div className="flex items-center gap-1">
@@ -15,6 +15,6 @@ export const Account = () => {
                     <ChevronDown size={14} />
                 </div>
             </div>
-        </div>
+        </div>  
     )
 }

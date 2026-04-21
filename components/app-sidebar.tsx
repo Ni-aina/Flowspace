@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import SignOut from "./sign-out"
 import { Account } from "./workspaces/account"
+import { Modal } from "./workspaces/modal"
 
 export function AppSidebar() {
   return (
@@ -15,6 +16,7 @@ export function AppSidebar() {
       <SidebarContent className="px-2">
         <SidebarGroup />
           <Account/>
+          <Modal/>
         <SidebarGroup />
       </SidebarContent>
       <SidebarFooter className="flex justify-end">
