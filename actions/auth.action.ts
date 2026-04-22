@@ -41,17 +41,38 @@ export async function signup(state: FormState, formData: FormData) {
   const { name, email, password } = validatedFields.data;
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  const user = await prisma.user.create({
+  const [user, workspace] = await Promise.all([
+    prisma.user.create({
       data: {
           name,
           email,
           password: hashedPassword
       }
-  })
+    }),
+    prisma.workspace.create({
+      data: {
+        name: `${name}'s Workspace`
+      }
+    })
+  ])
  
-  if (!user) {
+  if (!user || !workspace) {
     return {
-      message: 'An error occurred while creating your account.',
+      message: 'An error occurred while creating your account or workspace.',
+    }
+  }
+
+  const workspaceMember = await prisma.workspaceMember.create({
+    data: {
+      workspaceId: workspace.id,
+      userId: user.id,
+      role: 'owner'
+    }
+  })
+
+  if (!workspaceMember) {
+    return {
+      message: 'An error occurred while adding you to your workspace.',
     }
   }
 

@@ -4,31 +4,37 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Modal } from "./modal";
 import { useEffect, useRef, useState } from "react";
+import { Workspace } from "@prisma/client";
 
-export const Account = () => {
+interface AccountProps {
+    workspace: Workspace | null;
+    role: string;
+}
+
+export const Account = ({ workspace, role }: AccountProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const accountRef = useRef<HTMLDivElement>(null);
-    
-    useEffect(()=> {
+
+    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
             }
         }
-        
+
         document.addEventListener("mousedown", handleClickOutside);
-        
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         }
     }, [])
 
-    return(
-        <div 
+    return (
+        <div
             className="relative"
             ref={accountRef}
         >
-            <div 
+            <div
                 className="p-2 hover:bg-primary/5 rounded-sm cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
             >
@@ -40,8 +46,12 @@ export const Account = () => {
                         height={20}
                     />
                     <div className="flex items-center gap-1">
-                    <p className="text-md">
-                            Ni aina's Space <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">Invited</span>
+                        <p className="text-md">
+                            {workspace!.name}
+                            {
+                                role === "invited" &&
+                                <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">{role}</span>
+                            }
                         </p>
                         <ChevronDown size={14}
                             className="transition-all duration-200"
@@ -51,9 +61,11 @@ export const Account = () => {
                         />
                     </div>
                 </div>
-            </div>  
-            <Modal 
-                isOpen={isOpen} 
+            </div>
+            <Modal
+                isOpen={isOpen}
+                workspace={workspace}
+                role={role}
             />
         </div>
     )

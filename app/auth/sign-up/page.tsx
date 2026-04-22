@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import InputPassword from "@/components/ui/inputPassword"
 import { useActionState } from "react"
-import { signup } from "@/actions/auth"
+import { signup } from "@/actions/auth.action"
 
 export default function SignUp() {
     const [state, action, pending] = useActionState(signup, undefined);
@@ -48,15 +48,15 @@ export default function SignUp() {
                     {state?.errors?.email && <p className="text-sm text-destructive">{state.errors.email}</p>}
                 </div>
 
-            <InputPassword
-                label="Password"
-                error={state?.errors?.password?.at(0)}
-            />
+                <InputPassword
+                    label="Password"
+                    error={state?.errors?.password?.at(0)}
+                />
 
-            <InputPassword
-                label="Confirm Password"
-                error={state?.errors?.confirmPassword?.at(0)}
-            />
+                <InputPassword
+                    label="Confirm Password"
+                    error={state?.errors?.confirmPassword?.at(0)}
+                />
 
                 <Button
                     type="submit"
@@ -65,8 +65,8 @@ export default function SignUp() {
                 >
                     {
                         pending ?
-                        "Signing up..." :
-                        "Sign Up"
+                            "Signing up..." :
+                            "Sign Up"
                     }
                 </Button>
             </form>

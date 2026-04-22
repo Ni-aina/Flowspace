@@ -1,36 +1,52 @@
 "use client";
 
-import { BriefcaseBusiness, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { 
-    useEffect, 
-    useState 
+import {
+    useEffect,
+    useState
 } from "react";
 import SignOut from "../sign-out";
+import { Workspace } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 interface ModalProps {
     isOpen: boolean;
+    workspace: Workspace | null;
+    role: string;
 }
 
-export const Modal = ({ 
+export const Modal = ({
     isOpen,
+    workspace,
+    role
 }: ModalProps) => {
+    const { data } = useSession();
+    const currentUser = data?.user;
+
     const [opacity, setOpacity] = useState("opacity-0 -translate-y-2");
+
+    const {
+        id,
+        name,
+        plan,
+        createdAt,
+    } = workspace!;
 
     useEffect(() => {
         if (!isOpen) {
             setOpacity("opacity-0 -translate-y-2");
             return;
         }
-        
+
         setOpacity("opacity-100 translate-y-0");
     }, [isOpen])
 
     if (!isOpen) return null;
 
     return (
-        <div 
+        <div
             className={`
                 absolute top-12 left-0 z-50 w-full transition-all duration-200
                 ${opacity}
@@ -45,24 +61,20 @@ export const Modal = ({
                         height={40}
                     />
                     <div className="flex flex-col space-y-0">
-                        <p>Ni aina's Space </p>
-                        <span className=" text-xs  text-black/50 ">Invited</span>
-                    </div> 
+                        <p className="truncate w-40">{name}</p>
+                        <span className=" text-xs  text-black/50 ">{plan} plan</span>
+                    </div>
                 </div>
                 <hr />
                 <div className="flex flex-col gap-3 px-4">
-                    <p className="text-sm">niaina.dev.soft@gmail.com</p>
-                    <div className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1">
-                        <BriefcaseBusiness size={16}/>
-                        <p>Espace de Laly</p>
-                    </div>
+                    <p className="text-sm">{currentUser?.email}</p>
                     <div className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1">
                         <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
                             <h1 className="text-sm">
-                                N
+                                F
                             </h1>
                         </div>
-                        <p>Espace de Niaina</p>
+                        <p className="truncate w-40">Flow's space</p>
                     </div>
                     <div className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1">
                         <div>
@@ -73,14 +85,17 @@ export const Modal = ({
                                 height={18}
                             />
                         </div>
-                        <p className="truncate w-20">Ni aina's Space </p>
-                        <span className="text-xs px-2 py-1 bg-yellow-600/5 text-yellow-600 rounded-sm">Invited</span>
-                    </div> 
+                        <p className="truncate w-40">{name}</p>
+                        {
+                            role === "invited" &&
+                            <span className="text-xs px-2 py-1 bg-yellow-600/5 text-yellow-600 rounded-sm">Invited</span>
+                        }
+                    </div>
                     <div className="flex items-center gap-2 text-blue-700">
                         <div >
-                            <Plus size={18}/>
+                            <Plus size={18} />
                         </div>
-                        <Link 
+                        <Link
                             href="#"
                             className=""
                         >

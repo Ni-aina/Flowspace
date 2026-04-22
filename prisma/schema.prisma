@@ -15,7 +15,6 @@ model User {
   avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
 
-  ownedWorkspaces   Workspace[]        @relation("WorkspaceOwner")
   workspaceMembers  WorkspaceMember[]
   activities        Activity[]
   createdBoards     Board[]            @relation("BoardCreator")
@@ -30,12 +29,9 @@ model User {
 model Workspace {
   id        String   @id @default(uuid()) @db.Uuid
   name      String
-  slug      String   @unique
   plan      String   @default("free")
-  ownerId   String   @map("owner_id") @db.Uuid
   createdAt DateTime @default(now()) @map("created_at")
 
-  owner    User              @relation("WorkspaceOwner", fields: [ownerId], references: [id])
   members  WorkspaceMember[]
   boards   Board[]
   labels   Label[]

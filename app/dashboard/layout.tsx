@@ -1,18 +1,23 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { redirect } from "next/navigation"
+import { findWorkspaceMember } from "@/actions/workspaces/member.action"
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions)
-  if (!session) redirect("/auth/sign-in")
+  const workspaceMember = await findWorkspaceMember();
+
+  const {
+    workspaceId,
+    role
+  } = workspaceMember!;
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar 
+        workspaceId={workspaceId}
+        role={role}
+      />
       <main>
-        <SidebarTrigger className="cursor-pointer"/>
+        <SidebarTrigger className="cursor-pointer" />
         {children}
       </main>
     </SidebarProvider>

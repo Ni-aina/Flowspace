@@ -34,7 +34,7 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -96,7 +96,7 @@ export default function SignIn() {
             aria-invalid={!!errors.email}
           />
           {
-            errors.email && 
+            errors.email &&
             <p className="text-sm text-destructive">{errors.email}</p>
           }
         </div>
@@ -109,7 +109,7 @@ export default function SignIn() {
         />
 
         {
-          errors.general && 
+          errors.general &&
           <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
             {errors.general}
           </div>
