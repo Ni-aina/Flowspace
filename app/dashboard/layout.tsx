@@ -18,7 +18,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
         workspaceMember={workspaceMember}
         workspaces={workspaces}
       />
-      <main>
+      <main className="w-full h-full">
         <SidebarTrigger className="cursor-pointer" />
         {children}
       </main>

@@ -32,8 +32,7 @@ export const Modal = ({
     const {
         id,
         name,
-        plan,
-        createdAt,
+        plan
     } = workspace!;
 
     useEffect(() => {
@@ -72,9 +71,10 @@ export const Modal = ({
                     <p className="text-sm">{currentUser?.email}</p>
                     {
                         workspaces.map(workspace =>
-                            <div
-                                key={workspace.id}
+                            <Link
+                                href={`/dashboard/${workspace.id}`}
                                 className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
+                                key={workspace.id}
                             >
                                 <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
                                     <h1 className="text-sm">
@@ -82,10 +82,13 @@ export const Modal = ({
                                     </h1>
                                 </div>
                                 <p className="truncate w-40">{workspace.name}</p>
-                            </div>
+                            </Link>
                         )
                     }
-                    <div className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1">
+                    <Link 
+                        className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
+                        href={`/dashboard/${id}`}
+                    >
                         <div>
                             <Image
                                 src="/icons/3d-house.png"
@@ -99,7 +102,7 @@ export const Modal = ({
                             role === "invited" &&
                             <span className="text-xs px-2 py-1 bg-yellow-600/5 text-yellow-600 rounded-sm">Invited</span>
                         }
-                    </div>
+                    </Link>
                     <div className="flex items-center gap-2 text-blue-700">
                         <div >
                             <Plus size={18} />

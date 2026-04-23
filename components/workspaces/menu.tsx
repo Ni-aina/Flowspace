@@ -4,6 +4,7 @@ import { Home, Inbox, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { isUUID } from "@/utils/isUUID";
 
 const menuItems = [
     {
@@ -27,15 +28,16 @@ const Menu = () => {
     const [displayedLabel, setDisplayedLabel] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const pathname = usePathname();
+    const pathnameFormatted = isUUID(pathname.split("/").at(-1)!) ? "/dashboard" : pathname;
 
     useEffect(()=> {
-        if (!menuItems?.find(item => item.link === pathname)) return;
+        if (!menuItems?.find(item => item.link === pathnameFormatted)) return;
         setCurrentIndex(0);
         setDisplayedLabel("");
-    }, [pathname])
+    }, [pathnameFormatted])
 
     useEffect(() => {
-        const currentLabel = menuItems.find(item => item.link === pathname)?.label || "";
+        const currentLabel = menuItems.find(item => item.link === pathnameFormatted)?.label || "";
 
         if (currentIndex >= currentLabel.length) return;
 
@@ -45,7 +47,7 @@ const Menu = () => {
         }, 20);
 
         return () => clearTimeout(timeout);
-    }, [currentIndex, pathname])
+    }, [currentIndex, pathnameFormatted])
 
     return ( 
         <div className="flex items-center gap-3">
@@ -54,7 +56,7 @@ const Menu = () => {
                     <Link 
                         key={index} 
                         className={`
-                            ${item.link === pathname ? "bg-neutral-700/5" : "cursor-pointer"}
+                            ${item.link === pathnameFormatted ? "bg-neutral-700/5" : "cursor-pointer"}
                             flex items-center gap-1
                             rounded-full
                             px-2 py-1
@@ -65,7 +67,7 @@ const Menu = () => {
                         <h1 
                             className={
                             `
-                                ${pathname === item.link ? "block" : "hidden"}
+                                ${pathnameFormatted === item.link ? "block" : "hidden"}
                                 text-sm font-medium
                             `
                         }>

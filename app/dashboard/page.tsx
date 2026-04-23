@@ -1,9 +1,10 @@
-const Dashboard = () => {
-    return (
-        <div>
+import { findWorkspaceMember } from "@/actions/workspaces/member.action";
+import { redirect } from "next/navigation";
 
-        </div>
-    )
+const Dashboard = async () => {
+    const workspaceMember = await findWorkspaceMember();
+
+    return redirect(`/dashboard/${workspaceMember?.workspaceId}`);
 }
  
 export default Dashboard;
