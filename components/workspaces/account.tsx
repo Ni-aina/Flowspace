@@ -9,9 +9,10 @@ import { Workspace } from "@prisma/client";
 interface AccountProps {
     workspace: Workspace | null;
     role: string;
+    workspaces: Workspace[];
 }
 
-export const Account = ({ workspace, role }: AccountProps) => {
+export const Account = ({ workspace, role, workspaces }: AccountProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const accountRef = useRef<HTMLDivElement>(null);
 
@@ -66,6 +67,7 @@ export const Account = ({ workspace, role }: AccountProps) => {
                 isOpen={isOpen}
                 workspace={workspace}
                 role={role}
+                workspaces={workspaces}
             />
         </div>
     )

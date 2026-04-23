@@ -1,20 +1,22 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { findWorkspaceMember } from "@/actions/workspaces/member.action"
+import { getWorkspaces } from "@/actions/workspaces/workspace.action";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const workspaceMember = await findWorkspaceMember();
-
-  const {
-    workspaceId,
-    role
-  } = workspaceMember!;
+  const [
+    workspaceMember,
+    workspaces
+  ] = await Promise.all([
+    findWorkspaceMember(),
+    getWorkspaces()
+  ])
 
   return (
     <SidebarProvider>
       <AppSidebar 
-        workspaceId={workspaceId}
-        role={role}
+        workspaceMember={workspaceMember}
+        workspaces={workspaces}
       />
       <main>
         <SidebarTrigger className="cursor-pointer" />

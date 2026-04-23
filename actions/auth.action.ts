@@ -1,17 +1,34 @@
 "use server";
 
-import { 
-  SignupFormSchema, 
-  FormState 
+import { authOptions } from '@/lib/auth';
+import {
+  SignupFormSchema,
+  FormState
 } from '@/lib/definitions';
 import prisma from '@/lib/prisma';
+import { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
- 
+
+export async function getAuthorizedUser(): Promise<User | null> {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/auth/sign-in");
+
+  const { user } = session;
+  const userDB = await findUser(user.email!);
+
+  if (!userDB) {
+    throw new Error("Unauthorized access");
+  }
+
+  return userDB;
+}
+
 export async function findUser(email: string) {
-    if (!email) {
-        return null;
-    }
+  if (!email) {
+    return null;
+  }
   const user = await prisma.user.findUnique({
     where: {
       email
@@ -26,16 +43,16 @@ export async function checkPassword(password: string, hashedPassword: string) {
 
 export async function signup(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
-      name: formData.get('name'),
-      email: formData.get('email'),
-      password: formData.get('password'),
-      confirmPassword: formData.get('confirmPassword')
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    confirmPassword: formData.get('confirmPassword')
   })
-  
+
   if (!validatedFields.success) {
-      return {
+    return {
       errors: validatedFields.error.flatten().fieldErrors
-      }
+    }
   }
 
   const { name, email, password } = validatedFields.data;
@@ -44,9 +61,9 @@ export async function signup(state: FormState, formData: FormData) {
   const [user, workspace] = await Promise.all([
     prisma.user.create({
       data: {
-          name,
-          email,
-          password: hashedPassword
+        name,
+        email,
+        password: hashedPassword
       }
     }),
     prisma.workspace.create({
@@ -55,7 +72,7 @@ export async function signup(state: FormState, formData: FormData) {
       }
     })
   ])
- 
+
   if (!user || !workspace) {
     return {
       message: 'An error occurred while creating your account or workspace.',

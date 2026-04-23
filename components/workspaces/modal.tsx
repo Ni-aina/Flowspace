@@ -15,12 +15,14 @@ interface ModalProps {
     isOpen: boolean;
     workspace: Workspace | null;
     role: string;
+    workspaces: Workspace[];
 }
 
 export const Modal = ({
     isOpen,
     workspace,
-    role
+    role,
+    workspaces
 }: ModalProps) => {
     const { data } = useSession();
     const currentUser = data?.user;
@@ -68,14 +70,21 @@ export const Modal = ({
                 <hr />
                 <div className="flex flex-col gap-3 px-4">
                     <p className="text-sm">{currentUser?.email}</p>
-                    <div className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1">
-                        <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
-                            <h1 className="text-sm">
-                                F
-                            </h1>
-                        </div>
-                        <p className="truncate w-40">Flow's space</p>
-                    </div>
+                    {
+                        workspaces.map(workspace =>
+                            <div
+                                key={workspace.id}
+                                className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
+                            >
+                                <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
+                                    <h1 className="text-sm">
+                                        {workspace.name[0].toUpperCase()}
+                                    </h1>
+                                </div>
+                                <p className="truncate w-40">{workspace.name}</p>
+                            </div>
+                        )
+                    }
                     <div className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1">
                         <div>
                             <Image

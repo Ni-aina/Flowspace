@@ -8,14 +8,15 @@ import {
 import { Account } from "./workspaces/account"
 import Menu from "./workspaces/menu"
 import { getWorkspaceById } from "@/actions/workspaces/workspace.action";
+import { Workspace, WorkspaceMember } from "@prisma/client";
 
 interface AppSidebarProps {
-  workspaceId: string;
-  role: string;
+  workspaceMember: WorkspaceMember | null;
+  workspaces: Workspace[];
 }
 
-export async function AppSidebar({ workspaceId, role }: AppSidebarProps) {
-  const workspace = await getWorkspaceById(workspaceId);
+export async function AppSidebar({ workspaceMember, workspaces }: AppSidebarProps) {
+  const workspace = await getWorkspaceById(workspaceMember!.workspaceId);
 
   return (
     <Sidebar>
@@ -24,7 +25,8 @@ export async function AppSidebar({ workspaceId, role }: AppSidebarProps) {
         <SidebarGroup className="flex flex-col space-y-2">
           <Account 
             workspace={workspace}
-            role={role}
+            role={workspaceMember!.role}
+            workspaces={workspaces}
           />
           <Menu />
         </SidebarGroup>
