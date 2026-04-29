@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+    useActionState,
     useEffect,
     useState
 } from "react";
@@ -13,6 +14,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "../ui/button";
 import { ModalUI } from "../ui/modal";
 import { Input } from "../ui/input";
+import { createWorkspace } from "@/actions/workspaces/workspace.action";
 
 interface ModalProps {
     isOpen: boolean;
@@ -28,6 +30,7 @@ export const Modal = ({
     workspaces
 }: ModalProps) => {
     const [isCreateWorkspace, setIsCreateWorkspace] = useState<boolean>(false);
+    const [state, action, pending] = useActionState(createWorkspace, { success: false })
     const { data } = useSession();
     const currentUser = data?.user;
 
@@ -47,6 +50,12 @@ export const Modal = ({
 
         setOpacity("opacity-100 translate-y-0");
     }, [isOpen])
+
+    useEffect(() => {
+        if (state.success) {
+            setIsCreateWorkspace(false);
+        }
+    }, [state.success])
 
     if (!isOpen) return null;
 
@@ -75,20 +84,21 @@ export const Modal = ({
                     <div className="flex flex-col gap-3 px-4">
                         <p className="text-sm">{currentUser?.email}</p>
                         {
-                            workspaces.map(workspace =>
-                                <Link
-                                    href={`/dashboard/${workspace.id}`}
-                                    className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
-                                    key={workspace.id}
-                                >
-                                    <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
-                                        <h1 className="text-sm">
-                                            {workspace.name[0].toUpperCase()}
-                                        </h1>
-                                    </div>
-                                    <p className="truncate w-40">{workspace.name}</p>
-                                </Link>
-                            )
+                            workspaces.filter(workspace => workspace.id !== id)
+                                .map(workspace =>
+                                    <Link
+                                        href={`/dashboard/${workspace.id}`}
+                                        className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
+                                        key={workspace.id}
+                                    >
+                                        <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
+                                            <h1 className="text-sm">
+                                                {workspace.name[0].toUpperCase()}
+                                            </h1>
+                                        </div>
+                                        <p className="truncate w-40">{workspace.name}</p>
+                                    </Link>
+                                )
                         }
                         <Link
                             className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
@@ -130,9 +140,9 @@ export const Modal = ({
                 isOpen={isCreateWorkspace}
                 onClose={() => setIsCreateWorkspace(false)}
             >
-                <form action="#" className="flex flex-col gap-4 p-6">
+                <form action={action} className="flex flex-col gap-4 p-6">
                     <h2 className="text-lg font-semibold leading-none tracking-tight">
-                        Create workspace
+                        Create workspace *
                     </h2>
                     <Input
                         id="workspace"
@@ -142,11 +152,25 @@ export const Modal = ({
                         placeholder="Workspace name"
                         required
                     />
+                    {
+                        state?.error &&
+                        <span className="text-xs text-red-500">
+                            {
+                                state?.error
+                            }
+                        </span>
+                    }
                     <Button
-                        className="h-10 cursor-pointer hover:bg-primary/90"
+                        className="h-10 cursor-pointer hover:bg-primary/90 disabled:opacity-70"
                         type="submit"
+                        disabled={pending}
                     >
-                        Create
+                        {
+                            pending ?
+                                "Creating ..."
+                                :
+                                "Create"
+                        }
                     </Button>
                 </form>
             </ModalUI>
