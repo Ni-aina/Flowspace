@@ -4,11 +4,23 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import InputPassword from "@/components/ui/inputPassword"
-import { useActionState } from "react"
+import { ChangeEvent, useActionState, useState } from "react"
 import { signup } from "@/actions/auth.action"
 
 export default function SignUp() {
     const [state, action, pending] = useActionState(signup, undefined);
+    const [formState, setFormState] = useState({
+        name: "",
+        email: ""
+    })
+
+    const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormState(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
 
     return (
         <div className="w-full max-w-md mx-auto p-6">
@@ -30,6 +42,8 @@ export default function SignUp() {
                         type="text"
                         className="h-10"
                         placeholder="Enter your name"
+                        value={formState.name}
+                        onChange={handleFormChange}
                     />
                     {state?.errors?.name && <p className="text-sm text-destructive">{state.errors.name}</p>}
                 </div>
@@ -44,6 +58,8 @@ export default function SignUp() {
                         type="email"
                         className="h-10"
                         placeholder="Enter your email"
+                        value={formState.email}
+                        onChange={handleFormChange}
                     />
                     {state?.errors?.email && <p className="text-sm text-destructive">{state.errors.email}</p>}
                 </div>

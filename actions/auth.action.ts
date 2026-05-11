@@ -41,7 +41,7 @@ export async function checkPassword(password: string, hashedPassword: string) {
   return await bcrypt.compare(password, hashedPassword);
 }
 
-export async function signup(state: FormState, formData: FormData) {
+export async function signup(_state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
