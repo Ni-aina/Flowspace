@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { ModalUI } from "../ui/modal";
 import { Input } from "../ui/input";
 import { createWorkspace } from "@/actions/workspaces/workspace.action";
+import RenderItems from "../drag&drop/renderItems";
 
 interface ModalProps {
     isOpen: boolean;
@@ -77,29 +78,22 @@ export const Modal = ({
                         />
                         <div className="flex flex-col space-y-0">
                             <p className="truncate w-40">{name}</p>
-                            <span className=" text-xs  text-black/50 ">{plan} plan</span>
+                            <div className="flex items-center gap-2 text-black/50">
+                                <button
+                                    className="cursor-pointer hover:scale-105 transition-transform"
+                                >
+                                    <Settings size={14} />
+                                </button>
+                                <span className=" text-xs">{plan} plan</span>
+                            </div>
                         </div>
                     </div>
                     <hr />
                     <div className="flex flex-col gap-3 px-4">
                         <p className="text-sm">{currentUser?.email}</p>
-                        {
-                            workspaces.filter(workspace => workspace.id !== id)
-                                .map(workspace =>
-                                    <Link
-                                        href={`/dashboard/${workspace.id}`}
-                                        className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
-                                        key={workspace.id}
-                                    >
-                                        <div className="flex h-full items-center bg-primary/5 px-1 rounded-xs">
-                                            <h1 className="text-sm">
-                                                {workspace.name[0].toUpperCase()}
-                                            </h1>
-                                        </div>
-                                        <p className="truncate w-40">{workspace.name}</p>
-                                    </Link>
-                                )
-                        }
+                        <RenderItems
+                            initialItems={workspaces.filter(workspace => workspace.id !== id)}
+                        />
                         <Link
                             className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
                             href={`/dashboard/${id}`}
@@ -112,7 +106,9 @@ export const Modal = ({
                                     height={18}
                                 />
                             </div>
-                            <p className="truncate w-40">{name}</p>
+                            <p className={`truncate ${role === "invited" ? "w-25" : "w-40"}`}>
+                                {name}
+                            </p>
                             {
                                 role === "invited" &&
                                 <span className="text-xs px-2 py-1 bg-yellow-600/5 text-yellow-600 rounded-sm">Invited</span>

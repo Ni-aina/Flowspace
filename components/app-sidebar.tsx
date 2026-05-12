@@ -4,9 +4,9 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-} from "@/components/ui/sidebar"
-import { Account } from "./workspaces/account"
-import Menu from "./workspaces/menu"
+} from "@/components/ui/sidebar";
+import { Account } from "./workspaces/account";
+import Menu from "./workspaces/menu";
 import { getWorkspaceById } from "@/actions/workspaces/workspace.action";
 import { Workspace, WorkspaceMember } from "@prisma/client";
 

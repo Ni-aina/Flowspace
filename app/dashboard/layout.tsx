@@ -1,20 +1,32 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-import { findWorkspaceMember } from "@/actions/workspaces/member.action"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import { getWorkspaces } from "@/actions/workspaces/workspace.action";
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{
+    workspaceId: string;
+  }>
+}
+
+const Layout = async ({
+  children,
+  params
+}: LayoutProps) => {
+  const { workspaceId } = await params;
+
   const [
     workspaceMember,
     workspaces
   ] = await Promise.all([
-    findWorkspaceMember(),
+    findWorkspaceMember(workspaceId),
     getWorkspaces()
   ])
 
   return (
     <SidebarProvider>
-      <AppSidebar 
+      <AppSidebar
         workspaceMember={workspaceMember}
         workspaces={workspaces}
       />
@@ -25,3 +37,5 @@ export default async function Layout({ children }: { children: React.ReactNode }
     </SidebarProvider>
   )
 }
+
+export default Layout;

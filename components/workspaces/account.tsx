@@ -47,13 +47,13 @@ export const Account = ({ workspace, role, workspaces }: AccountProps) => {
                         height={20}
                     />
                     <div className="flex items-center gap-1">
-                        <p className="text-md">
+                        <p className="text-md truncate w-30">
                             {workspace!.name}
-                            {
-                                role === "invited" &&
-                                <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">{role}</span>
-                            }
                         </p>
+                        {
+                            role === "invited" &&
+                            <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">{role}</span>
+                        }
                         <ChevronDown size={14}
                             className="transition-all duration-200"
                             style={{
@@ -64,9 +64,9 @@ export const Account = ({ workspace, role, workspaces }: AccountProps) => {
                 </div>
             </div>
             <Modal
+                role={role}
                 isOpen={isOpen}
                 workspace={workspace}
-                role={role}
                 workspaces={workspaces}
             />
         </div>

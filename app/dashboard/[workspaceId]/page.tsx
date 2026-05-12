@@ -7,9 +7,9 @@ const Workspace = async ({ params }: WorkspaceProps) => {
 
     return (
         <div>
-            
+
         </div>
     )
 }
- 
+
 export default Workspace;
