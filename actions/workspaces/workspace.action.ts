@@ -8,6 +8,10 @@ import { revalidatePath } from "next/cache";
 
 type State = { error?: string; success?: boolean }
 
+export async function revalidateDashboard() {
+    revalidatePath("/dashboard");
+}
+
 export async function createWorkspace(
     _previousState: State,
     formData: FormData

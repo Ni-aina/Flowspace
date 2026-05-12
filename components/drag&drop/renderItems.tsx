@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OrderItem, OrderItemList } from "./orderItems";
 import Link from "next/link";
 import { GripVertical } from "lucide-react";
@@ -10,7 +10,11 @@ interface RenderItemsProps {
 }
 
 const RenderItems = ({ initialItems }: RenderItemsProps) => {
-    const [items, setItems] = useState<OrderItem[]>(initialItems)
+    const [items, setItems] = useState<OrderItem[]>(initialItems);
+
+    useEffect(() => {
+        setItems(initialItems)
+    }, [initialItems])
 
     return (
         <OrderItemList
