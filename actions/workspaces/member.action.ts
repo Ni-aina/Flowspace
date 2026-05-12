@@ -4,7 +4,7 @@ import { getAuthorizedUser } from "../auth.action";
 import prisma from "@/lib/prisma";
 import { WorkspaceMember } from "@prisma/client";
 
-export async function findWorkspaceMember(workspaceId: string): Promise<WorkspaceMember | null> {
+export async function findWorkspaceMember(workspaceId?: string): Promise<WorkspaceMember | null> {
     const user = await getAuthorizedUser();
 
     if (!user) {

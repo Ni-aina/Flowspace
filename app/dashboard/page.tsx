@@ -6,5 +6,5 @@ const Dashboard = async () => {
 
     return redirect(`/dashboard/${workspaceMember?.workspaceId}`);
 }
- 
+
 export default Dashboard;

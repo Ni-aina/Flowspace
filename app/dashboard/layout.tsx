@@ -30,7 +30,7 @@ const Layout = async ({
         workspaceMember={workspaceMember}
         workspaces={workspaces}
       />
-      <main className="w-full h-full">
+      <main className="flex-1">
         <SidebarTrigger className="cursor-pointer" />
         {children}
       </main>
