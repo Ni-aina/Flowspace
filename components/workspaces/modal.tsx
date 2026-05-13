@@ -82,11 +82,12 @@ export const Modal = ({
                             <div className="flex items-center gap-2 text-black/50">
                                 {
                                     role === "owner" &&
-                                    <button
+                                    <Link
                                         className="cursor-pointer hover:scale-105 transition-transform"
+                                        href={`/dashboard/${id}/setting`}
                                     >
                                         <Settings size={14} />
-                                    </button>
+                                    </Link>
                                 }
                                 <span className=" text-xs">{plan} plan</span>
                             </div>
