@@ -23,6 +23,7 @@ export async function findWorkspaceMember(workspaceId?: string): Promise<Workspa
                 position: "asc"
             }
         })
+
         return workspaceMember;
     }
 

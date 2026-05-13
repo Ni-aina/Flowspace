@@ -49,13 +49,14 @@ export const Modal = ({
 
     const initialWorkspaces = workspacesPosition.filter(workspace => workspace.id !== id)
         .map(item => ({
-            id: item.workspaceMemberId,
+            id: item.id,
+            idOrder: item.workspaceMemberId,
             name: item.name
         }))
 
     const handleReorder = async (items: OrderItem[]) => {
         await Promise.all(items.map((item, position) =>
-            setWorkspaceMemberPosition(String(item.id), position)
+            setWorkspaceMemberPosition(String(item.idOrder), position)
         ))
     }
 

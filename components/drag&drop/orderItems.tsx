@@ -20,6 +20,7 @@ import { HTMLAttributes, ReactNode } from "react";
 
 export interface OrderItem {
     id: UniqueIdentifier;
+    idOrder: UniqueIdentifier;
     name: string;
 }
 
