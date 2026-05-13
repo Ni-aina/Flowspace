@@ -1,6 +1,5 @@
 "use client";
 
-import { getWorkspaceById, revalidateDashboard } from "@/actions/workspaces/workspace.action";
 import { RoleType } from "@/stores/zustands/use-role";
 import { useRole } from "@/stores/zustands/use-role";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
@@ -21,9 +20,10 @@ export const StoreInitializer = ({ workspaceId, role }: StorInitializerInterface
 
   useEffect(() => {
     (async () => {
-      const workspace = await getWorkspaceById(workspaceId);
-      await revalidateDashboard();
-      setWorkspace(workspace);
+      const response = await fetch(`/api/workspaces/${workspaceId}`);
+      if (response.status !== 200) return;
+      const { data } = await response.json();
+      setWorkspace(data);
     })()
   }, [workspaceId])
 
