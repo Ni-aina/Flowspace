@@ -1,5 +1,5 @@
 import ItemLoading from "@/components/itemLoading";
 
-export default function DashboardLoading() {
-  return <ItemLoading />
-}
+const DashboardLoading = () => <ItemLoading />;
+
+export default DashboardLoading;

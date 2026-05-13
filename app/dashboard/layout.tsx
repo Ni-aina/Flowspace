@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import { getWorkspaces } from "@/actions/workspaces/workspace.action";
 import { StoreInitializer } from "@/components/store-initializer";
+import { RoleType } from "@/stores/zustands/use-role";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,7 +23,13 @@ const Layout = async ({
 
   return (
     <SidebarProvider>
-      {workspaceMember && <StoreInitializer member={workspaceMember} />}
+      {
+        workspaceMember &&
+        <StoreInitializer
+          workspaceId={workspaceMember.workspaceId}
+          role={workspaceMember.role as RoleType}
+        />
+      }
       <AppSidebar workspaces={workspaces} />
       <main className="flex-1">
         <SidebarTrigger className="cursor-pointer" />

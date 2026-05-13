@@ -1,16 +1,31 @@
 "use client";
 
-import { useRef } from "react";
-import { WorkspaceMember } from "@prisma/client";
-import { useWorkspaceMember } from "@/stores/zustands/use-workspace-member";
+import { getWorkspaceById, revalidateDashboard } from "@/actions/workspaces/workspace.action";
+import { RoleType } from "@/stores/zustands/use-role";
+import { useRole } from "@/stores/zustands/use-role";
+import { useWorkspace } from "@/stores/zustands/use-workspace";
+import { useEffect } from "react";
 
-export function StoreInitializer({ member }: { member: WorkspaceMember }) {
-  const initialized = useRef(false);
-  
-  if (!initialized.current) {
-    useWorkspaceMember.getState().setWorkspaceMember(member);
-    initialized.current = true;
-  }
-  
+interface StorInitializerInterface {
+  workspaceId: string;
+  role: RoleType;
+}
+
+export const StoreInitializer = ({ workspaceId, role }: StorInitializerInterface) => {
+  const setRole = useRole((s) => s.setRole);
+  const setWorkspace = useWorkspace((s) => s.setWorkspace);
+
+  useEffect(() => {
+    setRole(role);
+  }, [role])
+
+  useEffect(() => {
+    (async () => {
+      const workspace = await getWorkspaceById(workspaceId);
+      await revalidateDashboard();
+      setWorkspace(workspace);
+    })()
+  }, [workspaceId])
+
   return null;
 }

@@ -5,31 +5,19 @@ import Image from "next/image";
 import { Modal } from "./modal";
 import { useEffect, useRef, useState } from "react";
 import { Workspace } from "@prisma/client";
-import { useWorkspaceMember } from "@/stores/zustands/use-workspace-member";
-import { getWorkspaceById, revalidateDashboard } from "@/actions/workspaces/workspace.action";
+import { useWorkspace } from "@/stores/zustands/use-workspace";
+import { useRole } from "@/stores/zustands/use-role";
 
 interface AccountProps {
     workspaces: Workspace[];
 }
 
 export const Account = ({ workspaces }: AccountProps) => {
-    const member = useWorkspaceMember(state => state.workspaceMember);
+    const workspace = useWorkspace(state => state.workspace);
+    const role = useRole(state => state.role);
 
-    if (!member) return null;
-    const { role, workspaceId } = member;
-
-    const [workspace, setWorkspace] = useState<Workspace | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const accountRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!workspaceId) return;
-        (async () => {
-            const workspace = await getWorkspaceById(workspaceId);
-            await revalidateDashboard();
-            setWorkspace(workspace);
-        })()
-    }, [workspaceId])
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -69,8 +57,10 @@ export const Account = ({ workspaces }: AccountProps) => {
                                 {workspace?.name}
                             </p>
                             {
-                                role === "invited" &&
-                                <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">{role}</span>
+                                role &&
+                                <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">
+                                    {role}
+                                </span>
                             }
                         </div>
                         <ChevronDown size={14}

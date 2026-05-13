@@ -1,5 +1,5 @@
 import ItemLoading from "@/components/itemLoading";
 
-export default function WorkspaceLoading() {
-    return <ItemLoading />
-}
+const WorkspaceLoading = () => <ItemLoading />;
+
+export default WorkspaceLoading;

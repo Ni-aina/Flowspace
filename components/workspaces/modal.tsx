@@ -16,11 +16,12 @@ import { ModalUI } from "../ui/modal";
 import { Input } from "../ui/input";
 import { createWorkspace } from "@/actions/workspaces/workspace.action";
 import RenderItems from "../drag&drop/renderItems";
+import { RoleType } from "@/stores/zustands/use-role";
 
 interface ModalProps {
     isOpen: boolean;
     workspace: Workspace | null;
-    role: string;
+    role: RoleType;
     workspaces: Workspace[];
 }
 
@@ -110,8 +111,10 @@ export const Modal = ({
                                 {name}
                             </p>
                             {
-                                role === "invited" &&
-                                <span className="text-xs px-2 py-1 bg-yellow-600/5 text-yellow-600 rounded-sm">Invited</span>
+                                role &&
+                                <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">
+                                    {role}
+                                </span>
                             }
                         </Link>
                         <div

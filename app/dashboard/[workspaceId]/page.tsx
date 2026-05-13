@@ -1,5 +1,6 @@
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import { StoreInitializer } from "@/components/store-initializer";
+import { RoleType } from "@/stores/zustands/use-role";
 
 interface WorkspaceProps {
     params: Promise<{ workspaceId: string }>
@@ -11,8 +12,13 @@ const Workspace = async ({ params }: WorkspaceProps) => {
 
     return (
         <div>
-            {workspaceMember && <StoreInitializer member={workspaceMember} />}
-
+            {
+                workspaceMember &&
+                <StoreInitializer
+                    workspaceId={workspaceMember.workspaceId}
+                    role={workspaceMember.role as RoleType}
+                />
+            }
         </div>
     )
 }
