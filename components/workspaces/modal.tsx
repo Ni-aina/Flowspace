@@ -80,11 +80,14 @@ export const Modal = ({
                         <div className="flex flex-col space-y-0">
                             <p className="truncate w-40">{name}</p>
                             <div className="flex items-center gap-2 text-black/50">
-                                <button
-                                    className="cursor-pointer hover:scale-105 transition-transform"
-                                >
-                                    <Settings size={14} />
-                                </button>
+                                {
+                                    role === "owner" &&
+                                    <button
+                                        className="cursor-pointer hover:scale-105 transition-transform"
+                                    >
+                                        <Settings size={14} />
+                                    </button>
+                                }
                                 <span className=" text-xs">{plan} plan</span>
                             </div>
                         </div>
@@ -111,7 +114,7 @@ export const Modal = ({
                                 {name}
                             </p>
                             {
-                                role &&
+                                role === "invited" &&
                                 <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">
                                     {role}
                                 </span>

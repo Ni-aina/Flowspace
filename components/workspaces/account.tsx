@@ -57,7 +57,7 @@ export const Account = ({ workspaces }: AccountProps) => {
                                 {workspace?.name}
                             </p>
                             {
-                                role &&
+                                role === "invited" &&
                                 <span className="text-yellow-600 text-xs px-1.5 py-1 rounded-sm bg-yellow-600/10">
                                     {role}
                                 </span>
