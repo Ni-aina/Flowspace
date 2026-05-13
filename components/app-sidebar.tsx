@@ -7,20 +7,20 @@ import {
 } from "@/components/ui/sidebar";
 import { Account } from "./workspaces/account";
 import Menu from "./workspaces/menu";
-import { Workspace } from "@prisma/client";
+import { WorkspacePosition } from "@/types/workspacePosition";
 
 interface AppSidebarProps {
-  workspaces: Workspace[];
+  workspacesPosition: WorkspacePosition[];
 }
 
-export function AppSidebar({ workspaces }: AppSidebarProps) {
+export function AppSidebar({ workspacesPosition }: AppSidebarProps) {
 
   return (
     <Sidebar>
       <SidebarHeader />
       <SidebarContent className="px-2">
         <SidebarGroup className="flex flex-col space-y-2">
-          <Account workspaces={workspaces} />
+          <Account workspacesPosition={workspacesPosition} />
           <Menu />
         </SidebarGroup>
       </SidebarContent>

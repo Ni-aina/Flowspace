@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type RoleType = "owner" | "invited" | null;
+export type RoleType = "owner" | "invited" | "member";
 
 interface RoleState {
     role: RoleType;
@@ -8,6 +8,6 @@ interface RoleState {
 }
 
 export const useRole = create<RoleState>((set) => ({
-    role: null,
+    role: "member" as RoleType,
     setRole: (role: RoleType) => set({ role })
 }))

@@ -4,15 +4,15 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Modal } from "./modal";
 import { useEffect, useRef, useState } from "react";
-import { Workspace } from "@prisma/client";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useRole } from "@/stores/zustands/use-role";
+import { WorkspacePosition } from "@/types/workspacePosition";
 
 interface AccountProps {
-    workspaces: Workspace[];
+    workspacesPosition: WorkspacePosition[];
 }
 
-export const Account = ({ workspaces }: AccountProps) => {
+export const Account = ({ workspacesPosition }: AccountProps) => {
     const workspace = useWorkspace(state => state.workspace);
     const role = useRole(state => state.role);
 
@@ -76,7 +76,7 @@ export const Account = ({ workspaces }: AccountProps) => {
                 role={role}
                 isOpen={isOpen}
                 workspace={workspace}
-                workspaces={workspaces}
+                workspacesPosition={workspacesPosition}
             />
         </div>
     )

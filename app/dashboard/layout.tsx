@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
-import { getWorkspaces } from "@/actions/workspaces/workspace.action";
+import { getWorkspacesPosition } from "@/actions/workspaces/member.action";
 import { StoreInitializer } from "@/components/store-initializer";
 import { RoleType } from "@/stores/zustands/use-role";
 
@@ -15,10 +15,10 @@ const Layout = async ({
 
   const [
     workspaceMember,
-    workspaces
+    workspacesPosition
   ] = await Promise.all([
     findWorkspaceMember(),
-    getWorkspaces()
+    getWorkspacesPosition()
   ])
 
   return (
@@ -30,7 +30,7 @@ const Layout = async ({
           role={workspaceMember.role as RoleType}
         />
       }
-      <AppSidebar workspaces={workspaces} />
+      <AppSidebar workspacesPosition={workspacesPosition} />
       <main className="flex-1">
         <SidebarTrigger className="cursor-pointer" />
         {children}

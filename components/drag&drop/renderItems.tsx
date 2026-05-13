@@ -1,25 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useOptimistic, useTransition } from "react";
 import { OrderItem, OrderItemList } from "./orderItems";
 import Link from "next/link";
 import { GripVertical } from "lucide-react";
 
 interface RenderItemsProps {
     initialItems: OrderItem[];
+    handleReorder: (items: OrderItem[]) => Promise<void>;
 }
 
-const RenderItems = ({ initialItems }: RenderItemsProps) => {
-    const [items, setItems] = useState<OrderItem[]>(initialItems);
+const RenderItems = ({
+    initialItems,
+    handleReorder
+}: RenderItemsProps) => {
+    const [isPending, startTransition] = useTransition()
+    const [items, setItems] = useOptimistic<OrderItem[], OrderItem[]>(
+        initialItems,
+        (_state, newItems) => newItems
+    )
 
-    useEffect(() => {
-        setItems(initialItems)
-    }, [initialItems])
+    const handleChange = (newItems: OrderItem[]) => {
+        if (isPending) return;
+        startTransition(async () => {
+            setItems(newItems)
+            await handleReorder(newItems)
+        })
+    }
 
     return (
         <OrderItemList
             items={items}
-            onChange={setItems}
+            onChange={handleChange}
             renderItem={(item, dragHandleProps) =>
                 <div className="flex w-full items-center gap-2 hover:bg-primary/5 rounded-sm px-2 py-1">
                     <button

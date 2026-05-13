@@ -2,7 +2,9 @@
 
 import { getAuthorizedUser } from "../auth.action";
 import prisma from "@/lib/prisma";
+import { WorkspacePosition } from "@/types/workspacePosition";
 import { WorkspaceMember } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export async function findWorkspaceMember(workspaceId?: string): Promise<WorkspaceMember | null> {
     const user = await getAuthorizedUser();
@@ -16,6 +18,9 @@ export async function findWorkspaceMember(workspaceId?: string): Promise<Workspa
             where: {
                 userId: user.id,
                 workspaceId: workspaceId
+            },
+            orderBy: {
+                position: "asc"
             }
         })
         return workspaceMember;
@@ -28,8 +33,65 @@ export async function findWorkspaceMember(workspaceId?: string): Promise<Workspa
                 { role: "owner" },
                 { role: "invited" }
             ]
+        },
+        orderBy: {
+            position: "asc"
         }
     })
 
     return workspaceMember;
+}
+
+export async function setWorkspaceMemberPosition(id: string, position: number) {
+    const user = await getAuthorizedUser();
+
+    if (!user) {
+        throw new Error("Unauthorized access");
+    }
+
+    const workspaceMember = await prisma.workspaceMember.update({
+        where: {
+            id,
+            userId: user.id
+        },
+        data: {
+            position: position
+        }
+    })
+
+    if (!workspaceMember) return;
+    revalidatePath("/dashboard");
+}
+
+export async function getWorkspacesPosition(): Promise<WorkspacePosition[]> {
+    const user = await getAuthorizedUser();
+
+    if (!user) return [];
+
+    const workspaces = await prisma.workspaceMember.findMany({
+        where: {
+            userId: user.id
+        },
+        select: {
+            id: true,
+            position: true,
+            workspace: {
+                select: {
+                    id: true,
+                    name: true,
+                    plan: true,
+                    createdAt: true
+                }
+            }
+        },
+        orderBy: {
+            position: "asc"
+        }
+    })
+
+    return workspaces.map(item => ({
+        workspaceMemberId: String(item.id),
+        position: item.position,
+        ...item.workspace
+    }))
 }

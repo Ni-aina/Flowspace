@@ -45,6 +45,7 @@ model WorkspaceMember {
   workspaceId String   @map("workspace_id") @db.Uuid
   userId      String   @map("user_id") @db.Uuid
   role        String   @default("member")
+  position    Int      @default(0)
   joinedAt    DateTime @default(now()) @map("joined_at")
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)

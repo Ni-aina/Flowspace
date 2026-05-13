@@ -63,27 +63,3 @@ export async function getWorkspaceById(id: string): Promise<Workspace | null> {
 
     return workspace;
 }
-
-export async function getWorkspaces(): Promise<Workspace[]> {
-    const user = await getAuthorizedUser();
-
-    if (!user) return [];
-
-    const workspaces = await prisma.workspaceMember.findMany({
-        where: {
-            userId: user.id
-        },
-        select: {
-            workspace: {
-                select: {
-                    id: true,
-                    name: true,
-                    plan: true,
-                    createdAt: true
-                }
-            }
-        }
-    })
-
-    return workspaces.map(workspaceMember => workspaceMember.workspace)
-}

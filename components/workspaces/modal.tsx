@@ -17,19 +17,22 @@ import { Input } from "../ui/input";
 import { createWorkspace } from "@/actions/workspaces/workspace.action";
 import RenderItems from "../drag&drop/renderItems";
 import { RoleType } from "@/stores/zustands/use-role";
+import { OrderItem } from "../drag&drop/orderItems";
+import { setWorkspaceMemberPosition } from "@/actions/workspaces/member.action";
+import { WorkspacePosition } from "@/types/workspacePosition";
 
 interface ModalProps {
     isOpen: boolean;
     workspace: Workspace | null;
     role: RoleType;
-    workspaces: Workspace[];
+    workspacesPosition: WorkspacePosition[];
 }
 
 export const Modal = ({
     isOpen,
     workspace,
     role,
-    workspaces
+    workspacesPosition
 }: ModalProps) => {
     const [isCreateWorkspace, setIsCreateWorkspace] = useState<boolean>(false);
     const [state, action, pending] = useActionState(createWorkspace, { success: false })
@@ -43,6 +46,18 @@ export const Modal = ({
         name,
         plan
     } = workspace!;
+
+    const initialWorkspaces = workspacesPosition.filter(workspace => workspace.id !== id)
+        .map(item => ({
+            id: item.workspaceMemberId,
+            name: item.name
+        }))
+
+    const handleReorder = async (items: OrderItem[]) => {
+        await Promise.all(items.map((item, position) =>
+            setWorkspaceMemberPosition(String(item.id), position)
+        ))
+    }
 
     useEffect(() => {
         if (!isOpen) {
@@ -97,7 +112,8 @@ export const Modal = ({
                     <div className="flex flex-col gap-3 px-4">
                         <p className="text-sm">{currentUser?.email}</p>
                         <RenderItems
-                            initialItems={workspaces.filter(workspace => workspace.id !== id)}
+                            initialItems={initialWorkspaces}
+                            handleReorder={handleReorder}
                         />
                         <Link
                             className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
