@@ -15,13 +15,13 @@ model User {
   avatarUrl String?  @map("avatar_url")
   createdAt DateTime @default(now()) @map("created_at")
 
-  workspaceMembers  WorkspaceMember[]
-  activities        Activity[]
-  createdBoards     Board[]            @relation("BoardCreator")
-  createdCards      Card[]             @relation("CardCreator")
-  assignedCards     CardAssignee[]
-  comments          Comment[]
-  uploadedFiles     Attachment[]
+  workspaceMembers WorkspaceMember[]
+  activities       Activity[]
+  createdBoards    Board[]           @relation("BoardCreator")
+  createdCards     Card[]            @relation("CardCreator")
+  assignedCards    CardAssignee[]
+  comments         Comment[]
+  uploadedFiles    Attachment[]
 
   @@map("users")
 }
@@ -47,6 +47,7 @@ model WorkspaceMember {
   role        String   @default("member")
   position    Int      @default(0)
   joinedAt    DateTime @default(now()) @map("joined_at")
+  lastUsed    DateTime @default(now()) @map("last_used")
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -56,13 +57,13 @@ model WorkspaceMember {
 }
 
 model Board {
-  id          String   @id @default(uuid()) @db.Uuid
-  workspaceId String   @map("workspace_id") @db.Uuid
-  createdBy   String   @map("created_by") @db.Uuid
+  id          String @id @default(uuid()) @db.Uuid
+  workspaceId String @map("workspace_id") @db.Uuid
+  createdBy   String @map("created_by") @db.Uuid
   title       String
-  type        String   @default("kanban")
-  settings    Json     @default("{}")
-  position    Int      @default(0)
+  type        String @default("kanban")
+  settings    Json   @default("{}")
+  position    Int    @default(0)
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   creator   User      @relation("BoardCreator", fields: [createdBy], references: [id])

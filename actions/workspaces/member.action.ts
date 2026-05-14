@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { WorkspacePosition } from "@/types/workspacePosition";
 import { WorkspaceMember } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { abort } from "process";
 
 export async function findWorkspaceMember(workspaceId?: string): Promise<WorkspaceMember | null> {
     const user = await getAuthorizedUser();
@@ -18,9 +19,6 @@ export async function findWorkspaceMember(workspaceId?: string): Promise<Workspa
             where: {
                 userId: user.id,
                 workspaceId: workspaceId
-            },
-            orderBy: {
-                position: "asc"
             }
         })
 
@@ -36,11 +34,31 @@ export async function findWorkspaceMember(workspaceId?: string): Promise<Workspa
             ]
         },
         orderBy: {
-            position: "asc"
+            lastUsed: "desc"
         }
     })
 
     return workspaceMember;
+}
+
+export async function setWorkspaceLastUsed(id: string) {
+    const user = await getAuthorizedUser();
+
+    if (!user) {
+        throw new Error("Unauthorized access");
+    }
+
+    const now = new Date().toISOString();
+
+    await prisma.workspaceMember.update({
+        where: {
+            id,
+            userId: user.id
+        },
+        data: {
+            lastUsed: now
+        }
+    })
 }
 
 export async function setWorkspaceMemberPosition(id: string, position: number) {

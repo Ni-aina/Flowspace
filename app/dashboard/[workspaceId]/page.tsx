@@ -1,4 +1,4 @@
-import { findWorkspaceMember } from "@/actions/workspaces/member.action";
+import { findWorkspaceMember, setWorkspaceLastUsed } from "@/actions/workspaces/member.action";
 import { StoreInitializer } from "@/components/store-initializer";
 import { RoleType } from "@/stores/zustands/use-role";
 
@@ -8,7 +8,8 @@ interface WorkspaceProps {
 
 const Workspace = async ({ params }: WorkspaceProps) => {
     const { workspaceId } = await params;
-    const workspaceMember = await findWorkspaceMember(workspaceId);
+    const workspaceMember = await findWorkspaceMember(workspaceId); 
+    await setWorkspaceLastUsed(workspaceMember?.id!);
 
     return (
         <div>
