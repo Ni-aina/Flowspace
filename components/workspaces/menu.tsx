@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { isUUID } from "@/utils/isUUID";
+import Board from "./board";
 
 const menuItems = [
     {
@@ -30,7 +31,7 @@ const Menu = () => {
     const pathname = usePathname();
     const pathnameFormatted = isUUID(pathname.split("/").at(-1)!) ? "/dashboard" : pathname;
 
-    useEffect(()=> {
+    useEffect(() => {
         if (!menuItems?.find(item => item.link === pathnameFormatted)) return;
         setCurrentIndex(0);
         setDisplayedLabel("");
@@ -49,35 +50,40 @@ const Menu = () => {
         return () => clearTimeout(timeout);
     }, [currentIndex, pathnameFormatted])
 
-    return ( 
-        <div className="flex items-center gap-3">
+    return (
+        <div className="space-y-2">
+            <div className="flex items-center gap-3">
+                {
+                    menuItems.map((item, index) => (
+                        <Link
+                            key={index}
+                            className={`
+                                ${item.link === pathnameFormatted ? "bg-neutral-700/5" : "cursor-pointer"}
+                                flex items-center gap-1
+                                rounded-full
+                                px-2 py-1
+                            `}
+                            href={item.link}
+                        >
+                            {item.icon}
+                            <h1
+                                className={
+                                    `
+                                    ${pathnameFormatted === item.link ? "block" : "hidden"}
+                                    text-sm font-medium
+                                `
+                                }>
+                                {displayedLabel}
+                            </h1>
+                        </Link>
+                    ))
+                }
+            </div>
             {
-                menuItems.map((item, index) => (
-                    <Link 
-                        key={index} 
-                        className={`
-                            ${item.link === pathnameFormatted ? "bg-neutral-700/5" : "cursor-pointer"}
-                            flex items-center gap-1
-                            rounded-full
-                            px-2 py-1
-                        `}
-                        href={item.link}
-                    >
-                        {item.icon}
-                        <h1 
-                            className={
-                            `
-                                ${pathnameFormatted === item.link ? "block" : "hidden"}
-                                text-sm font-medium
-                            `
-                        }>
-                            {displayedLabel}
-                        </h1>
-                    </Link>
-                ))
+                pathnameFormatted === "/dashboard" && <Board />
             }
         </div>
     )
 }
- 
+
 export default Menu;

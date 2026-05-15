@@ -20,7 +20,9 @@ export function AppSidebar({ workspacesPosition }: AppSidebarProps) {
       <SidebarHeader />
       <SidebarContent className="px-2">
         <SidebarGroup className="flex flex-col space-y-2">
-          <Account workspacesPosition={workspacesPosition} />
+          <Account
+            workspacesPosition={workspacesPosition}
+          />
           <Menu />
         </SidebarGroup>
       </SidebarContent>
