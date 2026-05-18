@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/prisma";
 import { getAuthorizedUser } from "../auth.action";
-import { revalidatePath } from "next/cache";
 import { Board } from "@prisma/client";
 
 type State = { error?: string; success?: boolean }
@@ -33,7 +32,6 @@ export async function createBoard(
 
     if (!board) return { error: "Failed to create board" }
 
-    revalidatePath("/dashboard");
     return {
         success: true
     }

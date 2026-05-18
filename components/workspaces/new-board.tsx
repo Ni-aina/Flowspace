@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { ModalUI } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
@@ -24,17 +24,18 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
         { value: "list", icon: List, label: "List" }
     ]
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setTitle("");
         setType("grid");
         setOnNewBoard(false);
-    }
+    }, [])
 
-    if (state?.success) {
-        setTitle("");
-        setType("grid");
-        setOnNewBoard(false);
-    }
+    useEffect(() => {
+        if (state?.success) handleClose();
+    }, [
+        state,
+        handleClose
+    ])
 
     if (!workspace) return null;
 
@@ -47,6 +48,8 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
         >
             <form action={formAction} className="space-y-4">
                 <input type="hidden" name="workspaceId" value={workspace.id} />
+                <input type="hidden" name="type" value={type} />
+
                 <div>
                     <label className="block text-sm font-medium mb-2">
                         Type
