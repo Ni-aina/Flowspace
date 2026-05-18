@@ -1,4 +1,4 @@
-import ItemLoading from "@/components/itemLoading";
+import ItemLoading from "@/components/item-loading";
 
 const DashboardLoading = () => <ItemLoading />;
 

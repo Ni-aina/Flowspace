@@ -39,14 +39,17 @@ export async function createBoard(
     }
 }
 
-export async function getBoards(): Promise<Board[]> {
+export async function getBoardsByWorkspaceId(workspaceId: string): Promise<Board[]> {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized");
 
+    if (!workspaceId) throw new Error("Workspace ID is required");
+
     const boards = await prisma.board.findMany({
         where: {
             workspace: {
+                id: workspaceId,
                 members: {
                     some: {
                         userId: user.id

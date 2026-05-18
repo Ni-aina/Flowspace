@@ -42,7 +42,7 @@ const RenderItems = ({
                         <GripVertical size={16} className="text-gray-400" />
                     </button>
                     <Link
-                        href={`/dashboard/${item.id}`}
+                        href={item.link}
                         className="truncate flex-1 min-w-0"
                     >
                         {item.name}

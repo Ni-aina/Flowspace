@@ -84,6 +84,7 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
                     <Input
                         id="title"
                         type="text"
+                        name="title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="Enter board title"

@@ -2,14 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { Board as BoardType } from "@prisma/client";
-import { Loader2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import NewBoard from "./new-board";
-import ItemLoading from "../itemLoading";
 import RenderItems from "../drag&drop/renderItems";
 import { OrderItem } from "../drag&drop/orderItems";
 import { setBoardPosition } from "@/actions/workspaces/board.action";
+import { useWorkspace } from "@/stores/zustands/use-workspace";
+import CardLoading from "../cards/card-loading";
+import CardNotFound from "../cards/card-not-found";
 
 const Board = () => {
+    const workspace = useWorkspace(state => state.workspace);
+    const workspaceId = workspace?.id;
+
     const [loading, setLoading] = useState(true);
     const [boards, setBoards] = useState<BoardType[]>([]);
     const [onNewBoard, setOnNewBoard] = useState(false);
@@ -19,28 +24,38 @@ const Board = () => {
     const initialItems = boards.map((board) => ({
         id: board.id,
         orderId: board.id,
-        name: board.title
+        name: board.title,
+        link: "#"
     }))
+
+    const fetchBoards = async () => {
+        try {
+            const response = await fetch(`/api/boards?workspaceId=${workspaceId}`);
+            const data = await response.json();
+            setBoards(data);
+        } catch {
+            
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleReorder = async (items: OrderItem[]) => {
         await Promise.all(items.map((board, position) =>
             setBoardPosition(String(board.orderId), position)
         ))
+        await fetchBoards();
     }
 
     useEffect(() => {
-        (async () => {
-            try {
-                const response = await fetch("/api/boards");
-                const data = await response.json();
-                setBoards(data);
-            } catch {
+        if (!workspaceId) return;
 
-            } finally {
-                setLoading(false)
-            }
+        (async () => {
+            setLoading(true);
+            await fetchBoards();
         })()
-    }, [])
+
+    }, [workspaceId])
 
     return (
         <div className="px-1 space-y-2">
@@ -55,13 +70,17 @@ const Board = () => {
             </div>
             {
                 loading ?
-                    <Loader2
-                        size={16}
-                        className="animate-spin"
-                    />
+                    <div className="my-3">
+                        <CardLoading />
+                    </div>
                     :
                     boards.length === 0 ?
-                        <p>No boards found</p>
+                        <div className="my-3">
+                            <CardNotFound
+                                title="Boards"
+                                description="No boards found"
+                            />
+                        </div>
                         :
                         <RenderItems
                             initialItems={initialItems}

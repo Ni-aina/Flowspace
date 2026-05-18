@@ -51,7 +51,8 @@ export const Modal = ({
         .map(item => ({
             id: item.id,
             orderId: item.workspaceMemberId,
-            name: item.name
+            name: item.name,
+            link: `/dashboard/${item.id}`
         }))
 
     const handleReorder = async (items: OrderItem[]) => {

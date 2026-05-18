@@ -22,6 +22,7 @@ export interface OrderItem {
     id: UniqueIdentifier;
     orderId: UniqueIdentifier;
     name: string;
+    link: string;
 }
 
 interface SortableItemProps {
