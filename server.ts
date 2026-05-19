@@ -26,12 +26,12 @@ app.prepare().then(() => {
     setIO(io);
 
     io.on("connection", (socket) => {
-        socket.on("join-workspace", (workspaceId: string) => {
-            socket.join(`workspace:${workspaceId}`);
+        socket.on("join-workspace", (room: string) => {
+            socket.join(room);
         })
 
-        socket.on("leave-workspace", (workspaceId: string) => {
-            socket.leave(`workspace:${workspaceId}`);
+        socket.on("leave-workspace", (room: string) => {
+            socket.leave(room);
         })
     })
 

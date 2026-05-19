@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { socket } from "@/lib/socket";
-import {
-    WorkspaceEvent,
-    EntityType,
-    EntityMap
-} from "@/types/realtime";
+import { WorkspaceEvent, EntityType, EntityMap } from "@/types/realtime";
 
 type Options<E extends EntityType> = {
     room: string | null;
     entity: E;
-    initialData?: WorkspaceEvent<E>["payload"][];
+    initialData?: EntityMap[E][];
 }
 
 export const useRealtime = <E extends EntityType>({
@@ -19,13 +15,25 @@ export const useRealtime = <E extends EntityType>({
     entity,
     initialData
 }: Options<E>) => {
-    const [data, setData] = useState<EntityMap[E][]>(initialData ?? []);
+    const [data, setData] = useState<EntityMap[E][]>([]);
+    const prevRoom = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (room !== prevRoom.current) {
+            prevRoom.current = room;
+            setData([]);
+        }
+    }, [room])
+
+    useEffect(() => {
+        if (!initialData) return;
+        setData(initialData);
+    }, [initialData])
 
     useEffect(() => {
         if (!room) return;
 
         socket.connect();
-
         socket.emit("join-workspace", room);
 
         const handler = (event: WorkspaceEvent<E>) => {
@@ -34,22 +42,17 @@ export const useRealtime = <E extends EntityType>({
             setData(prev => {
                 switch (event.action) {
                     case "created":
-                        return [...prev, event.payload]
-
+                        return [...prev, event.payload];
                     case "updated":
                         return prev.map(item =>
-                            item.id === event.payload.id
-                                ? event.payload
-                                : item
+                            item.id === event.payload.id ? event.payload : item
                         )
-
+                    case "moved":
+                        return event.payload as unknown as EntityMap[E][];
                     case "deleted":
-                        return prev.filter(
-                            item => item.id !== event.payload.id
-                        )
-
+                        return prev.filter(item => item.id !== event.payload.id);
                     default:
-                        return prev
+                        return prev;
                 }
             })
         }

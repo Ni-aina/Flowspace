@@ -19,12 +19,6 @@ export type EntityType =
     | "label"
     | "activity";
 
-export type ActionType =
-    | "created"
-    | "updated"
-    | "deleted"
-    | "moved";
-
 export type EntityMap = {
     workspace: Workspace;
     board: Board;
@@ -36,10 +30,14 @@ export type EntityMap = {
     activity: Activity;
 }
 
-export type WorkspaceEvent<
-    E extends EntityType = EntityType
-> = {
-    entity: E;
-    action: ActionType;
-    payload: EntityMap[E];
-}
+export type WorkspaceEvent<E extends EntityType = EntityType> =
+    | {
+        entity: E;
+        action: "created" | "updated" | "deleted";
+        payload: EntityMap[E];
+    }
+    | {
+        entity: E;
+        action: "moved";
+        payload: EntityMap[E][];
+    }

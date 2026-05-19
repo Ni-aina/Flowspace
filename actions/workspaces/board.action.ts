@@ -66,25 +66,38 @@ export async function getBoardsByWorkspaceId(workspaceId: string): Promise<Board
                     }
                 }
             }
+        },
+        orderBy: {
+            position: "asc"
         }
     })
 
     return boards;
 }
 
-export async function setBoardPosition(boardId: string, position: number) {
+export const setBoardPositions = async (workspaceId: string, boardIds: string[]) => {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized");
 
-    const board = await prisma.board.update({
-        where: {
-            id: boardId
-        },
-        data: {
-            position
-        }
-    })
+    const boards = await Promise.all(
+        boardIds.map((id, position) =>
+            prisma.board.update({
+                where: { id },
+                data: { position }
+            })
+        )
+    )
 
-    return board;
+    emitToRoom(
+        `workspace:${workspaceId}`,
+        "workspace:event",
+        {
+            entity: "board",
+            action: "moved",
+            payload: boards
+        } satisfies WorkspaceEvent
+    )
+
+    return boards;
 }

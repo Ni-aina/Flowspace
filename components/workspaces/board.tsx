@@ -1,23 +1,23 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { Board } from "@prisma/client";
+import { Board as BoardType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import NewBoard from "./new-board";
 import RenderItems from "../drag&drop/renderItems";
 import { OrderItem } from "../drag&drop/orderItems";
-import { setBoardPosition } from "@/actions/workspaces/board.action";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
 import { useRealtime } from "@/hooks/use-realtime";
+import { setBoardPositions } from "@/actions/workspaces/board.action";
 
 const Board = () => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
 
     const [loading, setLoading] = useState(true);
-    const [initialBoards, setInitialBoards] = useState<Board[]>([]);
+    const [initialBoards, setInitialBoards] = useState<BoardType[]>([]);
     const [onNewBoard, setOnNewBoard] = useState(false);
 
     const handleShowBoard = () => setOnNewBoard(prev => !prev);
@@ -41,7 +41,9 @@ const Board = () => {
         if (!workspaceId) return;
 
         setLoading(true);
+        setInitialBoards([]);
         fetchBoards();
+
     }, [workspaceId, fetchBoards]);
 
     const boards = useRealtime<"board">({
@@ -58,9 +60,8 @@ const Board = () => {
     }))
 
     const handleReorder = async (items: OrderItem[]) => {
-        await Promise.all(items.map((board, position) =>
-            setBoardPosition(String(board.orderId), position)
-        ))
+        if (!workspaceId) return;
+        await setBoardPositions(workspaceId, items.map(item => String(item.orderId)));
     }
 
     return (
