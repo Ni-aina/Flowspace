@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Board as BoardType } from "@prisma/client";
+import { useCallback, useEffect, useState } from "react";
+import type { Board } from "@prisma/client";
 import { Plus } from "lucide-react";
 import NewBoard from "./new-board";
 import RenderItems from "../drag&drop/renderItems";
@@ -10,16 +10,45 @@ import { setBoardPosition } from "@/actions/workspaces/board.action";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
+import { useRealtime } from "@/hooks/use-realtime";
 
 const Board = () => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
 
     const [loading, setLoading] = useState(true);
-    const [boards, setBoards] = useState<BoardType[]>([]);
+    const [initialBoards, setInitialBoards] = useState<Board[]>([]);
     const [onNewBoard, setOnNewBoard] = useState(false);
 
     const handleShowBoard = () => setOnNewBoard(prev => !prev);
+
+    const fetchBoards = useCallback(async () => {
+        if (!workspaceId) return;
+
+        try {
+            const response = await fetch(
+                `/api/boards?workspaceId=${workspaceId}`
+            )
+
+            const data = await response.json();
+            setInitialBoards(data);
+        } finally {
+            setLoading(false);
+        }
+    }, [workspaceId])
+
+    useEffect(() => {
+        if (!workspaceId) return;
+
+        setLoading(true);
+        fetchBoards();
+    }, [workspaceId, fetchBoards]);
+
+    const boards = useRealtime<"board">({
+        room: workspaceId ? `workspace:${workspaceId}` : null,
+        entity: "board",
+        initialData: initialBoards
+    })
 
     const initialItems = boards.map((board) => ({
         id: board.id,
@@ -28,34 +57,11 @@ const Board = () => {
         link: "#"
     }))
 
-    const fetchBoards = async () => {
-        try {
-            const response = await fetch(`/api/boards?workspaceId=${workspaceId}`);
-            const data = await response.json();
-            setBoards(data);
-        } catch {
-            
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const handleReorder = async (items: OrderItem[]) => {
         await Promise.all(items.map((board, position) =>
             setBoardPosition(String(board.orderId), position)
         ))
-        await fetchBoards();
     }
-
-    useEffect(() => {
-        if (!workspaceId) return;
-
-        (async () => {
-            setLoading(true);
-            await fetchBoards();
-        })()
-
-    }, [workspaceId])
 
     return (
         <div className="px-1 space-y-2">

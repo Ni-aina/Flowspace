@@ -3,6 +3,8 @@
 import prisma from "@/lib/prisma";
 import { getAuthorizedUser } from "../auth.action";
 import { Board } from "@prisma/client";
+import { emitToRoom } from "@/lib/realtime";
+import { WorkspaceEvent } from "@/types/realtime";
 
 type State = { error?: string; success?: boolean }
 
@@ -31,6 +33,16 @@ export async function createBoard(
     })
 
     if (!board) return { error: "Failed to create board" }
+
+    emitToRoom(
+        `workspace:${workspaceId}`,
+        "workspace:event",
+        {
+            entity: "board",
+            action: "created",
+            payload: board
+        } satisfies WorkspaceEvent
+    )
 
     return {
         success: true
