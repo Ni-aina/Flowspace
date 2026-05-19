@@ -1,5 +1,7 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:3000", {
+const url = process.env.NEXTAUTH_URL!;
+
+export const socket = io(url, {
     autoConnect: false
 })

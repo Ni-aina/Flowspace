@@ -5,8 +5,8 @@ import { parse } from "url";
 import { setIO } from "@/lib/realtime";
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
-const port = 3000;
+const hostname = "0.0.0.0";
+const port = Number(process.env.PORT) || 3000;
 
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
