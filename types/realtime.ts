@@ -8,9 +8,11 @@ import {
     Activity,
     Label
 } from "@prisma/client";
+import { WorkspacePosition } from "./workspacePosition";
 
 export type EntityType =
     | "workspace"
+    | "workspacePosition"
     | "board"
     | "list"
     | "card"
@@ -21,6 +23,7 @@ export type EntityType =
 
 export type EntityMap = {
     workspace: Workspace;
+    workspacePosition: WorkspacePosition;
     board: Board;
     list: List;
     card: Card;

@@ -34,20 +34,21 @@ export const Modal = ({
     role,
     workspacesPosition
 }: ModalProps) => {
-    const [isCreateWorkspace, setIsCreateWorkspace] = useState<boolean>(false);
-    const [state, action, pending] = useActionState(createWorkspace, { success: false })
     const { data } = useSession();
     const currentUser = data?.user;
+
+    const [isCreateWorkspace, setIsCreateWorkspace] = useState<boolean>(false);
+    const [state, action, pending] = useActionState(createWorkspace, { success: false });
 
     const [opacity, setOpacity] = useState("opacity-0 -translate-y-2");
 
     const {
-        id,
+        id: workspaceId,
         name,
         plan
     } = workspace!;
 
-    const initialWorkspaces = workspacesPosition.filter(workspace => workspace.id !== id)
+    const initialWorkspaces = workspacesPosition.filter(workspace => workspace.id !== workspaceId)
         .map(item => ({
             id: item.id,
             orderId: item.workspaceMemberId,
@@ -56,9 +57,7 @@ export const Modal = ({
         }))
 
     const handleReorder = async (items: OrderItem[]) => {
-        await Promise.all(items.map((item, position) =>
-            setWorkspaceMemberPosition(String(item.orderId), position)
-        ))
+        setWorkspaceMemberPosition(items.map(item => item.orderId as string))
     }
 
     useEffect(() => {
@@ -101,7 +100,7 @@ export const Modal = ({
                                     role === "owner" &&
                                     <Link
                                         className="cursor-pointer hover:scale-105 transition-transform"
-                                        href={`/dashboard/${id}/setting`}
+                                        href={`/dashboard/${workspaceId}/setting`}
                                     >
                                         <Settings size={14} />
                                     </Link>
@@ -119,7 +118,7 @@ export const Modal = ({
                         />
                         <Link
                             className="flex items-center gap-2 hover:bg-primary/5 rounded-sm cursor-pointer px-2 py-1"
-                            href={`/dashboard/${id}`}
+                            href={`/dashboard/${workspaceId}`}
                         >
                             <div>
                                 <Image

@@ -26,9 +26,12 @@ export const useRealtime = <E extends EntityType>({
     }, [room])
 
     useEffect(() => {
-        if (!initialData) return;
+        if (!prevRoom.current || !initialData) return;
         setData(initialData);
-    }, [initialData])
+    }, [
+        prevRoom.current,
+        initialData
+    ])
 
     useEffect(() => {
         if (!room) return;
