@@ -68,7 +68,10 @@ export async function setWorkspaceMemberPosition(workspaceIds: string[]) {
     await Promise.all(
         workspaceIds.map((id, position) =>
             prisma.workspaceMember.update({
-                where: { id },
+                where: {
+                    id,
+                    userId: user.id
+                },
                 data: { position }
             })
         )

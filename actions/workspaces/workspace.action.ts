@@ -5,8 +5,9 @@ import prisma from "@/lib/prisma";
 import { isUUID } from "@/utils/isUUID";
 import { getAuthorizedUser } from "../auth.action";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-type State = { error?: string; success?: boolean }
+type State = { error?: string; } | null;
 
 export async function revalidateDashboard() {
     return revalidatePath("/dashboard");
@@ -47,9 +48,7 @@ export async function createWorkspace(
     }
 
     revalidatePath("/dashboard");
-    return {
-        success: true
-    }
+    redirect(`/dashboard/${workspace.id}`);
 }
 
 export async function getWorkspaceById(id: string): Promise<Workspace | null> {

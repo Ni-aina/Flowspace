@@ -38,7 +38,7 @@ export const Modal = ({
     const currentUser = data?.user;
 
     const [isCreateWorkspace, setIsCreateWorkspace] = useState<boolean>(false);
-    const [state, action, pending] = useActionState(createWorkspace, { success: false });
+    const [state, action, pending] = useActionState(createWorkspace, null);
 
     const [opacity, setOpacity] = useState("opacity-0 -translate-y-2");
 
@@ -68,12 +68,6 @@ export const Modal = ({
 
         setOpacity("opacity-100 translate-y-0");
     }, [isOpen])
-
-    useEffect(() => {
-        if (state.success) {
-            setIsCreateWorkspace(false);
-        }
-    }, [state.success])
 
     if (!isOpen) return null;
 

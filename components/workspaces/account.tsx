@@ -15,6 +15,8 @@ interface AccountProps {
 
 export const Account = ({ workspacesPosition }: AccountProps) => {
     const workspace = useWorkspace(state => state.workspace);
+    const workspaceId = workspace?.id;
+
     const role = useRole(state => state.role);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +35,11 @@ export const Account = ({ workspacesPosition }: AccountProps) => {
             document.removeEventListener("mousedown", handleClickOutside);
         }
     }, [])
+
+    useEffect(() => {
+        if (!workspaceId) return;
+        setIsOpen(false);
+    }, [workspaceId])
 
     if (!workspace) return <CardLoading />
 
