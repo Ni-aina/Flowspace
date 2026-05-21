@@ -20,7 +20,7 @@ export const StoreInitializer = ({ workspaceId, role }: StorInitializerInterface
 
   useEffect(() => {
     (async () => {
-      const response = await fetch(`/api/workspaces/${workspaceId}`);
+      const response = await fetch(`/api/protected/workspaces/${workspaceId}`);
       if (response.status !== 200) return;
       const { data } = await response.json();
       setWorkspace(data);

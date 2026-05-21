@@ -27,7 +27,7 @@ const Board = () => {
 
         try {
             const response = await fetch(
-                `/api/boards?workspaceId=${workspaceId}`
+                `/api/protected/boards?workspaceId=${workspaceId}`
             )
 
             const data = await response.json();
