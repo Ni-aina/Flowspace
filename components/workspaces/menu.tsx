@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { isUUID } from "@/utils/isUUID";
-import Board from "./board";
+import Board from "../boards/items";
 
 const menuItems = [
     {

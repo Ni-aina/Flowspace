@@ -1,4 +1,5 @@
 import { getBoardById } from "@/actions/boards/board.action";
+import BoardSpace from "@/components/boards/spaces";
 import StoreBoard from "@/components/boards/store-board";
 
 interface BoardPageProps {
@@ -15,6 +16,7 @@ const BoardPage = async ({ params }: BoardPageProps) => {
             {
                 board && <StoreBoard board={board} />
             }
+            <BoardSpace boardId={boardId} />
         </div>
     )
 }

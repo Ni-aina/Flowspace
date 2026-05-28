@@ -100,7 +100,8 @@ export async function getBoardsByWorkspaceId(workspaceId: string): Promise<Board
     return boards;
 }
 
-export const setBoardPositions = async (workspaceId: string, boardIds: string[]) => {
+export const setBoardPositions = async (workspaceId: string, boardIds: string[])
+    : Promise<Board[]> => {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized");

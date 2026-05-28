@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Board as BoardType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import NewBoard from "./new-board";
 import RenderItems from "../drag&drop/renderItems";
@@ -11,13 +10,15 @@ import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
 import { useRealtime } from "@/hooks/use-realtime";
 import { setBoardPositions } from "@/actions/boards/board.action";
+import { useBoards } from "@/stores/zustands/use-boards";
+import { Board as BoardPrisma } from "@prisma/client";
 
 const Board = () => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
 
+    const { boards, setBoards } = useBoards(state => state);
     const [loading, setLoading] = useState(true);
-    const [initialBoards, setInitialBoards] = useState<BoardType[]>([]);
     const [onNewBoard, setOnNewBoard] = useState(false);
 
     const handleShowBoard = () => setOnNewBoard(prev => !prev);
@@ -31,7 +32,7 @@ const Board = () => {
             )
 
             const data = await response.json();
-            setInitialBoards(data);
+            setBoards(data);
         } finally {
             setLoading(false);
         }
@@ -41,18 +42,18 @@ const Board = () => {
         if (!workspaceId) return;
 
         setLoading(true);
-        setInitialBoards([]);
+        setBoards([]);
         fetchBoards();
 
     }, [workspaceId, fetchBoards]);
 
-    const boards = useRealtime<"board">({
+    const realtimeBoards = useRealtime<"board">({
         room: workspaceId ? `workspace:${workspaceId}` : null,
         entity: "board",
-        initialData: initialBoards
+        initialData: boards
     })
 
-    const initialItems = boards.map((board) => ({
+    const initialItems = realtimeBoards.map((board) => ({
         id: board.id,
         orderId: board.id,
         name: board.title,
@@ -61,7 +62,14 @@ const Board = () => {
 
     const handleReorder = async (items: OrderItem[]) => {
         if (!workspaceId) return;
-        await setBoardPositions(workspaceId, items.map(item => String(item.orderId)));
+        const boardsOredered = items.map(item => {
+            const board = realtimeBoards.find(board => board.id === item.orderId);
+            return board;
+        }) as BoardPrisma[];
+
+        setBoards(boardsOredered);
+        const boards = await setBoardPositions(workspaceId, items.map(item => String(item.orderId)));
+        setBoards(boards);
     }
 
     return (
