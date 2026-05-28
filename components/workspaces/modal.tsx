@@ -75,7 +75,7 @@ export const Modal = ({
         <>
             <div
                 className={`
-                    absolute top-10 left-0 z-50 w-full transition-all duration-200
+                    absolute top-10 left-0 z-60 w-full transition-all duration-200
                     ${opacity}
                 `}
             >
