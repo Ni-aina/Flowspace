@@ -10,7 +10,7 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
 import { useRealtime } from "@/hooks/use-realtime";
-import { setBoardPositions } from "@/actions/workspaces/board.action";
+import { setBoardPositions } from "@/actions/boards/board.action";
 
 const Board = () => {
     const workspace = useWorkspace(state => state.workspace);
@@ -56,7 +56,7 @@ const Board = () => {
         id: board.id,
         orderId: board.id,
         name: board.title,
-        link: "#"
+        link: `/dashboard/boards/${board.id}`
     }))
 
     const handleReorder = async (items: OrderItem[]) => {

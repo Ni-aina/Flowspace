@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import { getWorkspacesPosition } from "@/actions/workspaces/member.action";
-import { StoreInitializer } from "@/components/store-initializer";
+import { StoreInitializer } from "@/components/workspaces/store-initializer";
 import { RoleType } from "@/stores/zustands/use-role";
 
 interface LayoutProps {

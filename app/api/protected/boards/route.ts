@@ -1,4 +1,4 @@
-import { getBoardsByWorkspaceId } from "@/actions/workspaces/board.action";
+import { getBoardsByWorkspaceId } from "@/actions/boards/board.action";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

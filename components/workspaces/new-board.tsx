@@ -4,7 +4,7 @@ import { useActionState, useCallback, useEffect, useState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { ModalUI } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { createBoard } from "@/actions/workspaces/board.action";
+import { createBoard } from "@/actions/boards/board.action";
 import { LayoutGrid, Table, List } from "lucide-react";
 
 interface NewBoardProps {

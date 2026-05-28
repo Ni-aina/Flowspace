@@ -61,7 +61,7 @@ model Board {
   workspaceId String @map("workspace_id") @db.Uuid
   createdBy   String @map("created_by") @db.Uuid
   title       String
-  type        String @default("kanban")
+  type        String @default("grid")
   settings    Json   @default("{}")
   position    Int    @default(0)
 

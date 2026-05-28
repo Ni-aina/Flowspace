@@ -49,6 +49,31 @@ export async function createBoard(
     }
 }
 
+export async function getBoardById(boardId: string): Promise<Board> {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized");
+
+    if (!boardId) throw new Error("Board ID is required");
+
+    const board = await prisma.board.findUnique({
+        where: {
+            id: boardId,
+            workspace: {
+                members: {
+                    some: {
+                        userId: user.id
+                    }
+                }
+            }
+        }
+    })
+
+    if (!board) throw new Error("Board not found");
+
+    return board;
+}
+
 export async function getBoardsByWorkspaceId(workspaceId: string): Promise<Board[]> {
     const user = await getAuthorizedUser();
 
