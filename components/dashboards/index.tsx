@@ -21,7 +21,7 @@ const WelcomeDashboard = () => {
                 <div className="flex flex-col gap-5 lg:gap-10 lg:col-span-2">
                     <div className="flex items-center gap-3">
                         <div
-                            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 text-lg 
+                            className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 text-lg 
                             font-semibold text-white shadow-lg shadow-zinc-300"
                         >
                             F

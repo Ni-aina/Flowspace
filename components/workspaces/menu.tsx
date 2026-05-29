@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { isUUID } from "@/utils/isUUID";
-import Board from "../boards/items";
+import BoardItems from "../boards/items";
 
 const menuItems = [
     {
@@ -80,7 +80,7 @@ const Menu = () => {
                 }
             </div>
             {
-                pathnameFormatted === "/dashboard" && <Board />
+                pathnameFormatted === "/dashboard" && <BoardItems />
             }
         </div>
     )

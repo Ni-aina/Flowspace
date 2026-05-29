@@ -3,17 +3,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import NewBoard from "./new-board";
-import RenderItems from "../drag&drop/renderItems";
-import { OrderItem } from "../drag&drop/orderItems";
+import RenderItems from "../drag&drop/verticals/renderItems";
+import { OrderItem } from "../drag&drop/verticals/orderItems";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
 import { useRealtime } from "@/hooks/use-realtime";
 import { setBoardPositions } from "@/actions/boards/board.action";
 import { useBoards } from "@/stores/zustands/use-boards";
-import { Board as BoardPrisma } from "@prisma/client";
+import { Board } from "@prisma/client";
 
-const Board = () => {
+const BoardItems = () => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
 
@@ -65,7 +65,7 @@ const Board = () => {
         const boardsOredered = items.map(item => {
             const board = realtimeBoards.find(board => board.id === item.orderId);
             return board;
-        }) as BoardPrisma[];
+        }) as Board[];
 
         setBoards(boardsOredered);
         const boards = await setBoardPositions(workspaceId, items.map(item => String(item.orderId)));
@@ -110,4 +110,4 @@ const Board = () => {
     )
 }
 
-export default Board;
+export default BoardItems;
