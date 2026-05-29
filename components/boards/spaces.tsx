@@ -1,8 +1,7 @@
 "use client";
 
 import { useRealtime } from "@/hooks/use-realtime";
-import { useBoards } from "@/stores/zustands/use-boards";
-import { redirect } from "next/navigation";
+import { useBoards, useLoadingBoards } from "@/stores/zustands/use-boards";
 import RenderItems from "../drag&drop/horizontals/renderItems";
 import { OrderItem } from "../drag&drop/horizontals/orderItems";
 import { setBoardPositions } from "@/actions/boards/board.action";
@@ -11,14 +10,11 @@ import { Board } from "@prisma/client";
 import { Filter, Plus, Search } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 
-interface BoardSpaceProps {
-    boardId: string;
-}
-
-const BoardSpace = ({ boardId }: BoardSpaceProps) => {
+const BoardSpace = () => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
     const { boards, setBoards } = useBoards();
+    const { loading } = useLoadingBoards();
 
     const [showInputSearch, setShowInputSearch] = useState(false);
     const handleShowInputSearch = () => setShowInputSearch(prev => !prev);
@@ -61,17 +57,23 @@ const BoardSpace = ({ boardId }: BoardSpaceProps) => {
         }
     }, [])
 
-    if (!boards.find(board => board.id === boardId)) return redirect("/not-found");
-
     return (
         <div className="p-4 lg:p-8">
             <div className="flex flex-wrap justify-between items-center gap-5">
-                <div className="flex items-center gap-2">
-                    <RenderItems
-                        initialItems={initialItems}
-                        handleReorder={handleReorder}
-                    />
-                </div>
+                {
+                    loading ?
+                        <div className="flex item-center gap-2">
+                            <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
+                            <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
+                        </div>
+                        :
+                        <div className="flex flex-wrap items-center gap-1">
+                            <RenderItems
+                                initialItems={initialItems}
+                                handleReorder={handleReorder}
+                            />
+                        </div>
+                }
                 <div className="flex items-center gap-5">
                     <button
                         className="flex items-center gap-1 px-3 py-1 bg-transparent text-primary cursor-pointer hover:bg-primary/5

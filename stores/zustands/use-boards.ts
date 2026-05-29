@@ -10,3 +10,13 @@ export const useBoards = create<BoardsState>((set) => ({
     boards: [],
     setBoards: (boards: Board[]) => set({ boards })
 }))
+
+interface LoadingBoardsState {
+    loading: boolean;
+    setLoading: (loading: boolean) => void;
+}
+
+export const useLoadingBoards = create<LoadingBoardsState>((set) => ({
+    loading: true,
+    setLoading: (loading: boolean) => set({ loading })
+}))

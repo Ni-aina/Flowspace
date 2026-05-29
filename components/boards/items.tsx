@@ -10,7 +10,7 @@ import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
 import { useRealtime } from "@/hooks/use-realtime";
 import { setBoardPositions } from "@/actions/boards/board.action";
-import { useBoards } from "@/stores/zustands/use-boards";
+import { useBoards, useLoadingBoards } from "@/stores/zustands/use-boards";
 import { Board } from "@prisma/client";
 
 const BoardItems = () => {
@@ -18,7 +18,7 @@ const BoardItems = () => {
     const workspaceId = workspace?.id;
 
     const { boards, setBoards } = useBoards(state => state);
-    const [loading, setLoading] = useState(true);
+    const { loading, setLoading } = useLoadingBoards();
     const [onNewBoard, setOnNewBoard] = useState(false);
 
     const handleShowBoard = () => setOnNewBoard(prev => !prev);
