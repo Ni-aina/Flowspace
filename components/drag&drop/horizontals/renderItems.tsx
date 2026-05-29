@@ -2,8 +2,8 @@
 
 import { useOptimistic, useTransition } from "react";
 import { OrderItem, OrderItemList } from "./orderItems";
-import { ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { LayoutGrid, List, Table } from "lucide-react";
 
 interface RenderItemsProps {
     initialItems: OrderItem[];
@@ -44,7 +44,18 @@ const RenderItems = ({
                     }
                     {...dragHandleProps}
                 >
-                    <ChevronRight size={16} className="text-gray-400" />
+                    {
+                        item.type === "grid" &&
+                        <LayoutGrid size={16} className="text-gray-400" />
+                    }
+                    {
+                        item.type === "table" &&
+                        <Table size={16} className="text-gray-400" />
+                    }
+                    {
+                        item.type === "list" &&
+                        <List size={16} className="text-gray-400" />
+                    }
                     <h1 className="truncate flex-1 min-w-0">
                         {item.name}
                     </h1>

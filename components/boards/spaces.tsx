@@ -28,7 +28,8 @@ const BoardSpace = () => {
 
     const initialItems = realtimeBoards.map(item => ({
         id: item.id,
-        name: item.title
+        name: item.title,
+        type: item.type
     }))
 
     const handleReorder = async (items: OrderItem[]) => {

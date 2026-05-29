@@ -16,11 +16,13 @@ import {
     arrayMove
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Board } from "@prisma/client";
 import { HTMLAttributes, ReactNode } from "react";
 
 export interface OrderItem {
     id: UniqueIdentifier;
     name: string;
+    type: Board["type"]
 }
 
 interface SortableItemProps {

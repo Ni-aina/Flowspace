@@ -55,28 +55,30 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
                         Type
                     </label>
                     <div className="flex gap-2">
-                        {boardTypes.map((boardType) => {
-                            const Icon = boardType.icon;
-                            return (
-                                <button
-                                    key={boardType.value}
-                                    type="button"
-                                    onClick={() => setType(boardType.value)}
-                                    disabled={pending}
-                                    className={`
+                        {
+                            boardTypes.map((boardType) => {
+                                const Icon = boardType.icon;
+                                return (
+                                    <button
+                                        key={boardType.value}
+                                        type="button"
+                                        onClick={() => setType(boardType.value)}
+                                        disabled={pending}
+                                        className={`
                                         flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
                                         ${type === boardType.value
-                                            ? 'border-primary/5 bg-primary/10'
-                                            : 'border-input hover:border-primary/40'
-                                        }
+                                                ? 'border-primary/5 bg-primary/10'
+                                                : 'border-input hover:border-primary/40'
+                                            }
                                         cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
                                     `}
-                                >
-                                    <Icon className="w-6 h-6" />
-                                    <span className="text-xs font-medium">{boardType.label}</span>
-                                </button>
-                            )
-                        })}
+                                    >
+                                        <Icon className="w-6 h-6" />
+                                        <span className="text-xs font-medium">{boardType.label}</span>
+                                    </button>
+                                )
+                            })
+                        }
                     </div>
                 </div>
 
