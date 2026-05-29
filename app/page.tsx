@@ -1,4 +1,4 @@
-import { Navbar } from '@/components/navbar';
+import { Navbar } from '@/components/layouts/navbar';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';

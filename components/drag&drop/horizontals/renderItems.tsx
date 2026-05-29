@@ -39,7 +39,7 @@ const RenderItems = ({
                 <div
                     className={`
                         flex w-full items-center gap-2 hover:bg-primary/5 
-                        rounded-xl px-3 py-1 cursor-grab
+                        rounded-full px-3 py-1 cursor-grab
                         ${lastPath === item.id ? 'bg-primary/5' : ''}`
                     }
                     {...dragHandleProps}

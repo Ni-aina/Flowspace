@@ -1,5 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/layouts/app-sidebar";
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import { getWorkspacesPosition } from "@/actions/workspaces/member.action";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
@@ -26,6 +26,7 @@ const Layout = async ({
       {
         workspaceMember &&
         <StoreInitializer
+          workspaceMemberId={workspaceMember.id}
           workspaceId={workspaceMember.workspaceId}
           role={workspaceMember.role as RoleType}
         />

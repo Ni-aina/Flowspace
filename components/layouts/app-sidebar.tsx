@@ -5,8 +5,8 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Account } from "./workspaces/account";
-import Menu from "./workspaces/menu";
+import { Account } from "../workspaces/account";
+import Menu from "../workspaces/menu";
 import { WorkspacePosition } from "@/types/workspacePosition";
 
 interface AppSidebarProps {

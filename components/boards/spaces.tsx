@@ -77,7 +77,7 @@ const BoardSpace = () => {
                 <div className="flex items-center gap-5">
                     <button
                         className="flex items-center gap-1 px-3 py-1 bg-transparent text-primary cursor-pointer hover:bg-primary/5
-                        rounded-xl transition-colors border border-primary/5 hover:border-transparent"
+                        rounded-full transition-colors border border-primary/5 hover:border-transparent"
                     >
                         <Plus size={14} />
                         <span className="text-sm">

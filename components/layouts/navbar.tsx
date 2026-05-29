@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { AuthButton } from "./auth-button";
-import { Button } from "./ui/button";
+import { AuthButton } from "../auth-button";
+import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 
 interface NavbarProps {

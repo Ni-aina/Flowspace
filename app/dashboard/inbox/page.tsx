@@ -1,8 +1,8 @@
 const Inbox = () => {
     return (
-        <div>
+        <>
             
-        </div>
+        </>
     )
 }
  

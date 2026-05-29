@@ -1,21 +1,19 @@
 import { getBoardsByWorkspaceId } from "@/actions/boards/board.action";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ workspaceId: string }> }
+) {
     try {
-        const { searchParams } = new URL(request.url);
-
-        const workspaceId = searchParams.get("workspaceId");
+        const { workspaceId } = await params;
 
         if (!workspaceId) {
-            return NextResponse.json(
-                { error: "Workspace ID is required" },
-                { status: 400 }
-            )
+            return NextResponse.json({ status: 400, message: "workspaceId is required" })
         }
 
         const boards = await getBoardsByWorkspaceId(workspaceId);
-        return NextResponse.json(boards);
+        return NextResponse.json({ status: 200, data: boards })
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Unknow error";
         return NextResponse.json({

@@ -1,8 +1,8 @@
 const Setting = () => {
     return (
-        <div>
+        <>
 
-        </div>
+        </>
     )
 }
 

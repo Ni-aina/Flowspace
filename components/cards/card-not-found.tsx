@@ -8,7 +8,7 @@ const CardNotFound = ({
     description = "No items found yet."
 }: CardNotFoundProps) => {
     return (
-        <div className="rounded-xl border border-neutral-100 bg-white p-3 shadow-sm">
+        <div className="rounded-xl bg-white p-3 shadow-sm">
             <div className="space-y-1">
                 <h3 className="text-sm font-medium text-neutral-900">
                     {title}

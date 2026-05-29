@@ -41,7 +41,11 @@ export const Account = ({ workspacesPosition }: AccountProps) => {
         setIsOpen(false);
     }, [workspaceId])
 
-    if (!workspace) return <CardLoading />
+    if (!workspace) return (
+        <div className="mb-5">
+            <CardLoading />
+        </div>
+    )
 
     return (
         <div

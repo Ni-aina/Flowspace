@@ -1,5 +1,5 @@
 import { getBoardById, getBoardsByWorkspaceId } from "@/actions/boards/board.action";
-import { findWorkspaceMember } from "@/actions/workspaces/member.action";
+import { findWorkspaceMember, setWorkspaceLastUsed } from "@/actions/workspaces/member.action";
 import BoardSpace from "@/components/boards/spaces";
 import StoreBoard from "@/components/boards/store-board";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
@@ -26,10 +26,11 @@ const BoardPage = async ({ params }: BoardPageProps) => {
     if (!boards.find(board => board.id === boardId)) redirect("/not-found");
 
     return (
-        <div>
+        <>
             {
                 workspaceMember &&
                 <StoreInitializer
+                    workspaceMemberId={workspaceMember.id}
                     workspaceId={workspaceMember.workspaceId}
                     role={workspaceMember.role as RoleType}
                 />
@@ -38,7 +39,7 @@ const BoardPage = async ({ params }: BoardPageProps) => {
                 board && <StoreBoard board={board} />
             }
             <BoardSpace />
-        </div>
+        </>
     )
 }
 

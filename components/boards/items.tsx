@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import NewBoard from "./new-board";
 import RenderItems from "../drag&drop/verticals/renderItems";
@@ -18,34 +18,10 @@ const BoardItems = () => {
     const workspaceId = workspace?.id;
 
     const { boards, setBoards } = useBoards(state => state);
-    const { loading, setLoading } = useLoadingBoards();
+    const { loading } = useLoadingBoards();
     const [onNewBoard, setOnNewBoard] = useState(false);
 
     const handleShowBoard = () => setOnNewBoard(prev => !prev);
-
-    const fetchBoards = useCallback(async () => {
-        if (!workspaceId) return;
-
-        try {
-            const response = await fetch(
-                `/api/protected/boards?workspaceId=${workspaceId}`
-            )
-
-            const data = await response.json();
-            setBoards(data);
-        } finally {
-            setLoading(false);
-        }
-    }, [workspaceId])
-
-    useEffect(() => {
-        if (!workspaceId) return;
-
-        setLoading(true);
-        setBoards([]);
-        fetchBoards();
-
-    }, [workspaceId, fetchBoards]);
 
     const realtimeBoards = useRealtime<"board">({
         room: workspaceId ? `workspace:${workspaceId}` : null,
@@ -89,7 +65,7 @@ const BoardItems = () => {
                         <CardLoading />
                     </div>
                     :
-                    boards.length === 0 ?
+                    boards?.length === 0 ?
                         <div className="my-3">
                             <CardNotFound
                                 title="Boards"
