@@ -11,9 +11,9 @@ import {
 import {
     SortableContext,
     sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
     useSortable,
-    arrayMove
+    arrayMove,
+    horizontalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Board } from "@prisma/client";
@@ -78,7 +78,7 @@ export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProp
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
         >
-            <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext items={items.map((i) => i.id)} strategy={horizontalListSortingStrategy}>
                 {items.map((item) =>
                     <SortableItem
                         key={item.id}
