@@ -6,12 +6,18 @@ import RenderItems from "../drag&drop/horizontals/renderItems";
 import { OrderItem } from "../drag&drop/horizontals/orderItems";
 import { setBoardPositions } from "@/actions/boards/board.action";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
-import { Board } from "@prisma/client";
+import { Board, List } from "@prisma/client";
 import { Filter, Plus, Search } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import NewList from "../lists/new-list";
+import ListItems from "../lists/items";
 
-const BoardSpace = ({ bordId }: { bordId: string }) => {
+interface BoardSpaceInterface {
+    boardId: string;
+    lists: List[];
+}
+
+const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
     const { boards, setBoards } = useBoards();
@@ -63,7 +69,7 @@ const BoardSpace = ({ bordId }: { bordId: string }) => {
 
     return (
         <>
-            <div className="p-4 lg:p-8">
+            <div className="p-4 lg:p-8 space-y-4 lg:space-y-8">
                 <div className="flex flex-wrap justify-between items-center gap-5">
                     {
                         loading ?
@@ -116,11 +122,12 @@ const BoardSpace = ({ bordId }: { bordId: string }) => {
                         }
                     </div>
                 </div>
+                <ListItems lists={lists} />
             </div>
             <NewList
                 onNewList={onNewList}
                 setOnNewList={setOnNewList}
-                boardId={bordId}
+                boardId={boardId}
             />
         </>
     )

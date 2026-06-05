@@ -1,5 +1,6 @@
 import { getBoardById, getBoardsByWorkspaceId } from "@/actions/boards/board.action";
-import { findWorkspaceMember, setWorkspaceLastUsed } from "@/actions/workspaces/member.action";
+import { getListsByBoardId } from "@/actions/lists/list.action";
+import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import BoardSpace from "@/components/boards/spaces";
 import StoreBoard from "@/components/boards/store-board";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
@@ -16,9 +17,11 @@ const BoardPage = async ({ params }: BoardPageProps) => {
     const board = await getBoardById(boardId);
 
     const [
+        lists,
         boards,
         workspaceMember
     ] = await Promise.all([
+        getListsByBoardId(board.id),
         getBoardsByWorkspaceId(board.workspaceId),
         findWorkspaceMember(board.workspaceId)
     ])
@@ -38,7 +41,10 @@ const BoardPage = async ({ params }: BoardPageProps) => {
             {
                 board && <StoreBoard board={board} />
             }
-            <BoardSpace bordId={boardId} />
+            <BoardSpace
+                boardId={boardId}
+                lists={lists}
+            />
         </>
     )
 }
