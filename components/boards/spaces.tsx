@@ -9,8 +9,9 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Board } from "@prisma/client";
 import { Filter, Plus, Search } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
+import NewList from "../lists/new-list";
 
-const BoardSpace = () => {
+const BoardSpace = ({ bordId }: { bordId: string }) => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
     const { boards, setBoards } = useBoards();
@@ -19,6 +20,8 @@ const BoardSpace = () => {
     const [showInputSearch, setShowInputSearch] = useState(false);
     const handleShowInputSearch = () => setShowInputSearch(prev => !prev);
     const inputSearchRef = useRef<HTMLDivElement>(null);
+
+    const [onNewList, setOnNewList] = useState(false);
 
     const realtimeBoards = useRealtime<"board">({
         room: "boards",
@@ -59,59 +62,67 @@ const BoardSpace = () => {
     }, [])
 
     return (
-        <div className="p-4 lg:p-8">
-            <div className="flex flex-wrap justify-between items-center gap-5">
-                {
-                    loading ?
-                        <div className="flex item-center gap-2">
-                            <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
-                            <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
-                        </div>
-                        :
-                        <div className="flex flex-wrap items-center gap-1">
-                            <RenderItems
-                                initialItems={initialItems}
-                                handleReorder={handleReorder}
-                            />
-                        </div>
-                }
-                <div className="flex items-center gap-5">
-                    <button
-                        className="flex items-center gap-1 px-3 py-1 bg-transparent text-primary cursor-pointer hover:bg-primary/5
-                        rounded-full transition-colors border border-primary/5 hover:border-transparent"
-                    >
-                        <Plus size={14} />
-                        <span className="text-sm">
-                            List
-                        </span>
-                    </button>
-                    <button
-                        className="text-gray-400 hover:scale-105 cursor-pointer"
-                    >
-                        <Filter size={16} />
-                    </button>
+        <>
+            <div className="p-4 lg:p-8">
+                <div className="flex flex-wrap justify-between items-center gap-5">
                     {
-                        showInputSearch ?
-                            <div
-                                ref={inputSearchRef}
-                                className="flex items-center rounded-full gap-3 border 
-                                border-gray-300 px-3 py-0.5 animate-in fade-in zoom-in"
-                            >
-                                <input type="text" className="w-full outline-none" />
-                                <Search size={16} className="text-gray-400" />
+                        loading ?
+                            <div className="flex item-center gap-2">
+                                <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
+                                <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
                             </div>
                             :
-                            <button
-                                className="text-gray-400 hover:scale-105 cursor-pointer 
-                                animate-in fade-in zoom-in"
-                                onClick={handleShowInputSearch}
-                            >
-                                <Search size={16} className="text-gray-400" />
-                            </button>
+                            <div className="flex flex-wrap items-center gap-1">
+                                <RenderItems
+                                    initialItems={initialItems}
+                                    handleReorder={handleReorder}
+                                />
+                            </div>
                     }
+                    <div className="flex items-center gap-5">
+                        <button
+                            className="flex items-center gap-1 px-3 py-1 bg-transparent text-primary cursor-pointer hover:bg-primary/5
+                            rounded-full transition-colors border border-primary/5 hover:border-transparent"
+                            onClick={() => setOnNewList(true)}
+                        >
+                            <Plus size={14} />
+                            <span className="text-sm">
+                                List
+                            </span>
+                        </button>
+                        <button
+                            className="text-gray-400 hover:scale-105 cursor-pointer"
+                        >
+                            <Filter size={16} />
+                        </button>
+                        {
+                            showInputSearch ?
+                                <div
+                                    ref={inputSearchRef}
+                                    className="flex items-center rounded-full gap-3 border 
+                                    border-gray-300 px-3 py-0.5 animate-in fade-in zoom-in"
+                                >
+                                    <input type="text" className="w-full outline-none" />
+                                    <Search size={16} className="text-gray-400" />
+                                </div>
+                                :
+                                <button
+                                    className="text-gray-400 hover:scale-105 cursor-pointer 
+                                    animate-in fade-in zoom-in"
+                                    onClick={handleShowInputSearch}
+                                >
+                                    <Search size={16} className="text-gray-400" />
+                                </button>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+            <NewList
+                onNewList={onNewList}
+                setOnNewList={setOnNewList}
+                boardId={bordId}
+            />
+        </>
     )
 }
 

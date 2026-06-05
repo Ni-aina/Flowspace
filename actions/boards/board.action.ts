@@ -11,7 +11,7 @@ type State = { error?: string; success?: boolean }
 export async function createBoard(
     _previousState: State | null,
     formData: FormData
-) {
+): Promise<State> {
     const user = await getAuthorizedUser();
 
     if (!user) return { error: "Unauthorized" }

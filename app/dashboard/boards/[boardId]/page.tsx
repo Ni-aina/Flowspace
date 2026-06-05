@@ -38,7 +38,7 @@ const BoardPage = async ({ params }: BoardPageProps) => {
             {
                 board && <StoreBoard board={board} />
             }
-            <BoardSpace />
+            <BoardSpace bordId={boardId} />
         </>
     )
 }
