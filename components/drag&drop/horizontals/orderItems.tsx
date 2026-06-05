@@ -22,7 +22,8 @@ import { HTMLAttributes, ReactNode } from "react";
 export interface OrderItem {
     id: UniqueIdentifier;
     name: string;
-    type: Board["type"]
+    type: Board["type"],
+    link: string;
 }
 
 interface SortableItemProps {

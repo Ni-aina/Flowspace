@@ -38,7 +38,8 @@ const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
     const initialItems = realtimeBoards.map(item => ({
         id: item.id,
         name: item.title,
-        type: item.type
+        type: item.type,
+        link: `/dashboard/boards/${item.id}`
     }))
 
     const handleReorder = async (items: OrderItem[]) => {

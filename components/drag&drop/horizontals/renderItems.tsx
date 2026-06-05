@@ -4,6 +4,7 @@ import { useOptimistic, useTransition } from "react";
 import { OrderItem, OrderItemList } from "./orderItems";
 import { usePathname } from "next/navigation";
 import { LayoutGrid, List, Table } from "lucide-react";
+import Link from "next/link";
 
 interface RenderItemsProps {
     initialItems: OrderItem[];
@@ -39,26 +40,33 @@ const RenderItems = ({
                 <div
                     className={`
                         flex w-full items-center gap-2 hover:bg-primary/5 
-                        rounded-full px-3 py-1 cursor-grab
+                        rounded-full px-3 py-1
                         ${lastPath === item.id ? 'bg-primary/5' : ''}`
                     }
-                    {...dragHandleProps}
                 >
-                    {
-                        item.type === "grid" &&
-                        <LayoutGrid size={16} className="text-gray-400" />
-                    }
-                    {
-                        item.type === "table" &&
-                        <Table size={16} className="text-gray-400" />
-                    }
-                    {
-                        item.type === "list" &&
-                        <List size={16} className="text-gray-400" />
-                    }
-                    <h1 className="truncate flex-1 min-w-0">
+                    <div
+                        className="flex items-center gap-2 cursor-grab"
+                        {...dragHandleProps}
+                    >
+                        {
+                            item.type === "grid" &&
+                            <LayoutGrid size={16} className="text-gray-400" />
+                        }
+                        {
+                            item.type === "table" &&
+                            <Table size={16} className="text-gray-400" />
+                        }
+                        {
+                            item.type === "list" &&
+                            <List size={16} className="text-gray-400" />
+                        }
+                    </div>
+                    <Link
+                        href={item.link}
+                        className="truncate flex-1 min-w-0"
+                    >
                         {item.name}
-                    </h1>
+                    </Link>
                 </div>
             }
         />
