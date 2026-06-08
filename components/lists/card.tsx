@@ -1,10 +1,12 @@
 "use client";
 
-import { List } from "@prisma/client";
+import { List, Workspace } from "@prisma/client";
 import React from "react";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import DeleteConfirm from "../ui/deleteConfirm";
 import { deleteList } from "@/actions/lists/list.action";
+import ListForm from "./list-form";
+import { useBoard } from "@/stores/zustands/use-board";
 
 interface ListCardProps {
     list: List;
@@ -12,11 +14,25 @@ interface ListCardProps {
     dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-const ListCard = ({ list, children, dragHandleProps }: ListCardProps) => {
+const ListCard = ({
+    list,
+    children,
+    dragHandleProps
+}: ListCardProps) => {
+    const { board } = useBoard();
+    const boardId = board.id;
+
     const count = React.Children.count(children);
     const [open, setOpen] = React.useState(false);
     const [listId, setListId] = React.useState<string>("");
     const [onDelete, setOnDelete] = React.useState(false);
+    const [listUpdate, setListUpdate] = React.useState<{
+        id: string;
+        title: string;
+        color: string;
+        position: number;
+    }>()
+
     const menuRef = React.useRef<HTMLDivElement>(null);
 
     const handleDelete = async () => {
@@ -61,7 +77,15 @@ const ListCard = ({ list, children, dragHandleProps }: ListCardProps) => {
                             open &&
                             <div className="absolute right-0 top-full mt-1 z-50 min-w-30 rounded-md border border-input bg-popover shadow-md py-1">
                                 <button
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => {
+                                        setListUpdate({
+                                            id: list.id,
+                                            title: list.title,
+                                            color: list.color,
+                                            position: list.position
+                                        })
+                                        setOpen(false)
+                                    }}
                                     className="w-full text-left px-3 py-1.5 text-sm hover:bg-muted cursor-pointer transition-colors flex items-center gap-2"
                                 >
                                     <Pencil size={12} className="text-amber-500" />
@@ -103,6 +127,12 @@ const ListCard = ({ list, children, dragHandleProps }: ListCardProps) => {
                 pending={onDelete}
                 title="Delete List"
                 description="Are you sure you want to delete this list?"
+            />
+            <ListForm
+                isOpen={!!listUpdate}
+                onClose={() => setListUpdate(undefined)}
+                initialData={listUpdate}
+                boardId={boardId}
             />
         </>
     )

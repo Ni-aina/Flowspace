@@ -7,7 +7,6 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useEffect, useState } from "react";
 import { setListPositions } from "@/actions/lists/list.action";
 import ListCard from "./card";
-import { LayoutList } from "lucide-react";
 
 interface ListItemsProps {
     lists: List[];

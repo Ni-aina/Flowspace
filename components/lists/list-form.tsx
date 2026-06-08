@@ -4,12 +4,18 @@ import { useActionState, useCallback, useEffect, useState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { ModalUI } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { createList } from "@/actions/lists/list.action";
+import { createList, updateList } from "@/actions/lists/list.action";
 
-interface NewListProps {
-    onNewList: boolean;
-    setOnNewList: (onNewList: boolean) => void;
+interface ListFormProps {
+    isOpen: boolean;
+    onClose: () => void;
     boardId: string;
+    initialData?: {
+        id: string;
+        title: string;
+        color: string;
+        position: number;
+    }
 }
 
 const LIST_COLORS = [
@@ -23,37 +29,55 @@ const LIST_COLORS = [
     { value: "#06b6d4", label: "Cyan" }
 ]
 
-const NewList = ({ onNewList, setOnNewList, boardId }: NewListProps) => {
+const DEFAULT_COLOR = "#6366f1";
+
+const ListForm = ({ isOpen, onClose, boardId, initialData }: ListFormProps) => {
     const workspace = useWorkspace(state => state.workspace);
-    const [state, formAction, pending] = useActionState(createList, null);
-    const [title, setTitle] = useState("");
-    const [color, setColor] = useState("#6366f1");
+    const isEditing = !!initialData;
+    const action = isEditing ? updateList : createList;
+    const [state, formAction, pending] = useActionState(action, null);
+
+    const [title, setTitle] = useState(initialData?.title ?? "");
+    const [color, setColor] = useState(initialData?.color ?? DEFAULT_COLOR);
 
     const handleClose = useCallback(() => {
-        setTitle("");
-        setColor("#6366f1");
-        setOnNewList(false);
-    }, [])
+        setTitle(initialData?.title ?? "");
+        setColor(initialData?.color ?? DEFAULT_COLOR);
+        onClose();
+    }, [initialData, onClose])
 
     useEffect(() => {
-        if (state?.success) handleClose();
+        if (state?.success) {
+            handleClose();
+            state.success = false;
+        }
     }, [
         state,
         handleClose
     ])
 
+    useEffect(() => {
+        if (isOpen) {
+            setTitle(initialData?.title ?? "");
+            setColor(initialData?.color ?? DEFAULT_COLOR);
+        }
+    }, [isOpen, initialData])
+
     if (!workspace) return null;
 
     return (
         <ModalUI
-            isOpen={onNewList}
+            isOpen={isOpen}
             onClose={handleClose}
-            title="Create New List"
+            title={isEditing ? "Edit List" : "Create New List"}
             size="md"
         >
             <form action={formAction} className="space-y-4">
                 <input type="hidden" name="boardId" value={boardId} />
                 <input type="hidden" name="color" value={color} />
+                <input type="hidden" name="position" value={initialData?.position ?? 0} />
+
+                {isEditing && <input type="hidden" name="listId" value={initialData.id} />}
 
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium mb-1">
@@ -124,7 +148,7 @@ const NewList = ({ onNewList, setOnNewList, boardId }: NewListProps) => {
                         disabled={pending}
                         className="px-4 py-2 rounded-lg bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {pending ? "Creating..." : "Create List"}
+                        {pending ? (isEditing ? "Saving..." : "Creating...") : (isEditing ? "Save Changes" : "Create List")}
                     </button>
                 </div>
             </form>
@@ -132,4 +156,4 @@ const NewList = ({ onNewList, setOnNewList, boardId }: NewListProps) => {
     )
 }
 
-export default NewList;
+export default ListForm;

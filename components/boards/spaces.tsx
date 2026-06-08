@@ -9,8 +9,8 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Board, List } from "@prisma/client";
 import { Filter, Plus, Search } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
-import NewList from "../lists/new-list";
 import ListItems from "../lists/items";
+import ListForm from "../lists/list-form";
 
 interface BoardSpaceInterface {
     boardId: string;
@@ -125,9 +125,9 @@ const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
                 </div>
                 <ListItems lists={lists} />
             </div>
-            <NewList
-                onNewList={onNewList}
-                setOnNewList={setOnNewList}
+            <ListForm
+                isOpen={onNewList}
+                onClose={() => setOnNewList(false)}
                 boardId={boardId}
             />
         </>

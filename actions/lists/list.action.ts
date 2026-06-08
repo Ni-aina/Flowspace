@@ -63,6 +63,111 @@ export async function createList(
     }
 }
 
+export async function updateList(
+    _previousState: State | null,
+    formData: FormData
+): Promise<State> {
+    const user = await getAuthorizedUser();
+
+    if (!user) return { error: "Unauthorized" }
+
+    const listId = formData.get("listId") as string;
+    const title = formData.get("title") as string;
+    const color = formData.get("color") as string;
+    const position = formData.get("position") as string;
+
+    if (!listId) return { error: "List ID is required" }
+    if (!title) return { error: "Title is required" }
+
+    const existing = await prisma.list.findUnique({
+        where: {
+            id: listId,
+            board: {
+                workspace: {
+                    members: {
+                        some: {
+                            userId: user.id
+                        }
+                    }
+                }
+            }
+        },
+        include: {
+            board: true
+        }
+    })
+
+    if (!existing) return { error: "List not found" }
+
+    const list = await prisma.list.update({
+        where: { id: listId },
+        data: {
+            title,
+            color: color || existing.color,
+            position: +position
+        }
+    })
+
+    emitToRoom(
+        `workspace:${existing.board.workspaceId}`,
+        "workspace:event",
+        {
+            entity: "list",
+            action: "updated",
+            payload: list
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}
+
+export async function deleteList(listId: string): Promise<{ success: boolean; }> {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized");
+
+    if (!listId) throw new Error("List ID is required");
+
+    const list = await prisma.list.findUnique({
+        where: { id: listId },
+        include: {
+            board: {
+                include: {
+                    workspace: {
+                        include: {
+                            members: {
+                                where: {
+                                    userId: user.id
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    if (!list) throw new Error("List not found")
+
+    if (list.board.workspace.members.length === 0) throw new Error("Unauthorized")
+
+    await prisma.list.delete({
+        where: { id: listId }
+    })
+
+    emitToRoom(
+        `workspace:${list.board.workspaceId}`,
+        "workspace:event",
+        {
+            entity: "list",
+            action: "deleted",
+            payload: list
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}
+
 export const getListsByBoardId = async (boardId: string): Promise<List[]> => {
     const user = await getAuthorizedUser();
 
@@ -117,51 +222,4 @@ export const setListPositions = async (workspaceId: string, listIds: string[])
     )
 
     return lists;
-}
-
-export async function deleteList(listId: string): Promise<{ success: boolean; }> {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized");
-
-    if (!listId) throw new Error("List ID is required");
-
-    const list = await prisma.list.findUnique({
-        where: { id: listId },
-        include: {
-            board: {
-                include: {
-                    workspace: {
-                        include: {
-                            members: {
-                                where: {
-                                    userId: user.id
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    })
-
-    if (!list) throw new Error("List not found")
-
-    if (list.board.workspace.members.length === 0) throw new Error("Unauthorized")
-
-    await prisma.list.delete({
-        where: { id: listId }
-    })
-
-    emitToRoom(
-        `workspace:${list.board.workspaceId}`,
-        "workspace:event",
-        {
-            entity: "list",
-            action: "deleted",
-            payload: list
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
 }
