@@ -65,19 +65,18 @@ const BoardItems = () => {
                         <CardLoading />
                     </div>
                     :
-                    boards?.length === 0 ?
-                        <div className="my-3">
-                            <CardNotFound
-                                title="Boards"
-                                description="No boards found"
-                            />
-                        </div>
-                        :
-                        <RenderItems
-                            initialItems={initialItems}
-                            handleReorder={handleReorder}
+                    initialItems.length === 0 &&
+                    <div className="my-3">
+                        <CardNotFound
+                            title="Boards"
+                            description="No boards found"
                         />
+                    </div>
             }
+            <RenderItems
+                initialItems={initialItems}
+                handleReorder={handleReorder}
+            />
             <NewBoard
                 onNewBoard={onNewBoard}
                 setOnNewBoard={setOnNewBoard}
