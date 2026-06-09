@@ -2,8 +2,8 @@
 
 import { useRealtime } from "@/hooks/use-realtime";
 import { useBoards, useLoadingBoards } from "@/stores/zustands/use-boards";
-import RenderItems from "../drag&drop/horizontals/renderItems";
-import { OrderItem } from "../drag&drop/horizontals/orderItems";
+import RenderItems from "./drag&drop/renderItems";
+import { OrderItem } from "./drag&drop/orderItems";
 import { setBoardPositions } from "@/actions/boards/board.action";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Board, List } from "@prisma/client";
@@ -83,6 +83,7 @@ const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
                                 <RenderItems
                                     initialItems={initialItems}
                                     handleReorder={handleReorder}
+                                    direction="horizontal"
                                 />
                             </div>
                     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { List, Workspace } from "@prisma/client";
+import { List } from "@prisma/client";
 import React from "react";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import DeleteConfirm from "../ui/deleteConfirm";

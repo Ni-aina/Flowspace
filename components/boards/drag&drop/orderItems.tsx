@@ -13,7 +13,8 @@ import {
     sortableKeyboardCoordinates,
     useSortable,
     arrayMove,
-    horizontalListSortingStrategy
+    horizontalListSortingStrategy,
+    verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Board } from "@prisma/client";
@@ -57,9 +58,10 @@ interface OrderItemListProps {
     items: OrderItem[];
     onChange: (items: OrderItem[]) => void;
     renderItem: (item: OrderItem, dragHandleProps: HTMLAttributes<HTMLElement>) => ReactNode;
+    direction: "horizontal" | "vertical";
 }
 
-export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProps) => {
+export const OrderItemList = ({ items, onChange, renderItem, direction }: OrderItemListProps) => {
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -79,7 +81,10 @@ export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProp
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
         >
-            <SortableContext items={items.map((i) => i.id)} strategy={horizontalListSortingStrategy}>
+            <SortableContext
+                items={items.map((i) => i.id)}
+                strategy={direction === "horizontal" ? horizontalListSortingStrategy : verticalListSortingStrategy}
+            >
                 {items.map((item) =>
                     <SortableItem
                         key={item.id}

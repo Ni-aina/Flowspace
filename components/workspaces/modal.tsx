@@ -15,9 +15,9 @@ import { Button } from "../ui/button";
 import { ModalUI } from "../ui/modal";
 import { Input } from "../ui/input";
 import { createWorkspace } from "@/actions/workspaces/workspace.action";
-import RenderItems from "../drag&drop/verticals/renderItems";
+import RenderItems from "./drag&drop/renderItems";
 import { RoleType } from "@/stores/zustands/use-role";
-import { OrderItem } from "../drag&drop/verticals/orderItems";
+import { OrderItem } from "./drag&drop/orderItems";
 import { setWorkspaceMemberPosition } from "@/actions/workspaces/member.action";
 import { WorkspacePosition } from "@/types/workspacePosition";
 

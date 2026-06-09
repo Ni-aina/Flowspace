@@ -49,6 +49,101 @@ export async function createBoard(
     }
 }
 
+export async function updateBoard(
+    _previousState: State | null,
+    formData: FormData
+): Promise<State> {
+    const user = await getAuthorizedUser();
+
+    if (!user) return { error: "Unauthorized" }
+
+    const boardId = formData.get("boardId") as string;
+    const title = formData.get("title") as string;
+    const type = formData.get("type") as string;
+    const workspaceId = formData.get("workspaceId") as string;
+
+    if (!boardId) return { error: "Board ID is required" }
+    if (!title) return { error: "Title is required" }
+    if (!workspaceId) return { error: "Workspace ID is required" }
+
+    const board = await prisma.board.update({
+        where: {
+            id: boardId,
+            workspace: {
+                id: workspaceId,
+                members: {
+                    some: {
+                        userId: user.id
+                    }
+                }
+            }
+        },
+        data: {
+            title,
+            type
+        }
+    })
+
+    if (!board) return { error: "Failed to update board" }
+
+    emitToRoom(
+        `workspace:${workspaceId}`,
+        "workspace:event",
+        {
+            entity: "board",
+            action: "updated",
+            payload: board
+        } satisfies WorkspaceEvent
+    )
+
+    return {
+        success: true
+    }
+}
+
+export async function deleteBoard(boardId: string): Promise<{ success: boolean }> {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized");
+
+    if (!boardId) throw new Error("Board ID is required");
+
+    const board = await prisma.board.findUnique({
+        where: { id: boardId },
+        include: {
+            workspace: {
+                include: {
+                    members: {
+                        where: {
+                            userId: user.id
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    if (!board) throw new Error("Board not found")
+
+    if (board.workspace.members.length === 0) throw new Error("Unauthorized")
+
+    await prisma.board.delete({
+        where: { id: boardId }
+    })
+
+    emitToRoom(
+        `workspace:${board.workspaceId}`,
+        "workspace:event",
+        {
+            entity: "board",
+            action: "deleted",
+            payload: board
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}
+
 export async function getBoardById(boardId: string): Promise<Board> {
     const user = await getAuthorizedUser();
 

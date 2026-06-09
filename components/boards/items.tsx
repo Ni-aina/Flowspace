@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import NewBoard from "./new-board";
-import RenderItems from "../drag&drop/verticals/renderItems";
-import { OrderItem } from "../drag&drop/verticals/orderItems";
+import BoardForm from "./board-form";
+import RenderItems from "./drag&drop/renderItems";
+import { OrderItem } from "./drag&drop/orderItems";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import CardLoading from "../cards/card-loading";
 import CardNotFound from "../cards/card-not-found";
@@ -31,20 +31,20 @@ const BoardItems = () => {
 
     const initialItems = realtimeBoards.map((board) => ({
         id: board.id,
-        orderId: board.id,
         name: board.title,
+        type: board.type,
         link: `/dashboard/boards/${board.id}`
     }))
 
     const handleReorder = async (items: OrderItem[]) => {
         if (!workspaceId) return;
         const boardsOredered = items.map(item => {
-            const board = realtimeBoards.find(board => board.id === item.orderId);
+            const board = realtimeBoards.find(board => board.id === item.id);
             return board;
         }) as Board[];
 
         setBoards(boardsOredered);
-        const boards = await setBoardPositions(workspaceId, items.map(item => String(item.orderId)));
+        const boards = await setBoardPositions(workspaceId, items.map(item => String(item.id)));
         setBoards(boards);
     }
 
@@ -76,10 +76,11 @@ const BoardItems = () => {
             <RenderItems
                 initialItems={initialItems}
                 handleReorder={handleReorder}
+                direction="vertical"
             />
-            <NewBoard
-                onNewBoard={onNewBoard}
-                setOnNewBoard={setOnNewBoard}
+            <BoardForm
+                isOpen={onNewBoard}
+                setOpen={setOnNewBoard}
             />
         </div>
     )

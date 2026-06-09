@@ -4,19 +4,25 @@ import { useActionState, useCallback, useEffect, useState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { ModalUI } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
-import { createBoard } from "@/actions/boards/board.action";
+import { createBoard, updateBoard } from "@/actions/boards/board.action";
 import { LayoutGrid, Table, List } from "lucide-react";
+import { OrderItem } from "./drag&drop/orderItems";
 
-interface NewBoardProps {
-    onNewBoard: boolean;
-    setOnNewBoard: (onNewBoard: boolean) => void;
+interface BoardFormProps {
+    isOpen: boolean;
+    setOpen: (isOpen: boolean) => void;
+    board?: OrderItem;
 }
 
-const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
+const BoardForm = ({ isOpen, setOpen, board }: BoardFormProps) => {
     const workspace = useWorkspace(state => state.workspace);
-    const [state, formAction, pending] = useActionState(createBoard, null);
-    const [title, setTitle] = useState("");
-    const [type, setType] = useState("grid");
+    const isEditing = !!board;
+    const [state, formAction, pending] = useActionState(
+        isEditing ? updateBoard : createBoard,
+        null
+    )
+    const [title, setTitle] = useState(board?.name ?? "");
+    const [type, setType] = useState(board?.type ?? "grid");
 
     const boardTypes = [
         { value: "grid", icon: LayoutGrid, label: "Grid" },
@@ -25,10 +31,10 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
     ]
 
     const handleClose = useCallback(() => {
-        setTitle("");
-        setType("grid");
-        setOnNewBoard(false);
-    }, [])
+        setTitle(board?.name ?? "");
+        setType(board?.type ?? "grid");
+        setOpen(false);
+    }, [board])
 
     useEffect(() => {
         if (state?.success) handleClose();
@@ -41,14 +47,15 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
 
     return (
         <ModalUI
-            isOpen={onNewBoard}
+            isOpen={isOpen}
             onClose={handleClose}
-            title="Create New Board"
+            title={isEditing ? "Update Board" : "Create New Board"}
             size="md"
         >
             <form action={formAction} className="space-y-4">
                 <input type="hidden" name="workspaceId" value={workspace.id} />
                 <input type="hidden" name="type" value={type} />
+                {isEditing && <input type="hidden" name="boardId" value={board.id} />}
 
                 <div>
                     <label className="block text-sm font-medium mb-2">
@@ -119,7 +126,7 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
                             cursor-pointer hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed
                         "
                     >
-                        {pending ? "Creating..." : "Create Board"}
+                        {pending ? (isEditing ? "Updating..." : "Creating...") : (isEditing ? "Update Board" : "Create Board")}
                     </button>
                 </div>
             </form>
@@ -127,4 +134,4 @@ const NewBoard = ({ onNewBoard, setOnNewBoard }: NewBoardProps) => {
     )
 }
 
-export default NewBoard;
+export default BoardForm;
