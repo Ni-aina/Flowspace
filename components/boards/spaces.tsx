@@ -14,7 +14,7 @@ import ListForm from "../lists/list-form";
 
 interface BoardSpaceInterface {
     boardId: string;
-    lists: List[];
+    lists?: List[];
 }
 
 const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
@@ -123,7 +123,9 @@ const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
                         }
                     </div>
                 </div>
-                <ListItems lists={lists} />
+                {
+                    lists && <ListItems lists={lists} />
+                }
             </div>
             <ListForm
                 isOpen={onNewList}
