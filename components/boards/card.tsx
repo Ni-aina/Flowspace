@@ -43,7 +43,7 @@ const BoardCard = ({ item, isActive, dragHandleProps }: BoardCardProps) => {
         <>
             <div
                 className={`
-                flex w-full items-center gap-2 hover:bg-primary/5
+                flex w-50 items-center gap-2 hover:bg-primary/5
                 rounded-full px-3 py-1
                 ${isActive ? 'bg-primary/5' : ''}
             `}
