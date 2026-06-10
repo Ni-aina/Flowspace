@@ -2,10 +2,11 @@
 
 import { List } from "@prisma/client";
 import React from "react";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
 import DeleteConfirm from "../ui/deleteConfirm";
 import { deleteList } from "@/actions/lists/list.action";
 import ListForm from "./list-form";
+import CardForm from "../cards/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
 
 interface ListCardProps {
@@ -26,6 +27,7 @@ const ListCard = ({
     const [open, setOpen] = React.useState(false);
     const [listId, setListId] = React.useState<string>("");
     const [onDelete, setOnDelete] = React.useState(false);
+    const [cardFormOpen, setCardFormOpen] = React.useState(false);
     const [listUpdate, setListUpdate] = React.useState<{
         id: string;
         title: string;
@@ -105,20 +107,22 @@ const ListCard = ({
                         }
                     </div>
                 </div>
-
                 {
                     count > 0 &&
-                    <div className="flex flex-col gap-2 p-2">
+                    <div className="flex flex-col gap-2 p-1">
                         {children}
                     </div>
                 }
-
-                {
-                    count === 0 &&
-                    <div className="flex items-center justify-center px-3 py-4">
-                        <p className="text-xs text-muted-foreground">No cards yet</p>
-                    </div>
-                }
+                <div className="p-1">
+                    <button
+                        onClick={() => setCardFormOpen(true)}
+                        className="w-full flex items-center gap-1.5 text-xs text-muted-foreground 
+                        hover:text-foreground hover:bg-muted/50 rounded-sm py-1.5 px-2 transition-colors cursor-pointer"
+                    >
+                        <Plus size={12} />
+                        Add a card
+                    </button>
+                </div>
             </div>
             <DeleteConfirm
                 isOpen={!!listId}
@@ -133,6 +137,11 @@ const ListCard = ({
                 onClose={() => setListUpdate(undefined)}
                 initialData={listUpdate}
                 boardId={boardId}
+            />
+            <CardForm
+                isOpen={cardFormOpen}
+                onClose={() => setCardFormOpen(false)}
+                listId={list.id}
             />
         </>
     )

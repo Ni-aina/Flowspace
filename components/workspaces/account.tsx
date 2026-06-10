@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useRole } from "@/stores/zustands/use-role";
 import { WorkspacePosition } from "@/types/workspacePosition";
-import CardLoading from "../cards/card-loading";
+import CardLoading from "../card-loading";
 
 interface AccountProps {
     workspacesPosition: WorkspacePosition[];

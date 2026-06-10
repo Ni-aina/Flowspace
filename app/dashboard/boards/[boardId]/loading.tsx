@@ -1,5 +1,5 @@
 import BoardSpace from "@/components/boards/spaces";
-import CardLoading from "@/components/cards/card-loading";
+import CardLoading from "@/components/card-loading";
 
 const BoardLoading = () => (
     <div className="flex-1">
