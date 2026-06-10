@@ -43,7 +43,7 @@ const BoardCard = ({ item, isActive, dragHandleProps }: BoardCardProps) => {
         <>
             <div
                 className={`
-                flex w-50 items-center gap-2 hover:bg-primary/5
+                flex  w-full min-w-50 max-w-60 items-center gap-2 hover:bg-primary/5
                 rounded-full px-3 py-1
                 ${isActive ? 'bg-primary/5' : ''}
             `}
@@ -56,7 +56,7 @@ const BoardCard = ({ item, isActive, dragHandleProps }: BoardCardProps) => {
                     {item.type === "table" && <Table size={16} className="text-gray-400" />}
                     {item.type === "list" && <List size={16} className="text-gray-400" />}
                 </div>
-                <Link href={item.link} className="truncate flex-1 min-w-0 text-sm">
+                <Link href={item.link} className="flex-1 truncate text-sm">
                     {item.name}
                 </Link>
                 <div
