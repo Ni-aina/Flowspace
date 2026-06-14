@@ -6,24 +6,22 @@ import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
 import DeleteConfirm from "../ui/deleteConfirm";
 import { deleteList } from "@/actions/lists/list.action";
 import ListForm from "./list-form";
-import CardForm from "../cards/card-form";
+import CardForm from "../cards/card-forms/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
+import CardList from "../cards/card-list";
 
 interface ListCardProps {
     list: List;
-    children?: React.ReactNode;
     dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 const ListCard = ({
     list,
-    children,
     dragHandleProps
 }: ListCardProps) => {
     const { board } = useBoard();
     const boardId = board.id;
 
-    const count = React.Children.count(children);
     const [open, setOpen] = React.useState(false);
     const [listId, setListId] = React.useState<string>("");
     const [onDelete, setOnDelete] = React.useState(false);
@@ -107,12 +105,9 @@ const ListCard = ({
                         }
                     </div>
                 </div>
-                {
-                    count > 0 &&
-                    <div className="flex flex-col gap-2 p-1">
-                        {children}
-                    </div>
-                }
+                <div className="flex flex-col gap-2 p-1">
+                    <CardList listId={list.id} />
+                </div>
                 <div className="p-1">
                     <button
                         onClick={() => setCardFormOpen(true)}

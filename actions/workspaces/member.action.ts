@@ -3,7 +3,7 @@
 import { getAuthorizedUser } from "../auth.action";
 import prisma from "@/lib/prisma";
 import { WorkspacePosition } from "@/types/workspacePosition";
-import { WorkspaceMember } from "@prisma/client";
+import { User, WorkspaceMember } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function findWorkspaceMember(workspaceId?: string): Promise<WorkspaceMember | null> {
@@ -111,4 +111,17 @@ export async function getWorkspacesPosition(): Promise<WorkspacePosition[]> {
         position: item.position,
         ...item.workspace
     }))
+}
+
+export const getWorkspaceMembers = async (workspaceId: string): Promise<User[]> => {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized");
+
+    const members = await prisma.workspaceMember.findMany({
+        where: { workspaceId },
+        include: { user: true }
+    })
+
+    return members.map(m => m.user);
 }

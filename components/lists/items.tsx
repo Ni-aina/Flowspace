@@ -43,7 +43,7 @@ const ListItems = ({ lists }: ListItemsProps) => {
     }, [lists?.length])
 
     return (
-        <div className="flex flex-wrap items-center gap-5">
+        <div className="flex flex-wrap gap-5">
             {
                 realtimeLists.length === 0 ?
                     <div className="flex flex-col w-full py-16 lg:py-32 items-center justify-center gap-2">
