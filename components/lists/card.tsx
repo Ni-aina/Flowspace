@@ -9,7 +9,6 @@ import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
 import CardList from "../cards/card-list";
-import DroppableBlock from "@/components/dnd/droppable-block";
 
 interface ListCardProps {
     list: List;
@@ -54,8 +53,7 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
 
     return (
         <>
-            <DroppableBlock
-                id={list.id}
+            <div
                 className="flex flex-col w-64 shrink-0 rounded-lg border border-input bg-muted/30"
             >
                 <div
@@ -119,7 +117,7 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
                         Add a card
                     </button>
                 </div>
-            </DroppableBlock>
+            </div>
             <DeleteConfirm
                 isOpen={!!listId}
                 onClose={() => setListId("")}

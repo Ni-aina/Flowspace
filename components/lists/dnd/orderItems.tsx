@@ -1,3 +1,5 @@
+"use client";
+
 import {
     DndContext,
     closestCenter,
@@ -28,22 +30,11 @@ interface SortableItemProps {
 }
 
 const SortableItem = ({ item, renderItem }: SortableItemProps) => {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition
-    } = useSortable({ id: item.list.id })
+
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.list.id })
 
     return (
-        <div
-            ref={setNodeRef}
-            style={{
-                transform: CSS.Transform.toString(transform),
-                transition
-            }}
-        >
+        <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }}>
             {renderItem(item, { ...attributes, ...listeners })}
         </div>
     )
@@ -53,35 +44,37 @@ interface OrderItemListProps {
     items: OrderItem[];
     onChange: (items: OrderItem[]) => void;
     renderItem: (item: OrderItem, dragHandleProps: HTMLAttributes<HTMLElement>) => ReactNode;
+    onDragEnd?: (event: DragEndEvent) => void;
 }
 
-export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProps) => {
+export const OrderItemList = ({ items, onChange, renderItem, onDragEnd }: OrderItemListProps) => {
+
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
     )
 
     const handleDragEnd = (event: DragEndEvent) => {
+
         const { active, over } = event
+
+        onDragEnd?.(event)
+
         if (!over || active.id === over.id) return
+
         const oldIndex = items.findIndex((i) => i.list.id === active.id)
         const newIndex = items.findIndex((i) => i.list.id === over.id)
+
+        if (oldIndex === -1 || newIndex === -1) return
+
         onChange(arrayMove(items, oldIndex, newIndex))
     }
 
     return (
-        <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-        >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={items.map((i) => i.list.id)} strategy={horizontalListSortingStrategy}>
                 {items.map((item) =>
-                    <SortableItem
-                        key={item.list.id}
-                        item={item}
-                        renderItem={renderItem}
-                    />
+                    <SortableItem key={item.list.id} item={item} renderItem={renderItem} />
                 )}
             </SortableContext>
         </DndContext>

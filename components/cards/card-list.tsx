@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@prisma/client";
 import { getCardsByListId } from "@/actions/cards/card.action";
 import { useRealtime } from "@/hooks/use-realtime";
-import DraggableItem from "@/components/dnd/draggable-item";
+import DraggableItem from "@/components/lists/dnd/draggable-item";
 
 const CardList = ({ listId }: { listId: string }) => {
 
@@ -25,7 +25,7 @@ const CardList = ({ listId }: { listId: string }) => {
         room: workspaceId ? `workspace:${workspaceId}` : null,
         entity: "card",
         initialData: initialCards
-    }).filter(c => c.listId === listId)
+    })
 
     if (loading) return (
         <div className="flex flex-col gap-2 p-1">

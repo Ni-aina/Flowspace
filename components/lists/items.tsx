@@ -7,6 +7,8 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useEffect, useState } from "react";
 import { setListPositions } from "@/actions/lists/list.action";
 import ListCard from "./card";
+import { moveCard } from "@/actions/cards/card.action";
+import { DragEndEvent } from "@dnd-kit/core";
 
 interface ListItemsProps {
     lists: List[];
@@ -27,14 +29,31 @@ const ListItems = ({ lists }: ListItemsProps) => {
 
     const handleReorder = async (items: OrderItem[]) => {
         if (!workspaceId) return;
-        const listsOredered = items.map(item => {
+        const listsOrdered = items.map(item => {
             const list = realtimeLists.find(list => list.id === item.list.id);
             return list;
         }) as List[];
 
-        setListsState(listsOredered);
-        const lists = await setListPositions(workspaceId, items.map(item => String(item.list.id)));
-        setListsState(lists);
+        setListsState(listsOrdered);
+        const updated = await setListPositions(workspaceId, items.map(item => String(item.list.id)));
+        setListsState(updated);
+    }
+
+    const handleDragEnd = async (event: DragEndEvent) => {
+
+        const { active, over } = event;
+
+        if (!over) return;
+
+        const activeId = active.id as string;
+        const overId = over.id as string;
+
+        const isCard = !realtimeLists.some(l => l.id === activeId);
+        const isTargetList = realtimeLists.some(l => l.id === overId);
+
+        if (!isCard || !isTargetList) return;
+
+        await moveCard(activeId, overId);
     }
 
     useEffect(() => {
@@ -44,22 +63,22 @@ const ListItems = ({ lists }: ListItemsProps) => {
 
     return (
         <div className="flex flex-wrap gap-5">
-            {
-                realtimeLists.length === 0 ?
-                    <div className="flex flex-col w-full py-16 lg:py-32 items-center justify-center gap-2">
-                        <p className="text-md font-medium">No lists yet</p>
-                        <p className="text-sm text-muted-foreground">
-                            Create a list to start organizing your cards
-                        </p>
-                    </div>
-                    :
-                    <OrderItemList
-                        items={realtimeLists.map(list => ({ list }))}
-                        onChange={handleReorder}
-                        renderItem={(item, dragHandleProps) => (
-                            <ListCard list={item.list} dragHandleProps={dragHandleProps} />
-                        )}
-                    />
+            {realtimeLists.length === 0 ?
+                <div className="flex flex-col w-full py-16 lg:py-32 items-center justify-center gap-2">
+                    <p className="text-md font-medium">No lists yet</p>
+                    <p className="text-sm text-muted-foreground">
+                        Create a list to start organizing your cards
+                    </p>
+                </div>
+                :
+                <OrderItemList
+                    items={realtimeLists.map(list => ({ list }))}
+                    onChange={handleReorder}
+                    onDragEnd={handleDragEnd}
+                    renderItem={(item, dragHandleProps) =>
+                        <ListCard list={item.list} dragHandleProps={dragHandleProps} />
+                    }
+                />
             }
         </div>
     )
