@@ -384,3 +384,32 @@ export const removeLabelFromCard = async (cardId: string, labelId: string): Prom
 
     return { success: true }
 }
+
+export const moveCard = async (cardId: string, targetListId: string): Promise<{ success: boolean }> => {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized")
+    if (!cardId) throw new Error("Card ID is required")
+    if (!targetListId) throw new Error("Target list ID is required")
+
+    const existing = await getCardWithAccess(cardId, user.id);
+
+    if (!existing) throw new Error("Card not found")
+
+    const card = await prisma.card.update({
+        where: { id: cardId },
+        data: { listId: targetListId }
+    })
+
+    emitToRoom(
+        `workspace:${existing.list.board.workspaceId}`,
+        "workspace:event",
+        {
+            entity: "card",
+            action: "updated",
+            payload: card
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}

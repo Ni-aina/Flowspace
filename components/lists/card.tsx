@@ -9,16 +9,15 @@ import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
 import CardList from "../cards/card-list";
+import DroppableBlock from "@/components/dnd/droppable-block";
 
 interface ListCardProps {
     list: List;
     dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
 }
 
-const ListCard = ({
-    list,
-    dragHandleProps
-}: ListCardProps) => {
+const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
+
     const { board } = useBoard();
     const boardId = board.id;
 
@@ -55,7 +54,10 @@ const ListCard = ({
 
     return (
         <>
-            <div className="flex flex-col w-64 shrink-0 rounded-lg border border-input bg-muted/30">
+            <DroppableBlock
+                id={list.id}
+                className="flex flex-col w-64 shrink-0 rounded-lg border border-input bg-muted/30"
+            >
                 <div
                     {...dragHandleProps}
                     className="flex items-center gap-2 px-3 py-2 rounded-t-lg cursor-grab"
@@ -73,8 +75,7 @@ const ListCard = ({
                         >
                             <MoreVertical className="h-3 w-3" />
                         </button>
-                        {
-                            open &&
+                        {open &&
                             <div className="absolute right-0 top-full mt-1 z-50 min-w-30 rounded-md border border-input bg-popover shadow-md py-1">
                                 <button
                                     onClick={() => {
@@ -118,7 +119,7 @@ const ListCard = ({
                         Add a card
                     </button>
                 </div>
-            </div>
+            </DroppableBlock>
             <DeleteConfirm
                 isOpen={!!listId}
                 onClose={() => setListId("")}

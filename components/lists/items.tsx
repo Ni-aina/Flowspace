@@ -2,7 +2,7 @@
 
 import { useRealtime } from "@/hooks/use-realtime";
 import { List } from "@prisma/client";
-import { OrderItem, OrderItemList } from "@/components/lists/drag&drop/orderItems";
+import { OrderItem, OrderItemList } from "@/components/lists/dnd/orderItems";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useEffect, useState } from "react";
 import { setListPositions } from "@/actions/lists/list.action";

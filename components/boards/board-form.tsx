@@ -6,7 +6,7 @@ import { ModalUI } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 import { createBoard, updateBoard } from "@/actions/boards/board.action";
 import { LayoutGrid, Table, List } from "lucide-react";
-import { OrderItem } from "./drag&drop/orderItems";
+import { OrderItem } from "./dnd/orderItems";
 
 interface BoardFormProps {
     isOpen: boolean;

@@ -2,8 +2,8 @@
 
 import { useRealtime } from "@/hooks/use-realtime";
 import { useBoards, useLoadingBoards } from "@/stores/zustands/use-boards";
-import RenderItems from "./drag&drop/renderItems";
-import { OrderItem } from "./drag&drop/orderItems";
+import RenderItems from "./dnd/renderItems";
+import { OrderItem } from "./dnd/orderItems";
 import { setBoardPositions } from "@/actions/boards/board.action";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Board, List } from "@prisma/client";

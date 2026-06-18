@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import BoardForm from "./board-form";
-import RenderItems from "./drag&drop/renderItems";
-import { OrderItem } from "./drag&drop/orderItems";
+import RenderItems from "./dnd/renderItems";
+import { OrderItem } from "./dnd/orderItems";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import CardLoading from "../card-loading";
 import CardNotFound from "../card-not-found";

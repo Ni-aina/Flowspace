@@ -1,6 +1,6 @@
 "use client";
 
-import { OrderItem } from "./drag&drop/orderItems";
+import { OrderItem } from "./dnd/orderItems";
 import { LayoutGrid, List, Table, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
