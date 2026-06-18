@@ -1,5 +1,3 @@
-"use client";
-
 import {
     DndContext,
     closestCenter,
@@ -14,14 +12,14 @@ import {
     sortableKeyboardCoordinates,
     useSortable,
     arrayMove,
-    horizontalListSortingStrategy
+    verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { List } from "@prisma/client";
+import { Card } from "@prisma/client";
 import { HTMLAttributes, ReactNode } from "react";
 
 export interface OrderItem {
-    list: List
+    card: Card
 }
 
 interface SortableItemProps {
@@ -30,11 +28,22 @@ interface SortableItemProps {
 }
 
 const SortableItem = ({ item, renderItem }: SortableItemProps) => {
-
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.list.id })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition
+    } = useSortable({ id: item.card.id })
 
     return (
-        <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }}>
+        <div
+            ref={setNodeRef}
+            style={{
+                transform: CSS.Transform.toString(transform),
+                transition
+            }}
+        >
             {renderItem(item, { ...attributes, ...listeners })}
         </div>
     )
@@ -47,7 +56,6 @@ interface OrderItemListProps {
 }
 
 export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProps) => {
-
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -56,8 +64,8 @@ export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProp
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
         if (!over || active.id === over.id) return
-        const oldIndex = items.findIndex((i) => i.list.id === active.id)
-        const newIndex = items.findIndex((i) => i.list.id === over.id)
+        const oldIndex = items.findIndex((i) => i.card.id === active.id)
+        const newIndex = items.findIndex((i) => i.card.id === over.id)
         onChange(arrayMove(items, oldIndex, newIndex))
     }
 
@@ -67,9 +75,16 @@ export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProp
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
         >
-            <SortableContext items={items.map((i) => i.list.id)} strategy={horizontalListSortingStrategy}>
+            <SortableContext
+                items={items.map((i) => i.card.id)}
+                strategy={verticalListSortingStrategy}
+            >
                 {items.map((item) =>
-                    <SortableItem key={item.list.id} item={item} renderItem={renderItem} />
+                    <SortableItem
+                        key={item.card.id}
+                        item={item}
+                        renderItem={renderItem}
+                    />
                 )}
             </SortableContext>
         </DndContext>

@@ -7,8 +7,6 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useEffect, useState } from "react";
 import { setListPositions } from "@/actions/lists/list.action";
 import ListCard from "./card";
-import { moveCard } from "@/actions/cards/card.action";
-import { DragEndEvent } from "@dnd-kit/core";
 
 interface ListItemsProps {
     lists: List[];
@@ -39,23 +37,6 @@ const ListItems = ({ lists }: ListItemsProps) => {
         setListsState(updated);
     }
 
-    const handleDragEnd = async (event: DragEndEvent) => {
-
-        const { active, over } = event;
-
-        if (!over) return;
-
-        const activeId = active.id as string;
-        const overId = over.id as string;
-
-        const isCard = !realtimeLists.some(l => l.id === activeId);
-        const isTargetList = realtimeLists.some(l => l.id === overId);
-
-        if (!isCard || !isTargetList) return;
-
-        await moveCard(activeId, overId);
-    }
-
     useEffect(() => {
         if (!lists?.length) return;
         setListsState(lists);
@@ -74,7 +55,6 @@ const ListItems = ({ lists }: ListItemsProps) => {
                 <OrderItemList
                     items={realtimeLists.map(list => ({ list }))}
                     onChange={handleReorder}
-                    onDragEnd={handleDragEnd}
                     renderItem={(item, dragHandleProps) =>
                         <ListCard list={item.list} dragHandleProps={dragHandleProps} />
                     }

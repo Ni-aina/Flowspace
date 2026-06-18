@@ -9,10 +9,7 @@ const CardItem = ({ card }: { card: Card }) => {
 
     return (
         <>
-            <div
-                onClick={() => setOpen(true)}
-                className="flex flex-col gap-1 p-2 rounded-md border border-input bg-background hover:border-muted-foreground/30 transition-colors cursor-pointer"
-            >
+            <div onClick={() => setOpen(true)}>
                 <p className="text-xs leading-snug">{card.title}</p>
                 {card.dueDate &&
                     <div className={`flex items-center gap-1 ${isOverdue ? "text-red-500" : "text-muted-foreground"}`}>
