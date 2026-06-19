@@ -14,22 +14,20 @@ const CardList = ({ listId }: { listId: string }) => {
     const [loading, setLoading] = useState(true);
 
     const realtimeCards = useRealtime<"card">({
-        room: workspaceId ? `workspace:${workspaceId}` : null,
+        room: workspaceId ? `workspace:${workspaceId}:list:${listId}` : null,
         entity: "card",
         initialData: cards
-    })
-
-    const listCards = realtimeCards.filter(card => card.listId === listId);
+    }).filter(item => item.listId === listId)
 
     const handleReorder = async (items: OrderItem[]) => {
-        if (!workspaceId) return;
+        if (!workspaceId || !listId) return;
         const cardsOredered = items.map(item => {
             const card = realtimeCards.find(card => card.id === item.card.id);
             return card;
         }) as Card[];
 
         setCards(cardsOredered);
-        const cards = await setCardPositions(workspaceId, items.map(item => String(item.card.id)));
+        const cards = await setCardPositions(workspaceId, listId, items.map(item => String(item.card.id)));
         setCards(cards);
     }
 
@@ -48,12 +46,12 @@ const CardList = ({ listId }: { listId: string }) => {
         </div>
     )
 
-    if (listCards.length === 0) return null;
+    if (realtimeCards.length === 0) return null;
 
     return (
         <div className="flex flex-col gap-2 p-1">
             <RenderItems
-                initialItems={listCards.map(card => ({ card }))}
+                initialItems={realtimeCards.map(card => ({ card }))}
                 handleReorder={handleReorder}
             />
         </div>

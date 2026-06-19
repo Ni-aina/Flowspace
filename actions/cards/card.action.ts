@@ -75,7 +75,7 @@ export const createCard = async (
     if (!card) return { error: "Failed to create card" }
 
     emitToRoom(
-        `workspace:${list.board.workspaceId}`,
+        `workspace:${list.board.workspaceId}:list:${listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -119,7 +119,7 @@ export const updateCard = async (
     })
 
     emitToRoom(
-        `workspace:${existing.list.board.workspaceId}`,
+        `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -144,7 +144,7 @@ export const deleteCard = async (cardId: string): Promise<{ success: boolean }> 
     await prisma.card.delete({ where: { id: cardId } })
 
     emitToRoom(
-        `workspace:${card.list.board.workspaceId}`,
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -181,6 +181,7 @@ export const getCardsByListId = async (listId: string): Promise<Card[]> => {
 
 export const setCardPositions = async (
     workspaceId: string,
+    listId: string,
     cardIds: string[]
 ): Promise<Card[]> => {
     const user = await getAuthorizedUser();
@@ -197,7 +198,7 @@ export const setCardPositions = async (
     )
 
     emitToRoom(
-        `workspace:${workspaceId}`,
+        `workspace:${workspaceId}:list:${listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -232,7 +233,7 @@ export const addComment = async (
     })
 
     emitToRoom(
-        `workspace:${card.list.board.workspaceId}`,
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -265,7 +266,7 @@ export const deleteComment = async (commentId: string): Promise<{ success: boole
     await prisma.comment.delete({ where: { id: commentId } })
 
     emitToRoom(
-        `workspace:${comment.card.list.board.workspaceId}`,
+        `workspace:${comment.card.list.board.workspaceId}:list:${comment.card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -293,7 +294,7 @@ export const assignCard = async (cardId: string, userId: string): Promise<{ succ
     })
 
     emitToRoom(
-        `workspace:${card.list.board.workspaceId}`,
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -319,7 +320,7 @@ export const unassignCard = async (cardId: string, userId: string): Promise<{ su
     })
 
     emitToRoom(
-        `workspace:${card.list.board.workspaceId}`,
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -347,7 +348,7 @@ export const addLabelToCard = async (cardId: string, labelId: string): Promise<{
     })
 
     emitToRoom(
-        `workspace:${card.list.board.workspaceId}`,
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -373,7 +374,7 @@ export const removeLabelFromCard = async (cardId: string, labelId: string): Prom
     })
 
     emitToRoom(
-        `workspace:${card.list.board.workspaceId}`,
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
         "workspace:event",
         {
             entity: "card",
@@ -402,7 +403,7 @@ export const moveCard = async (cardId: string, targetListId: string): Promise<{ 
     })
 
     emitToRoom(
-        `workspace:${existing.list.board.workspaceId}`,
+        `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
         "workspace:event",
         {
             entity: "card",
