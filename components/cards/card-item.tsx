@@ -9,9 +9,10 @@ const CardItem = ({ card }: { card: Card }) => {
 
     return (
         <>
-            <div onClick={() => setOpen(true)}>
-                <p className="text-xs leading-snug">{card.title}</p>
-                {card.dueDate &&
+            <div onClick={() => setOpen(true)} className="flex justify-between items-center gap-5">
+                <p className="text-xs truncate">{card.title}</p>
+                {
+                    card.dueDate &&
                     <div className={`flex items-center gap-1 ${isOverdue ? "text-red-500" : "text-muted-foreground"}`}>
                         <CalendarIcon size={10} />
                         <span className="text-[10px]">{new Date(card.dueDate).toLocaleDateString()}</span>

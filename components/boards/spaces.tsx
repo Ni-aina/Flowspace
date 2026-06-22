@@ -13,11 +13,11 @@ import ListItems from "../lists/items";
 import ListForm from "../lists/list-form";
 
 interface BoardSpaceInterface {
-    boardId: string;
+    board: Board;
     lists?: List[];
 }
 
-const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
+const BoardSpace = ({ board, lists }: BoardSpaceInterface) => {
     const workspace = useWorkspace(state => state.workspace);
     const workspaceId = workspace?.id;
     const { boards, setBoards } = useBoards();
@@ -125,13 +125,14 @@ const BoardSpace = ({ boardId, lists }: BoardSpaceInterface) => {
                     </div>
                 </div>
                 {
-                    lists && <ListItems lists={lists} />
+                    (board?.type === "grid" && lists) &&
+                    <ListItems lists={lists} />
                 }
             </div>
             <ListForm
                 isOpen={onNewList}
                 onClose={() => setOnNewList(false)}
-                boardId={boardId}
+                boardId={board?.id}
             />
         </>
     )

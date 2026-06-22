@@ -3,7 +3,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
-import React from "react";
+import { useEffect, useState } from "react";
 import { createCard, updateCard, deleteCard } from "@/actions/cards/card.action";
 import { getCardComments, getCardAttachments, getCardBlocks, getCardAssignees, getCardLabels } from "@/actions/cards/details.action";
 import { getWorkspaceMembers } from "@/actions/workspaces/member.action";
@@ -37,27 +37,27 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
     const { workspace } = useWorkspace();
 
     const [state, formAction, pending] = useActionState(isEdit ? updateCard : createCard, null);
-    const [deleting, setDeleting] = React.useState(false);
+    const [deleting, setDeleting] = useState(false);
 
-    const [title, setTitle] = React.useState(initialData?.title ?? "");
-    const [description, setDescription] = React.useState(initialData?.description ?? "");
-    const [dueDate, setDueDate] = React.useState(
+    const [title, setTitle] = useState(initialData?.title ?? "");
+    const [description, setDescription] = useState(initialData?.description ?? "");
+    const [dueDate, setDueDate] = useState(
         initialData?.dueDate ? new Date(initialData.dueDate).toISOString().slice(0, 16) : ""
     )
 
-    const [members, setMembers] = React.useState<{ id: string; name: string; avatarUrl: string | null }[]>([]);
-    const [labels, setLabels] = React.useState<LabelType[]>([]);
-    const [assignedIds, setAssignedIds] = React.useState<string[]>([]);
-    const [labelIds, setLabelIds] = React.useState<string[]>([]);
-    const [comments, setComments] = React.useState<CommentWithAuthor[]>([]);
-    const [attachments, setAttachments] = React.useState<Attachment[]>([]);
-    const [blocks, setBlocks] = React.useState<Block[]>([]);
+    const [members, setMembers] = useState<{ id: string; name: string; avatarUrl: string | null }[]>([]);
+    const [labels, setLabels] = useState<LabelType[]>([]);
+    const [assignedIds, setAssignedIds] = useState<string[]>([]);
+    const [labelIds, setLabelIds] = useState<string[]>([]);
+    const [comments, setComments] = useState<CommentWithAuthor[]>([]);
+    const [attachments, setAttachments] = useState<Attachment[]>([]);
+    const [blocks, setBlocks] = useState<Block[]>([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (state?.success) onClose();
     }, [state])
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!isOpen || !workspace?.id) return;
         setTitle(initialData?.title ?? "");
         setDescription(initialData?.description ?? "");
