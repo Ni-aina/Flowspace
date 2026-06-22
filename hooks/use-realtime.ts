@@ -41,6 +41,7 @@ export const useRealtime = <E extends EntityType>({
 
         const handler = (event: WorkspaceEvent<E>) => {
             if (event.entity !== entity) return;
+            if (event.room !== room) return;
 
             setData(prev => {
                 switch (event.action) {

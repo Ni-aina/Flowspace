@@ -1,11 +1,8 @@
 "use client";
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { CalendarIcon, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import React from "react";
 import { createCard, updateCard, deleteCard } from "@/actions/cards/card.action";
 import { getCardComments, getCardAttachments, getCardBlocks, getCardAssignees, getCardLabels } from "@/actions/cards/details.action";
@@ -20,6 +17,7 @@ import LabelsSection from "./labels-section";
 import CommentsSection from "./comments-section";
 import AttachmentsSection from "./attachements-section";
 import BlocksSection from "./blocks-section";
+import CardFields from "./card-fields";
 
 interface CardFormProps {
     isOpen: boolean;
@@ -94,44 +92,11 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
                     {isEdit && <input type="hidden" name="cardId" value={initialData.id} />}
                     {isEdit && <input type="hidden" name="position" value={initialData.position} />}
                     {!isEdit && <input type="hidden" name="listId" value={listId} />}
-                    <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="title">Title</Label>
-                        <Input
-                            id="title"
-                            name="title"
-                            placeholder="Card title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea
-                            id="description"
-                            name="description"
-                            placeholder="Add a description..."
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            rows={4}
-                            className="resize-none"
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="dueDate">
-                            <span className="flex items-center gap-1.5">
-                                <CalendarIcon size={13} className="text-muted-foreground" />
-                                Due Date
-                            </span>
-                        </Label>
-                        <Input
-                            id="dueDate"
-                            name="dueDate"
-                            type="datetime-local"
-                            value={dueDate}
-                            onChange={(e) => setDueDate(e.target.value)}
-                        />
-                    </div>
+                    <CardFields
+                        initialTitle={title}
+                        initialDescription={description}
+                        initialDueDate={dueDate}
+                    />
                     <Separator />
                     <AssigneesSection
                         cardId={initialData?.id}

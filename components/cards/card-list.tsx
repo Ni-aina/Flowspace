@@ -17,7 +17,7 @@ const CardList = ({ listId }: { listId: string }) => {
         room: workspaceId ? `workspace:${workspaceId}:list:${listId}` : null,
         entity: "card",
         initialData: cards
-    }).filter(item => item.listId === listId)
+    })
 
     const handleReorder = async (items: OrderItem[]) => {
         if (!workspaceId || !listId) return;

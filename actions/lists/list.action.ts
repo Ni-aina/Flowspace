@@ -54,6 +54,7 @@ export async function createList(
         {
             entity: "list",
             action: "created",
+            room: `workspace:${board.workspaceId}`,
             payload: list
         } satisfies WorkspaceEvent
     )
@@ -114,6 +115,7 @@ export async function updateList(
         {
             entity: "list",
             action: "updated",
+            room: `workspace:${existing.board.workspaceId}`,
             payload: list
         } satisfies WorkspaceEvent
     )
@@ -161,6 +163,7 @@ export async function deleteList(listId: string): Promise<{ success: boolean; }>
         {
             entity: "list",
             action: "deleted",
+            room: `workspace:${list.board.workspaceId}`,
             payload: list
         } satisfies WorkspaceEvent
     )
@@ -217,6 +220,7 @@ export const setListPositions = async (workspaceId: string, listIds: string[])
         {
             entity: "list",
             action: "moved",
+            room: `workspace:${workspaceId}`,
             payload: lists
         } satisfies WorkspaceEvent
     )

@@ -40,6 +40,7 @@ export async function createBoard(
         {
             entity: "board",
             action: "created",
+            room: `workspace:${workspaceId}`,
             payload: board
         } satisfies WorkspaceEvent
     )
@@ -92,6 +93,7 @@ export async function updateBoard(
         {
             entity: "board",
             action: "updated",
+            room: `workspace:${workspaceId}`,
             payload: board
         } satisfies WorkspaceEvent
     )
@@ -137,6 +139,7 @@ export async function deleteBoard(boardId: string): Promise<{ success: boolean }
         {
             entity: "board",
             action: "deleted",
+            room: `workspace:${board.workspaceId}`,
             payload: board
         } satisfies WorkspaceEvent
     )
@@ -216,6 +219,7 @@ export const setBoardPositions = async (workspaceId: string, boardIds: string[])
         {
             entity: "board",
             action: "moved",
+            room: `workspace:${workspaceId}`,
             payload: boards
         } satisfies WorkspaceEvent
     )

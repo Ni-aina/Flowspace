@@ -37,10 +37,12 @@ export type WorkspaceEvent<E extends EntityType = EntityType> =
     | {
         entity: E;
         action: "created" | "updated" | "deleted";
+        room: string;
         payload: EntityMap[E];
     }
     | {
         entity: E;
         action: "moved";
+        room: string;
         payload: EntityMap[E][];
     }

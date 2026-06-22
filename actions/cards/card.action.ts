@@ -80,6 +80,7 @@ export const createCard = async (
         {
             entity: "card",
             action: "created",
+            room: `workspace:${list.board.workspaceId}:list:${listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -124,6 +125,7 @@ export const updateCard = async (
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -149,6 +151,7 @@ export const deleteCard = async (cardId: string): Promise<{ success: boolean }> 
         {
             entity: "card",
             action: "deleted",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -203,6 +206,7 @@ export const setCardPositions = async (
         {
             entity: "card",
             action: "moved",
+            room: `workspace:${workspaceId}:list:${listId}`,
             payload: cards
         } satisfies WorkspaceEvent
     )
@@ -238,6 +242,7 @@ export const addComment = async (
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
             payload: comment
         } satisfies WorkspaceEvent
     )
@@ -271,6 +276,7 @@ export const deleteComment = async (commentId: string): Promise<{ success: boole
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${comment.card.list.board.workspaceId}:list:${comment.card.listId}`,
             payload: comment
         } satisfies WorkspaceEvent
     )
@@ -299,6 +305,7 @@ export const assignCard = async (cardId: string, userId: string): Promise<{ succ
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -325,6 +332,7 @@ export const unassignCard = async (cardId: string, userId: string): Promise<{ su
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -353,6 +361,7 @@ export const addLabelToCard = async (cardId: string, labelId: string): Promise<{
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -379,6 +388,7 @@ export const removeLabelFromCard = async (cardId: string, labelId: string): Prom
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
@@ -408,6 +418,7 @@ export const moveCard = async (cardId: string, targetListId: string): Promise<{ 
         {
             entity: "card",
             action: "updated",
+            room: `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
             payload: card
         } satisfies WorkspaceEvent
     )
