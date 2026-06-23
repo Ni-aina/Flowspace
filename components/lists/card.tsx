@@ -9,6 +9,7 @@ import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
 import CardList from "../cards/card-list";
+import Droppable from "../droppable";
 
 interface ListCardProps {
     list: List;
@@ -105,7 +106,14 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-2 p-1">
-                    <CardList listId={list.id} />
+                    <Droppable
+                        onDrop={(data: string) => {
+                            console.log(data);
+
+                        }}
+                    >
+                        <CardList listId={list.id} />
+                    </Droppable>
                 </div>
                 <div className="p-1">
                     <button
