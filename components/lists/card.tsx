@@ -1,7 +1,7 @@
 "use client";
 
 import { List } from "@prisma/client";
-import React from "react";
+import React, { HTMLAttributes, useEffect, useRef, useState } from "react";
 import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
 import DeleteConfirm from "../ui/deleteConfirm";
 import { deleteList } from "@/actions/lists/list.action";
@@ -9,11 +9,10 @@ import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
 import CardList from "../cards/card-list";
-import Droppable from "../dnd-native/droppable";
 
 interface ListCardProps {
     list: List;
-    dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
+    dragHandleProps?: HTMLAttributes<HTMLDivElement>;
 }
 
 const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
@@ -21,18 +20,18 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
     const { board } = useBoard();
     const boardId = board.id;
 
-    const [open, setOpen] = React.useState(false);
-    const [listId, setListId] = React.useState<string>("");
-    const [onDelete, setOnDelete] = React.useState(false);
-    const [cardFormOpen, setCardFormOpen] = React.useState(false);
-    const [listUpdate, setListUpdate] = React.useState<{
+    const [open, setOpen] = useState(false);
+    const [listId, setListId] = useState<string>("");
+    const [onDelete, setOnDelete] = useState(false);
+    const [cardFormOpen, setCardFormOpen] = useState(false);
+    const [listUpdate, setListUpdate] = useState<{
         id: string;
         title: string;
         color: string;
         position: number;
     }>()
 
-    const menuRef = React.useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const handleDelete = async () => {
         if (!listId) return;
@@ -41,7 +40,17 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
         setListId("");
     }
 
-    React.useEffect(() => {
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+    }
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        const cardId = e.dataTransfer.getData("text/plain")
+        console.log(cardId)
+    }
+
+    useEffect(() => {
         if (!open) return;
         const handler = (e: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -105,14 +114,12 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
                         }
                     </div>
                 </div>
-                <div className="flex flex-col gap-2 p-1">
-                    <Droppable
-                        onDrop={(data: string) => {
-                            console.log(data);
-                        }}
-                    >
-                        <CardList listId={list.id} />
-                    </Droppable>
+                <div
+                    className="flex flex-col gap-2 p-1"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                >
+                    <CardList listId={list.id} />
                 </div>
                 <div className="p-1">
                     <button
