@@ -1,16 +1,27 @@
-import { Card } from "@prisma/client";
-import { CalendarIcon } from "lucide-react";
+import { Card, List } from "@prisma/client";
+import { CalendarIcon, GripVertical } from "lucide-react";
 import { useState } from "react";
 import CardForm from "./card-forms/card-form";
+import Draggable from "../dnd-native/draggable";
 
-const CardItem = ({ card }: { card: Card }) => {
+interface CardItemProps {
+    card: Card
+}
+
+const CardItem = ({ card }: CardItemProps) => {
     const [open, setOpen] = useState(false);
     const isOverdue = card.dueDate && new Date(card.dueDate) < new Date();
 
     return (
-        <>
+        <Draggable
+            id={JSON.stringify({ card })}
+            type="card"
+        >
             <div onClick={() => setOpen(true)} className="flex justify-between items-center gap-5">
-                <p className="text-xs truncate">{card.title}</p>
+                <div className="flex items-center gap-2">
+                    <GripVertical size={14} className="text-muted-foreground" />
+                    <p className="text-xs truncate">{card.title}</p>
+                </div>
                 {
                     card.dueDate &&
                     <div className={`flex items-center gap-1 ${isOverdue ? "text-red-500" : "text-muted-foreground"}`}>
@@ -31,7 +42,7 @@ const CardItem = ({ card }: { card: Card }) => {
                     position: card.position
                 }}
             />
-        </>
+        </Draggable>
     )
 }
 

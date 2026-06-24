@@ -413,11 +413,23 @@ export const moveCard = async (cardId: string, targetListId: string): Promise<{ 
     })
 
     emitToRoom(
+        `workspace:${existing.list.board.workspaceId}:list:${card.listId}`,
+        "workspace:event",
+        {
+            entity: "card",
+            action: "created",
+            room: `workspace:${existing.list.board.workspaceId}:list:${card.listId}`,
+            payload: card
+        } satisfies WorkspaceEvent
+    )
+
+
+    emitToRoom(
         `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
         "workspace:event",
         {
             entity: "card",
-            action: "updated",
+            action: "deleted",
             room: `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
             payload: card
         } satisfies WorkspaceEvent

@@ -1,10 +1,11 @@
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useEffect, useState } from "react";
 import { Card } from "@prisma/client";
-import { getCardsByListId, setCardPositions } from "@/actions/cards/card.action";
+import { getCardsByListId, moveCard, setCardPositions } from "@/actions/cards/card.action";
 import { useRealtime } from "@/hooks/use-realtime";
 import RenderItems from "./dnd/renderItems";
 import { OrderItem } from "./dnd/orderItems";
+import Droppable from "../dnd-native/droppable";
 
 const CardList = ({ listId }: { listId: string }) => {
     const { workspace } = useWorkspace();
@@ -31,6 +32,12 @@ const CardList = ({ listId }: { listId: string }) => {
         setCards(cards);
     }
 
+    const onDropItem = async (data: string) => {
+        const { card } = JSON.parse(data);
+        if (!card || !card.id || card.listId === listId) return;
+        await moveCard(card.id, listId)
+    }
+
     useEffect(() => {
         getCardsByListId(listId).then(cards => {
             setCards(cards);
@@ -49,12 +56,18 @@ const CardList = ({ listId }: { listId: string }) => {
     if (realtimeCards.length === 0) return null;
 
     return (
-        <div className="flex flex-col gap-2 p-1">
+        <Droppable
+            id={`list:${listId}`}
+            accepts="card"
+            onDropItem={onDropItem}
+            className="flex flex-col gap-2 p-1"
+            activeClassName="bg-primary/5"
+        >
             <RenderItems
                 initialItems={realtimeCards.map(card => ({ card }))}
                 handleReorder={handleReorder}
             />
-        </div>
+        </Droppable>
     )
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { List } from "@prisma/client";
-import React, { HTMLAttributes, useEffect, useRef, useState } from "react";
+import { HTMLAttributes, useEffect, useRef, useState } from "react";
 import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
 import DeleteConfirm from "../ui/deleteConfirm";
 import { deleteList } from "@/actions/lists/list.action";
@@ -38,16 +38,6 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
         setOnDelete(true);
         await deleteList(listId);
         setListId("");
-    }
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault()
-    }
-
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault()
-        const cardId = e.dataTransfer.getData("text/plain")
-        console.log(cardId)
     }
 
     useEffect(() => {
@@ -114,13 +104,7 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
                         }
                     </div>
                 </div>
-                <div
-                    className="flex flex-col gap-2 p-1"
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                >
-                    <CardList listId={list.id} />
-                </div>
+                <CardList listId={list.id} />
                 <div className="p-1">
                     <button
                         onClick={() => setCardFormOpen(true)}
