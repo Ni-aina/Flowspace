@@ -9,7 +9,7 @@ import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";
 import { useBoard } from "@/stores/zustands/use-board";
 import CardList from "../cards/card-list";
-import Droppable from "../droppable";
+import Droppable from "../dnd-native/droppable";
 
 interface ListCardProps {
     list: List;
@@ -109,7 +109,6 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
                     <Droppable
                         onDrop={(data: string) => {
                             console.log(data);
-
                         }}
                     >
                         <CardList listId={list.id} />

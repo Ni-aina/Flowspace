@@ -9,7 +9,7 @@ const Droppable = (props: DroppableProps) => {
     const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const element = ref.current;
+        const element = ref.current
 
         if (!element) return
 
@@ -19,9 +19,7 @@ const Droppable = (props: DroppableProps) => {
 
         const onDrop = (e: DragEvent): void => {
             e.preventDefault()
-
             const data = e.dataTransfer?.getData("text/plain")
-
             if (data) props.onDrop(data)
         }
 

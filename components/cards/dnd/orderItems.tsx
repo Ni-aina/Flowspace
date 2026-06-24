@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Card } from "@prisma/client";
-import { HTMLAttributes, ReactNode } from "react";
+import { HTMLAttributes, ReactNode, useRef } from "react";
 
 export interface OrderItem {
     card: Card
@@ -28,6 +28,8 @@ interface SortableItemProps {
 }
 
 const SortableItem = ({ item, renderItem }: SortableItemProps) => {
+    const dataRef = useRef(item.card.id)
+
     const {
         attributes,
         listeners,
@@ -36,9 +38,15 @@ const SortableItem = ({ item, renderItem }: SortableItemProps) => {
         transition
     } = useSortable({ id: item.card.id })
 
+    const handleDragStart = (e: React.DragEvent) => {
+        e.dataTransfer?.setData("text/plain", dataRef.current)
+    }
+
     return (
         <div
             ref={setNodeRef}
+            onDragStart={handleDragStart}
+            draggable
             style={{
                 transform: CSS.Transform.toString(transform),
                 transition
