@@ -49,12 +49,12 @@ export async function createList(
     if (!list) return { error: "Failed to create list" }
 
     emitToRoom(
-        `workspace:${board.workspaceId}`,
+        `workspace:${board.workspaceId}:list`,
         "workspace:event",
         {
             entity: "list",
             action: "created",
-            room: `workspace:${board.workspaceId}`,
+            room: `workspace:${board.workspaceId}:list`,
             payload: list
         } satisfies WorkspaceEvent
     )
@@ -110,12 +110,12 @@ export async function updateList(
     })
 
     emitToRoom(
-        `workspace:${existing.board.workspaceId}`,
+        `workspace:${existing.board.workspaceId}:list`,
         "workspace:event",
         {
             entity: "list",
             action: "updated",
-            room: `workspace:${existing.board.workspaceId}`,
+            room: `workspace:${existing.board.workspaceId}:list`,
             payload: list
         } satisfies WorkspaceEvent
     )
@@ -158,12 +158,12 @@ export async function deleteList(listId: string): Promise<{ success: boolean; }>
     })
 
     emitToRoom(
-        `workspace:${list.board.workspaceId}`,
+        `workspace:${list.board.workspaceId}:list`,
         "workspace:event",
         {
             entity: "list",
             action: "deleted",
-            room: `workspace:${list.board.workspaceId}`,
+            room: `workspace:${list.board.workspaceId}:list`,
             payload: list
         } satisfies WorkspaceEvent
     )
@@ -215,12 +215,12 @@ export const setListPositions = async (workspaceId: string, listIds: string[])
     )
 
     emitToRoom(
-        `workspace:${workspaceId}`,
+        `workspace:${workspaceId}:list`,
         "workspace:event",
         {
             entity: "list",
             action: "moved",
-            room: `workspace:${workspaceId}`,
+            room: `workspace:${workspaceId}:list`,
             payload: lists
         } satisfies WorkspaceEvent
     )

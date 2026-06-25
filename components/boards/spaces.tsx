@@ -30,7 +30,7 @@ const BoardSpace = ({ board, lists }: BoardSpaceInterface) => {
     const [onNewList, setOnNewList] = useState(false);
 
     const realtimeBoards = useRealtime<"board">({
-        room: "boards",
+        room: workspaceId ? `workspace:${workspaceId}:board` : null,
         entity: "board",
         initialData: boards
     })

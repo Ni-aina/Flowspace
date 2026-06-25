@@ -24,7 +24,7 @@ const BoardItems = () => {
     const handleShowBoard = () => setOnNewBoard(prev => !prev);
 
     const realtimeBoards = useRealtime<"board">({
-        room: workspaceId ? `workspace:${workspaceId}` : null,
+        room: workspaceId ? `workspace:${workspaceId}:board` : null,
         entity: "board",
         initialData: boards
     })

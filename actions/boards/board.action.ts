@@ -35,12 +35,12 @@ export async function createBoard(
     if (!board) return { error: "Failed to create board" }
 
     emitToRoom(
-        `workspace:${workspaceId}`,
+        `workspace:${workspaceId}:board`,
         "workspace:event",
         {
             entity: "board",
             action: "created",
-            room: `workspace:${workspaceId}`,
+            room: `workspace:${workspaceId}:board`,
             payload: board
         } satisfies WorkspaceEvent
     )
@@ -88,12 +88,12 @@ export async function updateBoard(
     if (!board) return { error: "Failed to update board" }
 
     emitToRoom(
-        `workspace:${workspaceId}`,
+        `workspace:${workspaceId}:board`,
         "workspace:event",
         {
             entity: "board",
             action: "updated",
-            room: `workspace:${workspaceId}`,
+            room: `workspace:${workspaceId}:board`,
             payload: board
         } satisfies WorkspaceEvent
     )
@@ -134,12 +134,12 @@ export async function deleteBoard(boardId: string): Promise<{ success: boolean }
     })
 
     emitToRoom(
-        `workspace:${board.workspaceId}`,
+        `workspace:${board.workspaceId}:board`,
         "workspace:event",
         {
             entity: "board",
             action: "deleted",
-            room: `workspace:${board.workspaceId}`,
+            room: `workspace:${board.workspaceId}:board`,
             payload: board
         } satisfies WorkspaceEvent
     )
@@ -214,12 +214,12 @@ export const setBoardPositions = async (workspaceId: string, boardIds: string[])
     )
 
     emitToRoom(
-        `workspace:${workspaceId}`,
+        `workspace:${workspaceId}:board`,
         "workspace:event",
         {
             entity: "board",
             action: "moved",
-            room: `workspace:${workspaceId}`,
+            room: `workspace:${workspaceId}:board`,
             payload: boards
         } satisfies WorkspaceEvent
     )

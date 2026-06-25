@@ -54,7 +54,7 @@ const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
     return (
         <>
             <div
-                className="flex flex-col w-full sm:w-72 shrink-0 rounded-lg border border-input bg-muted/30"
+                className="flex flex-col w-full sm:w-64 shrink-0 rounded-lg border border-input bg-muted/30"
             >
                 <div
                     {...dragHandleProps}
