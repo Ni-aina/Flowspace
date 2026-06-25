@@ -5,8 +5,7 @@ import {
     Workspace,
     Comment,
     Attachment,
-    Activity,
-    Label
+    Activity
 } from "@prisma/client";
 import { WorkspacePosition } from "./workspacePosition";
 
@@ -18,7 +17,6 @@ export type EntityType =
     | "card"
     | "comment"
     | "attachment"
-    | "label"
     | "activity";
 
 export type EntityMap = {
@@ -29,7 +27,6 @@ export type EntityMap = {
     card: Card;
     comment: Comment;
     attachment: Attachment;
-    label: Label;
     activity: Activity;
 }
 

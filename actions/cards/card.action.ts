@@ -239,6 +239,119 @@ export const setCardPositions = async (
     return cards
 }
 
+export const moveCard = async (cardId: string, targetListId: string): Promise<{ success: boolean }> => {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized")
+    if (!cardId) throw new Error("Card ID is required")
+    if (!targetListId) throw new Error("Target list ID is required")
+
+    const [
+        existing,
+        lastPositioncard
+    ] = await Promise.all([
+        getCardWithAccess(cardId, user.id),
+        prisma.card.findFirst({
+            where: {
+                listId: targetListId
+            },
+            orderBy: {
+                position: "desc"
+            }
+        })
+    ])
+
+    if (!existing) throw new Error("Card not found")
+
+    const position = lastPositioncard?.position ? lastPositioncard.position + 1 : 1
+
+    const card = await prisma.card.update({
+        where: { id: cardId },
+        data: { listId: targetListId, position }
+    })
+
+    emitToRoom(
+        `workspace:${existing.list.board.workspaceId}:list:${card.listId}`,
+        "workspace:event",
+        {
+            entity: "card",
+            action: "created",
+            room: `workspace:${existing.list.board.workspaceId}:list:${card.listId}`,
+            payload: card
+        } satisfies WorkspaceEvent
+    )
+
+
+    emitToRoom(
+        `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
+        "workspace:event",
+        {
+            entity: "card",
+            action: "deleted",
+            room: `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
+            payload: card
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}
+
+export const assignCard = async (cardId: string, userId: string): Promise<{ success: boolean }> => {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized")
+
+    const card = await getCardWithAccess(cardId, user.id);
+
+    if (!card) throw new Error("Card not found")
+
+    await prisma.cardAssignee.upsert({
+        where: { cardId_userId: { cardId, userId } },
+        create: { cardId, userId },
+        update: {}
+    })
+
+    emitToRoom(
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
+        "workspace:event",
+        {
+            entity: "card",
+            action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
+            payload: card
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}
+
+export const unassignCard = async (cardId: string, userId: string): Promise<{ success: boolean }> => {
+    const user = await getAuthorizedUser();
+
+    if (!user) throw new Error("Unauthorized")
+
+    const card = await getCardWithAccess(cardId, user.id);
+
+    if (!card) throw new Error("Card not found")
+
+    await prisma.cardAssignee.delete({
+        where: { cardId_userId: { cardId, userId } }
+    })
+
+    emitToRoom(
+        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
+        "workspace:event",
+        {
+            entity: "card",
+            action: "updated",
+            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
+            payload: card
+        } satisfies WorkspaceEvent
+    )
+
+    return { success: true }
+}
+
 export const addComment = async (
     _previousState: State | null,
     formData: FormData
@@ -303,175 +416,6 @@ export const deleteComment = async (commentId: string): Promise<{ success: boole
             action: "updated",
             room: `workspace:${comment.card.list.board.workspaceId}:list:${comment.card.listId}`,
             payload: comment
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const assignCard = async (cardId: string, userId: string): Promise<{ success: boolean }> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized")
-
-    const card = await getCardWithAccess(cardId, user.id);
-
-    if (!card) throw new Error("Card not found")
-
-    await prisma.cardAssignee.upsert({
-        where: { cardId_userId: { cardId, userId } },
-        create: { cardId, userId },
-        update: {}
-    })
-
-    emitToRoom(
-        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "updated",
-            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-            payload: card
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const unassignCard = async (cardId: string, userId: string): Promise<{ success: boolean }> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized")
-
-    const card = await getCardWithAccess(cardId, user.id);
-
-    if (!card) throw new Error("Card not found")
-
-    await prisma.cardAssignee.delete({
-        where: { cardId_userId: { cardId, userId } }
-    })
-
-    emitToRoom(
-        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "updated",
-            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-            payload: card
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const addLabelToCard = async (cardId: string, labelId: string): Promise<{ success: boolean }> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized")
-
-    const card = await getCardWithAccess(cardId, user.id);
-
-    if (!card) throw new Error("Card not found")
-
-    await prisma.cardLabel.upsert({
-        where: { cardId_labelId: { cardId, labelId } },
-        create: { cardId, labelId },
-        update: {}
-    })
-
-    emitToRoom(
-        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "updated",
-            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-            payload: card
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const removeLabelFromCard = async (cardId: string, labelId: string): Promise<{ success: boolean }> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized")
-
-    const card = await getCardWithAccess(cardId, user.id);
-
-    if (!card) throw new Error("Card not found")
-
-    await prisma.cardLabel.delete({
-        where: { cardId_labelId: { cardId, labelId } }
-    })
-
-    emitToRoom(
-        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "updated",
-            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-            payload: card
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const moveCard = async (cardId: string, targetListId: string): Promise<{ success: boolean }> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized")
-    if (!cardId) throw new Error("Card ID is required")
-    if (!targetListId) throw new Error("Target list ID is required")
-
-    const [
-        existing,
-        lastPositioncard
-    ] = await Promise.all([
-        getCardWithAccess(cardId, user.id),
-        prisma.card.findFirst({
-            where: {
-                listId: targetListId
-            },
-            orderBy: {
-                position: "desc"
-            }
-        })
-    ])
-
-    if (!existing) throw new Error("Card not found")
-
-    const position = lastPositioncard?.position ? lastPositioncard.position + 1 : 1
-
-    const card = await prisma.card.update({
-        where: { id: cardId },
-        data: { listId: targetListId, position }
-    })
-
-    emitToRoom(
-        `workspace:${existing.list.board.workspaceId}:list:${card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "created",
-            room: `workspace:${existing.list.board.workspaceId}:list:${card.listId}`,
-            payload: card
-        } satisfies WorkspaceEvent
-    )
-
-
-    emitToRoom(
-        `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "deleted",
-            room: `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
-            payload: card
         } satisfies WorkspaceEvent
     )
 

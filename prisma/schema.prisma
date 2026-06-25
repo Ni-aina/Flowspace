@@ -34,7 +34,6 @@ model Workspace {
 
   members  WorkspaceMember[]
   boards   Board[]
-  labels   Label[]
   Activity Activity[]
 
   @@map("workspaces")
@@ -97,10 +96,8 @@ model Card {
   list        List           @relation(fields: [listId], references: [id], onDelete: Cascade)
   creator     User           @relation("CardCreator", fields: [createdBy], references: [id])
   assignees   CardAssignee[]
-  labels      CardLabel[]
   comments    Comment[]
   attachments Attachment[]
-  blocks      Block[]
 
   @@map("cards")
 }
@@ -115,30 +112,6 @@ model CardAssignee {
 
   @@unique([cardId, userId])
   @@map("card_assignees")
-}
-
-model Label {
-  id          String @id @default(uuid()) @db.Uuid
-  workspaceId String @map("workspace_id") @db.Uuid
-  name        String
-  color       String @default("#6366f1")
-
-  workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  cards     CardLabel[]
-
-  @@map("labels")
-}
-
-model CardLabel {
-  id      String @id @default(uuid()) @db.Uuid
-  cardId  String @map("card_id") @db.Uuid
-  labelId String @map("label_id") @db.Uuid
-
-  card  Card  @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
-
-  @@unique([cardId, labelId])
-  @@map("card_labels")
 }
 
 model Comment {
@@ -166,21 +139,6 @@ model Attachment {
   uploader User @relation(fields: [uploadedBy], references: [id])
 
   @@map("attachments")
-}
-
-model Block {
-  id            String  @id @default(uuid()) @db.Uuid
-  cardId        String  @map("card_id") @db.Uuid
-  parentBlockId String? @map("parent_block_id") @db.Uuid
-  type          String  @default("text")
-  content       Json    @default("{}")
-  position      Int     @default(0)
-
-  card     Card    @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  parent   Block?  @relation("BlockChildren", fields: [parentBlockId], references: [id], onDelete: Cascade)
-  children Block[] @relation("BlockChildren")
-
-  @@map("blocks")
 }
 
 model Activity {

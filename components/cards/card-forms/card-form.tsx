@@ -5,18 +5,15 @@ import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createCard, updateCard, deleteCard } from "@/actions/cards/card.action";
-import { getCardComments, getCardAttachments, getCardBlocks, getCardAssignees, getCardLabels } from "@/actions/cards/details.action";
+import { getCardComments, getCardAttachments, getCardAssignees } from "@/actions/cards/details.action";
 import { getWorkspaceMembers } from "@/actions/workspaces/member.action";
-import { getWorkspaceLabels } from "@/actions/labels/label.action";
 import { useActionState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
-import { Attachment, Block, Label as LabelType } from "@prisma/client";
+import { Attachment } from "@prisma/client";
 import { CommentWithAuthor } from "@/actions/cards/details.action";
 import AssigneesSection from "./assignees-section";
-import LabelsSection from "./labels-section";
 import CommentsSection from "./comments-section";
 import AttachmentsSection from "./attachements-section";
-import BlocksSection from "./blocks-section";
 import CardFields from "./card-fields";
 
 interface CardFormProps {
@@ -46,12 +43,9 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
     )
 
     const [members, setMembers] = useState<{ id: string; name: string; avatarUrl: string | null }[]>([]);
-    const [labels, setLabels] = useState<LabelType[]>([]);
     const [assignedIds, setAssignedIds] = useState<string[]>([]);
-    const [labelIds, setLabelIds] = useState<string[]>([]);
     const [comments, setComments] = useState<CommentWithAuthor[]>([]);
     const [attachments, setAttachments] = useState<Attachment[]>([]);
-    const [blocks, setBlocks] = useState<Block[]>([]);
 
     useEffect(() => {
         if (state?.success) onClose();
@@ -63,13 +57,10 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
         setDescription(initialData?.description ?? "");
         setDueDate(initialData?.dueDate ? new Date(initialData.dueDate).toISOString().slice(0, 16) : "")
         getWorkspaceMembers(workspace.id).then(ms => setMembers(ms));
-        getWorkspaceLabels(workspace.id).then(setLabels);
         if (!initialData?.id) return;
         getCardAssignees(initialData.id).then(a => setAssignedIds(a.map(a => a.userId)));
-        getCardLabels(initialData.id).then(l => setLabelIds(l.map(l => l.labelId)));
         getCardComments(initialData.id).then(setComments);
         getCardAttachments(initialData.id).then(setAttachments);
-        getCardBlocks(initialData.id).then(setBlocks);
     }, [isOpen])
 
     const handleDelete = async () => {
@@ -97,27 +88,17 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
                         initialDescription={description}
                         initialDueDate={dueDate}
                     />
-                    <Separator />
                     <AssigneesSection
                         cardId={initialData?.id}
                         members={members}
                         assignedIds={assignedIds}
                         onChange={setAssignedIds}
                     />
-                    <LabelsSection
-                        cardId={initialData?.id}
-                        labels={labels}
-                        selectedIds={labelIds}
-                        onChange={setLabelIds}
-                    />
                     {isEdit &&
                         <>
-                            <Separator />
                             <CommentsSection cardId={initialData.id} initialComments={comments} />
-                            <Separator />
                             <AttachmentsSection attachments={attachments} />
                             <Separator />
-                            <BlocksSection blocks={blocks} />
                         </>
                     }
                     {state?.error && <p className="text-xs text-destructive">{state.error}</p>}
