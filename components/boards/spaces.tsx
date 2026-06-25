@@ -75,8 +75,8 @@ const BoardSpace = ({ board, lists }: BoardSpaceInterface) => {
                     {
                         loading ?
                             <div className="flex item-center gap-2">
-                                <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
-                                <div className="w-32 h-8 bg-primary/5 rounded-full animate-pulse"></div>
+                                <div className="w-48 h-8 bg-primary/5 rounded-full animate-pulse"></div>
+                                <div className="w-48 h-8 bg-primary/5 rounded-full animate-pulse"></div>
                             </div>
                             :
                             <div className="flex flex-wrap items-center gap-1">

@@ -159,16 +159,16 @@ export const deleteCard = async (cardId: string): Promise<{ success: boolean }> 
     return { success: true }
 }
 
-export const getCardsByListId = async (listId: string): Promise<Card[]> => {
+export const getCardsGroupedByListId = async (boardId: string): Promise<Record<string, Card[]>> => {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized")
-    if (!listId) throw new Error("List ID is required")
+    if (!boardId) throw new Error("Board ID is required")
 
-    return prisma.card.findMany({
+    const cards = await prisma.card.findMany({
         where: {
-            listId,
             list: {
+                boardId,
                 board: {
                     workspace: {
                         members: {
@@ -180,6 +180,15 @@ export const getCardsByListId = async (listId: string): Promise<Card[]> => {
         },
         orderBy: { position: "asc" }
     })
+
+    return cards.reduce((acc, card) => {
+        if (!acc[card.listId])
+            acc[card.listId] = []
+
+        acc[card.listId].push(card)
+
+        return acc
+    }, {} as Record<string, Card[]>)
 }
 
 export const setCardPositions = async (

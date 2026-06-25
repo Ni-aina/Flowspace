@@ -1,18 +1,23 @@
 import { useWorkspace } from "@/stores/zustands/use-workspace";
-import { useEffect, useState } from "react";
 import { Card } from "@prisma/client";
-import { getCardsByListId, moveCard, setCardPositions } from "@/actions/cards/card.action";
+import { moveCard, setCardPositions } from "@/actions/cards/card.action";
 import { useRealtime } from "@/hooks/use-realtime";
 import RenderItems from "./dnd/renderItems";
 import { OrderItem } from "./dnd/orderItems";
 import Droppable from "../dnd-native/droppable";
+import { useCards } from "@/stores/zustands/use-cards";
 
 const CardList = ({ listId }: { listId: string }) => {
     const { workspace } = useWorkspace();
     const workspaceId = workspace?.id ?? null;
 
-    const [cards, setCards] = useState<Card[]>([]);
-    const [loading, setLoading] = useState(true);
+    const {
+        cardsByList,
+        setCardsForList,
+        addCard,
+        removeCard
+    } = useCards(state => state);
+    const cards = cardsByList[listId] || [];
 
     const realtimeCards = useRealtime<"card">({
         room: workspaceId ? `workspace:${workspaceId}:list:${listId}` : null,
@@ -26,34 +31,18 @@ const CardList = ({ listId }: { listId: string }) => {
             const card = realtimeCards.find(card => card.id === item.card.id);
             return card;
         }) as Card[];
-
-        setCards(cardsOredered);
+        setCardsForList(listId, cardsOredered);
         const cards = await setCardPositions(workspaceId, listId, items.map(item => String(item.card.id)));
-        setCards(cards);
+        setCardsForList(listId, cards);
     }
 
     const onDropItem = async (data: string) => {
         const { card } = JSON.parse(data);
         if (!card || !card.id || card.listId === listId) return;
-        await moveCard(card.id, listId)
+        removeCard(card.listId, card.id);
+        addCard(listId, card);
+        await moveCard(card.id, listId);
     }
-
-    useEffect(() => {
-        getCardsByListId(listId).then(cards => {
-            setCards(cards);
-            setLoading(false);
-        })
-    }, [listId])
-
-    if (loading) return (
-        <div className="flex flex-col gap-2 p-1">
-            {Array.from({ length: 2 }).map((_, i) =>
-                <div key={i} className="h-8 rounded-md bg-muted animate-pulse" />
-            )}
-        </div>
-    )
-
-    if (realtimeCards.length === 0) return null;
 
     return (
         <Droppable
@@ -63,10 +52,17 @@ const CardList = ({ listId }: { listId: string }) => {
             className="flex flex-col gap-2 p-1"
             activeClassName="bg-primary/5"
         >
-            <RenderItems
-                initialItems={realtimeCards.map(card => ({ card }))}
-                handleReorder={handleReorder}
-            />
+            {
+                realtimeCards.length ?
+                    <RenderItems
+                        initialItems={realtimeCards.map(card => ({ card }))}
+                        handleReorder={handleReorder}
+                    />
+                    :
+                    <div className="text-center text-xs py-2">
+                        Drop or create a card
+                    </div>
+            }
         </Droppable>
     )
 }

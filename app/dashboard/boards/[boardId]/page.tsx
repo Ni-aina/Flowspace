@@ -1,8 +1,10 @@
 import { getBoardById, getBoardsByWorkspaceId } from "@/actions/boards/board.action";
+import { getCardsGroupedByListId } from "@/actions/cards/card.action";
 import { getListsByBoardId } from "@/actions/lists/list.action";
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import BoardSpace from "@/components/boards/spaces";
 import StoreBoard from "@/components/boards/store-board";
+import StoreCards from "@/components/cards/store-card";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
 import { RoleType } from "@/stores/zustands/use-role";
 import { redirect } from "next/navigation";
@@ -17,13 +19,15 @@ const BoardPage = async ({ params }: BoardPageProps) => {
     const board = await getBoardById(boardId);
 
     const [
-        lists,
+        workspaceMember,
         boards,
-        workspaceMember
+        lists,
+        cardsByList
     ] = await Promise.all([
-        getListsByBoardId(board.id),
+        findWorkspaceMember(board.workspaceId),
         getBoardsByWorkspaceId(board.workspaceId),
-        findWorkspaceMember(board.workspaceId)
+        getListsByBoardId(board.id),
+        getCardsGroupedByListId(board.id)
     ])
 
     if (!boards.find(board => board.id === boardId)) redirect("/not-found");
@@ -38,9 +42,13 @@ const BoardPage = async ({ params }: BoardPageProps) => {
                     role={workspaceMember.role as RoleType}
                 />
             }
+
             {
                 board && <StoreBoard board={board} />
             }
+
+            <StoreCards cardsByList={cardsByList} />
+
             <BoardSpace
                 board={board}
                 lists={lists}

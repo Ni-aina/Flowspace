@@ -70,6 +70,8 @@ export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProp
         onChange(arrayMove(items, oldIndex, newIndex))
     }
 
+    const uniqueItems = [...new Map(items.map((item) => [item.card.id, item])).values()]
+
     return (
         <DndContext
             sensors={sensors}
@@ -77,10 +79,10 @@ export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProp
             onDragEnd={handleDragEnd}
         >
             <SortableContext
-                items={items.map((i) => i.card.id)}
+                items={uniqueItems.map((i) => i.card.id)}
                 strategy={verticalListSortingStrategy}
             >
-                {items.map((item) =>
+                {uniqueItems.map((item) =>
                     <SortableItem
                         key={item.card.id}
                         item={item}
