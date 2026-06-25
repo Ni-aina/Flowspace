@@ -46,21 +46,36 @@ export const createCard = async (
     if (!title) return { error: "Title is required" }
     if (!listId) return { error: "List ID is required" }
 
-    const list = await prisma.list.findUnique({
-        where: {
-            id: listId,
-            board: {
-                workspace: {
-                    members: {
-                        some: { userId: user.id }
+    const [
+        list,
+        lastPositionCard
+    ] = await Promise.all([
+        prisma.list.findUnique({
+            where: {
+                id: listId,
+                board: {
+                    workspace: {
+                        members: {
+                            some: { userId: user.id }
+                        }
                     }
                 }
+            },
+            include: { board: true }
+        }),
+        prisma.card.findFirst({
+            where: {
+                listId
+            },
+            orderBy: {
+                position: "desc"
             }
-        },
-        include: { board: true }
-    })
+        })
+    ])
 
     if (!list) return { error: "List not found" }
+
+    const position = lastPositionCard?.position ? lastPositionCard.position + 1 : 1
 
     const card = await prisma.card.create({
         data: {
@@ -68,7 +83,8 @@ export const createCard = async (
             listId,
             createdBy: user.id,
             description: description || null,
-            dueDate: dueDate ? new Date(dueDate) : null
+            dueDate: dueDate ? new Date(dueDate) : null,
+            position
         }
     })
 
@@ -412,13 +428,28 @@ export const moveCard = async (cardId: string, targetListId: string): Promise<{ 
     if (!cardId) throw new Error("Card ID is required")
     if (!targetListId) throw new Error("Target list ID is required")
 
-    const existing = await getCardWithAccess(cardId, user.id);
+    const [
+        existing,
+        lastPositioncard
+    ] = await Promise.all([
+        getCardWithAccess(cardId, user.id),
+        prisma.card.findFirst({
+            where: {
+                listId: targetListId
+            },
+            orderBy: {
+                position: "desc"
+            }
+        })
+    ])
 
     if (!existing) throw new Error("Card not found")
 
+    const position = lastPositioncard?.position ? lastPositioncard.position + 1 : 1
+
     const card = await prisma.card.update({
         where: { id: cardId },
-        data: { listId: targetListId }
+        data: { listId: targetListId, position }
     })
 
     emitToRoom(

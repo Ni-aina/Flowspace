@@ -45,8 +45,11 @@ export const useRealtime = <E extends EntityType>({
 
             setData(prev => {
                 switch (event.action) {
-                    case "created":
-                        return [...prev, event.payload];
+                    case "created": {
+                        const map = new Map(prev.map(item => [item.id, item]));
+                        map.set(event.payload.id, event.payload);
+                        return Array.from(map.values());
+                    }
                     case "updated":
                         return prev.map(item =>
                             item.id === event.payload.id ? event.payload : item

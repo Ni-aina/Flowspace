@@ -60,7 +60,7 @@ const CardList = ({ listId }: { listId: string }) => {
                     />
                     :
                     <div className="text-center text-xs py-2">
-                        Drop or create a card
+                        Create or drop a card here
                     </div>
             }
         </Droppable>

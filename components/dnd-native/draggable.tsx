@@ -12,7 +12,6 @@ interface DraggableProps {
 const Draggable = ({ id, type, children, className }: DraggableProps) => {
 
     const handleDragStart = (e: DragEvent) => {
-        e.stopPropagation();
         e.dataTransfer.setData("text/plain", id)
         e.dataTransfer.setData("application/x-drag-type", type)
     }

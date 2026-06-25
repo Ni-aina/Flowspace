@@ -39,12 +39,14 @@ const RenderItems = ({
                 <div
                     className={`
                         flex flex-col gap-1 p-2 rounded-md border border-input bg-background 
-                        cursor-grab hover:border-muted-foreground/30 transition-colors
+                        hover:border-muted-foreground/30 transition-colors
                         ${lastPath === item.card.id ? 'bg-primary/5' : ''}`
                     }
-                    {...dragHandleProps}
                 >
-                    <CardItem card={item.card} />
+                    <CardItem
+                        card={item.card}
+                        dragHandleProps={dragHandleProps}
+                    />
                 </div>
             }
         />

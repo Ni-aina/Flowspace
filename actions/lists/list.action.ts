@@ -23,26 +23,42 @@ export async function createList(
     if (!title) return { error: "Title is required" }
     if (!boardId) return { error: "Board ID is required" }
 
-    const board = await prisma.board.findUnique({
-        where: {
-            id: boardId,
-            workspace: {
-                members: {
-                    some: {
-                        userId: user.id
+    const [
+        board,
+        lastPositionList
+    ] = await Promise.all([
+        prisma.board.findUnique({
+            where: {
+                id: boardId,
+                workspace: {
+                    members: {
+                        some: {
+                            userId: user.id
+                        }
                     }
                 }
             }
-        }
-    })
+        }),
+        prisma.list.findFirst({
+            where: {
+                boardId
+            },
+            orderBy: {
+                position: "desc"
+            }
+        })
+    ])
 
     if (!board) return { error: "Board not found" }
+
+    const position = lastPositionList?.position ? lastPositionList.position + 1 : 1
 
     const list = await prisma.list.create({
         data: {
             title,
             color: color || "#6366f1",
-            boardId
+            boardId,
+            position
         }
     })
 
