@@ -15,11 +15,11 @@ import { Button } from "../ui/button";
 import { ModalUI } from "../ui/modal";
 import { Input } from "../ui/input";
 import { createWorkspace } from "@/actions/workspaces/workspace.action";
-import RenderItems from "./dnd/renderItems";
+import RenderItems from "./dnd/render-items";
 import { RoleType } from "@/stores/zustands/use-role";
-import { OrderItem } from "./dnd/orderItems";
+import { OrderItem } from "./dnd/order-items";
 import { setWorkspaceMemberPosition } from "@/actions/workspaces/member.action";
-import { WorkspacePosition } from "@/types/workspacePosition";
+import { WorkspacePosition } from "@/types/workspace-position";
 
 interface ModalProps {
     isOpen: boolean;

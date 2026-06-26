@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import InputPassword from "@/components/ui/inputPassword"
+import InputPassword from "@/components/ui/input-password"
 import { ChangeEvent, useActionState, useState } from "react"
 import { signup } from "@/actions/auth.action"
 

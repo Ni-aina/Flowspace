@@ -6,7 +6,7 @@ import { Modal } from "./modal";
 import { useEffect, useRef, useState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useRole } from "@/stores/zustands/use-role";
-import { WorkspacePosition } from "@/types/workspacePosition";
+import { WorkspacePosition } from "@/types/workspace-position";
 import CardLoading from "../card-loading";
 
 interface AccountProps {

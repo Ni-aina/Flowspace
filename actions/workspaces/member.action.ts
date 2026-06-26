@@ -2,7 +2,7 @@
 
 import { getAuthorizedUser } from "../auth.action";
 import prisma from "@/lib/prisma";
-import { WorkspacePosition } from "@/types/workspacePosition";
+import { WorkspacePosition } from "@/types/workspace-position";
 import { User, WorkspaceMember } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 

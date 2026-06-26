@@ -1,11 +1,11 @@
 "use client";
 
-import { OrderItem } from "./dnd/orderItems";
+import { OrderItem } from "./dnd/order-items";
 import { LayoutGrid, List, Table, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import BoardForm from "./board-form";
-import DeleteConfirm from "../ui/deleteConfirm";
+import DeleteConfirm from "../ui/delete-confirm";
 import { deleteBoard } from "@/actions/boards/board.action";
 
 interface BoardCardProps {

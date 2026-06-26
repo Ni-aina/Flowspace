@@ -1,6 +1,6 @@
 "use client";
 
-import { OrderItem, OrderItemList } from "./orderItems";
+import { OrderItem, OrderItemList } from "./order-items";
 import { usePathname } from "next/navigation";
 import CardItem from "../card-item";
 

@@ -2,7 +2,7 @@
 
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useRealtime } from "@/hooks/use-realtime";
-import RenderItems from "./dnd/renderItems";
+import RenderItems from "./dnd/render-items";
 import { useCards } from "@/stores/zustands/use-cards";
 import { useDroppable, useDndContext } from "@dnd-kit/core";
 

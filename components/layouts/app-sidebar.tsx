@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Account } from "../workspaces/account";
 import Menu from "../workspaces/menu";
-import { WorkspacePosition } from "@/types/workspacePosition";
+import { WorkspacePosition } from "@/types/workspace-position";
 
 interface AppSidebarProps {
   workspacesPosition: WorkspacePosition[];

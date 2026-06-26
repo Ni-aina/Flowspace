@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import InputPassword from "@/components/ui/inputPassword"
+import InputPassword from "@/components/ui/input-password"
 import { signIn } from "next-auth/react"
 
 export default function SignIn() {

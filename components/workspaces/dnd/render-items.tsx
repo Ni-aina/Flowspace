@@ -1,7 +1,7 @@
 "use client";
 
 import { useOptimistic, useTransition } from "react";
-import { OrderItem, OrderItemList } from "./orderItems";
+import { OrderItem, OrderItemList } from "./order-items";
 import Link from "next/link";
 import { GripVertical } from "lucide-react";
 import { usePathname } from "next/navigation";

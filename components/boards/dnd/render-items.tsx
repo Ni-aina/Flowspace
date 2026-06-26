@@ -1,7 +1,7 @@
 "use client";
 
 import { useOptimistic, useTransition } from "react";
-import { OrderItem, OrderItemList } from "./orderItems";
+import { OrderItem, OrderItemList } from "./order-items";
 import { usePathname } from "next/navigation";
 import BoardCard from "../card";
 

@@ -3,7 +3,7 @@
 import { List } from "@prisma/client";
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
 import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
-import DeleteConfirm from "../ui/deleteConfirm";
+import DeleteConfirm from "../ui/delete-confirm";
 import { deleteList } from "@/actions/lists/list.action";
 import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";

@@ -7,7 +7,7 @@ import {
     Attachment,
     Activity
 } from "@prisma/client";
-import { WorkspacePosition } from "./workspacePosition";
+import { WorkspacePosition } from "./workspace-position";
 
 export type EntityType =
     | "workspace"
