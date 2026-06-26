@@ -4,14 +4,17 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useRealtime } from "@/hooks/use-realtime";
 import RenderItems from "./dnd/renderItems";
 import { useCards } from "@/stores/zustands/use-cards";
-import { useDroppable } from "@dnd-kit/core";
+import { useDroppable, useDndContext } from "@dnd-kit/core";
 
-const CardList = ({ listId }: { listId: string }) => {
-    const { workspace } = useWorkspace();
-    const workspaceId = workspace?.id ?? null;
+interface CardListProps {
+    listId: string
+}
 
-    const cardsByList = useCards(state => state.cardsByList);
-    const cards = cardsByList[listId] || [];
+const CardList = ({ listId }: CardListProps) => {
+    const { workspace } = useWorkspace()
+    const workspaceId = workspace?.id ?? null
+    const cardsByList = useCards(state => state.cardsByList)
+    const cards = cardsByList[listId] || []
 
     const realtimeCards = useRealtime<"card">({
         room: workspaceId ? `workspace:${workspaceId}:list:${listId}` : null,
@@ -19,8 +22,12 @@ const CardList = ({ listId }: { listId: string }) => {
         initialData: cards
     })
 
+    const { active } = useDndContext()
+    const activeCardListId = active?.data.current?.card?.listId
+
     const { isOver, setNodeRef } = useDroppable({
         id: `list:${listId}`,
+        disabled: activeCardListId === listId,
         data: {
             type: "list",
             listId
@@ -34,18 +41,17 @@ const CardList = ({ listId }: { listId: string }) => {
                 isOver ? "bg-primary/5 border border-dashed border-primary/20" : ""
             }`}
         >
-            {
-                realtimeCards.length ?
-                    <RenderItems
-                        initialItems={realtimeCards.map(card => ({ card }))}
-                    />
-                    :
-                    <div className="text-center text-xs py-4 text-muted-foreground">
-                        Create or drop a card here
-                    </div>
+            {realtimeCards.length ?
+                <RenderItems
+                    initialItems={realtimeCards.map(card => ({ card }))}
+                />
+                :
+                <div className="text-center text-xs py-4 text-muted-foreground">
+                    Create or drop a card here
+                </div>
             }
         </div>
     )
 }
 
-export default CardList;
+export default CardList
