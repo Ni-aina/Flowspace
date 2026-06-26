@@ -1,51 +1,33 @@
 "use client";
 
-import { useOptimistic, useTransition } from "react";
 import { OrderItem, OrderItemList } from "./orderItems";
 import { usePathname } from "next/navigation";
 import CardItem from "../card-item";
 
 interface RenderItemsProps {
     initialItems: OrderItem[];
-    handleReorder: (items: OrderItem[]) => Promise<void>;
 }
 
 const RenderItems = ({
-    initialItems,
-    handleReorder
+    initialItems
 }: RenderItemsProps) => {
     const pathname = usePathname();
     const lastPath = pathname.split('/').pop();
 
-    const [isPending, startTransition] = useTransition()
-    const [items, setItems] = useOptimistic<OrderItem[], OrderItem[]>(
-        initialItems,
-        (_state, newItems) => newItems
-    )
-
-    const handleChange = (newItems: OrderItem[]) => {
-        if (isPending) return;
-        startTransition(async () => {
-            setItems(newItems)
-            await handleReorder(newItems)
-        })
-    }
-
     return (
         <OrderItemList
-            items={items}
-            onChange={handleChange}
+            items={initialItems}
             renderItem={(item, dragHandleProps) =>
                 <div
+                    {...dragHandleProps}
                     className={`
                         flex flex-col gap-1 p-2 rounded-md border border-input bg-background 
-                        hover:border-muted-foreground/30 transition-colors
+                        hover:border-muted-foreground/30 transition-colors cursor-grab
                         ${lastPath === item.card.id ? 'bg-primary/5' : ''}`
                     }
                 >
                     <CardItem
                         card={item.card}
-                        dragHandleProps={dragHandleProps}
                     />
                 </div>
             }

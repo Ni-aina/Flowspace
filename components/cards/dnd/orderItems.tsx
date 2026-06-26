@@ -1,17 +1,8 @@
-import {
-    DndContext,
-    closestCenter,
-    PointerSensor,
-    KeyboardSensor,
-    useSensor,
-    useSensors,
-    DragEndEvent
-} from "@dnd-kit/core";
+"use client";
+
 import {
     SortableContext,
-    sortableKeyboardCoordinates,
     useSortable,
-    arrayMove,
     verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -28,14 +19,19 @@ interface SortableItemProps {
 }
 
 const SortableItem = ({ item, renderItem }: SortableItemProps) => {
-
     const {
         attributes,
         listeners,
         setNodeRef,
         transform,
         transition
-    } = useSortable({ id: item.card.id })
+    } = useSortable({
+        id: item.card.id,
+        data: {
+            type: "card",
+            card: item.card
+        }
+    })
 
     return (
         <div
@@ -52,42 +48,22 @@ const SortableItem = ({ item, renderItem }: SortableItemProps) => {
 
 interface OrderItemListProps {
     items: OrderItem[];
-    onChange: (items: OrderItem[]) => void;
     renderItem: (item: OrderItem, dragHandleProps: HTMLAttributes<HTMLElement>) => ReactNode;
 }
 
-export const OrderItemList = ({ items, onChange, renderItem }: OrderItemListProps) => {
-    const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-    )
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event
-        if (!over || active.id === over.id) return
-        const oldIndex = items.findIndex((i) => i.card.id === active.id)
-        const newIndex = items.findIndex((i) => i.card.id === over.id)
-        onChange(arrayMove(items, oldIndex, newIndex))
-    }
-
+export const OrderItemList = ({ items, renderItem }: OrderItemListProps) => {
     return (
-        <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+        <SortableContext
+            items={items.map((i) => i.card.id)}
+            strategy={verticalListSortingStrategy}
         >
-            <SortableContext
-                items={items.map((i) => i.card.id)}
-                strategy={verticalListSortingStrategy}
-            >
-                {items.map((item) =>
-                    <SortableItem
-                        key={item.card.id}
-                        item={item}
-                        renderItem={renderItem}
-                    />
-                )}
-            </SortableContext>
-        </DndContext>
+            {items.map((item) =>
+                <SortableItem
+                    key={item.card.id}
+                    item={item}
+                    renderItem={renderItem}
+                />
+            )}
+        </SortableContext>
     )
 }

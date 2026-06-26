@@ -1,22 +1,16 @@
+"use client";
+
 import { useWorkspace } from "@/stores/zustands/use-workspace";
-import { Card } from "@prisma/client";
-import { moveCard, setCardPositions } from "@/actions/cards/card.action";
 import { useRealtime } from "@/hooks/use-realtime";
 import RenderItems from "./dnd/renderItems";
-import { OrderItem } from "./dnd/orderItems";
-import Droppable from "../dnd-native/droppable";
 import { useCards } from "@/stores/zustands/use-cards";
+import { useDroppable } from "@dnd-kit/core";
 
 const CardList = ({ listId }: { listId: string }) => {
     const { workspace } = useWorkspace();
     const workspaceId = workspace?.id ?? null;
 
-    const {
-        cardsByList,
-        setCardsForList,
-        addCard,
-        removeCard
-    } = useCards(state => state);
+    const cardsByList = useCards(state => state.cardsByList);
     const cards = cardsByList[listId] || [];
 
     const realtimeCards = useRealtime<"card">({
@@ -25,45 +19,32 @@ const CardList = ({ listId }: { listId: string }) => {
         initialData: cards
     })
 
-    const handleReorder = async (items: OrderItem[]) => {
-        if (!workspaceId || !listId) return;
-        const cardsOredered = items.map(item => {
-            const card = realtimeCards.find(card => card.id === item.card.id);
-            return card;
-        }) as Card[];
-        setCardsForList(listId, cardsOredered);
-        const cards = await setCardPositions(workspaceId, listId, items.map(item => String(item.card.id)));
-        setCardsForList(listId, cards);
-    }
-
-    const onDropItem = async (data: string) => {
-        const { card } = JSON.parse(data);
-        if (!card || !card.id || card.listId === listId) return;
-        removeCard(card.listId, card.id);
-        addCard(listId, card);
-        await moveCard(card.id, listId);
-    }
+    const { isOver, setNodeRef } = useDroppable({
+        id: `list:${listId}`,
+        data: {
+            type: "list",
+            listId
+        }
+    })
 
     return (
-        <Droppable
-            id={`list:${listId}`}
-            accepts="card"
-            onDropItem={onDropItem}
-            className="flex flex-col gap-2 p-1"
-            activeClassName="bg-primary/5"
+        <div
+            ref={setNodeRef}
+            className={`flex flex-col gap-2 p-1 min-h-12.5 rounded-md transition-colors ${
+                isOver ? "bg-primary/5 border border-dashed border-primary/20" : ""
+            }`}
         >
             {
                 realtimeCards.length ?
                     <RenderItems
                         initialItems={realtimeCards.map(card => ({ card }))}
-                        handleReorder={handleReorder}
                     />
                     :
-                    <div className="text-center text-xs py-2">
+                    <div className="text-center text-xs py-4 text-muted-foreground">
                         Create or drop a card here
                     </div>
             }
-        </Droppable>
+        </div>
     )
 }
 

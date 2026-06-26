@@ -1,38 +1,28 @@
-import { Card, List } from "@prisma/client";
+"use client";
+
+import { Card } from "@prisma/client";
 import { CalendarIcon, Eye, GripVertical } from "lucide-react";
-import { HTMLAttributes, useState } from "react";
+import { useState } from "react";
 import CardForm from "./card-forms/card-form";
-import Draggable from "../dnd-native/draggable";
 
 interface CardItemProps {
     card: Card
-    dragHandleProps: HTMLAttributes<HTMLElement>
 }
 
-const CardItem = ({ card, dragHandleProps }: CardItemProps) => {
+const CardItem = ({ card }: CardItemProps) => {
     const [open, setOpen] = useState(false);
     const isOverdue = card.dueDate && new Date(card.dueDate) < new Date();
 
     return (
         <>
-            <div className="flex justify-between items-center gap-5">
-                <div className="flex items-center gap-2">
-                    <button
-                        type="button"
-                        {...dragHandleProps}
-                        className="cursor-grab text-muted-foreground"
-                    >
+            <div className="flex justify-between items-center gap-5 w-full">
+                <div className="flex items-center gap-2 overflow-hidden flex-1">
+                    <div className="text-muted-foreground shrink-0 cursor-grab">
                         <GripVertical size={14} />
-                    </button>
-                    <Draggable
-                        id={JSON.stringify({ card })}
-                        type="card"
-                        className="cursor-grabbing"
-                    >
-                        <p className="text-xs truncate">{card.title}</p>
-                    </Draggable>
+                    </div>
+                    <p className="text-xs truncate">{card.title}</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                     {
                         card.dueDate &&
                         <div className={`flex items-center gap-1 ${isOverdue ? "text-red-500" : "text-muted-foreground"}`}>
@@ -42,7 +32,10 @@ const CardItem = ({ card, dragHandleProps }: CardItemProps) => {
                     }
                     <button
                         type="button"
-                        onClick={() => setOpen(true)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setOpen(true);
+                        }}
                         className="cursor-pointer text-muted-foreground hover:scale-105 transition-transform"
                     >
                         <Eye size={14} />
