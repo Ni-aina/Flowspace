@@ -1,23 +1,26 @@
 "use client";
 
-import { List } from "@prisma/client";
+import { Board, List } from "@prisma/client";
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
 import { MoreVertical, Pencil, Trash2, Plus } from "lucide-react";
 import DeleteConfirm from "../ui/delete-confirm";
 import { deleteList } from "@/actions/lists/list.action";
 import ListForm from "./list-form";
 import CardForm from "../cards/card-forms/card-form";
-import { useBoard } from "@/stores/zustands/use-board";
 import CardList from "../cards/card-list";
 
 interface ListCardProps {
+    board: Board;
     list: List;
     dragHandleProps?: HTMLAttributes<HTMLDivElement>;
 }
 
-const ListCard = ({ list, dragHandleProps }: ListCardProps) => {
+const ListCard = ({ 
+    board, 
+    list, 
+    dragHandleProps 
+}: ListCardProps) => {
 
-    const { board } = useBoard();
     const boardId = board.id;
 
     const [open, setOpen] = useState(false);

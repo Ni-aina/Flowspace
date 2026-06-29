@@ -1,7 +1,7 @@
 "use client";
 
 import { useRealtime } from "@/hooks/use-realtime";
-import { List } from "@prisma/client";
+import { Board, List } from "@prisma/client";
 import { OrderItemList } from "@/components/lists/dnd/order-items";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { useEffect, useState } from "react";
@@ -26,10 +26,11 @@ import {
 } from "@dnd-kit/sortable";
 
 interface ListItemsProps {
+    board: Board
     lists: List[]
 }
 
-const ListItems = ({ lists }: ListItemsProps) => {
+const ListItems = ({ board, lists }: ListItemsProps) => {
     const [listsState, setListsState] = useState<List[]>(lists)
     const { workspace } = useWorkspace()
     const workspaceId = workspace?.id
@@ -181,7 +182,11 @@ const ListItems = ({ lists }: ListItemsProps) => {
                     <OrderItemList
                         items={realtimeLists.map(list => ({ list }))}
                         renderItem={(item, dragHandleProps) =>
-                            <ListCard list={item.list} dragHandleProps={dragHandleProps} />
+                            <ListCard
+                                board={board}
+                                list={item.list}
+                                dragHandleProps={dragHandleProps}
+                            />
                         }
                     />
                 }

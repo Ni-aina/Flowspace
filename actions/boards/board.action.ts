@@ -5,6 +5,7 @@ import { getAuthorizedUser } from "../auth.action";
 import { Board } from "@prisma/client";
 import { emitToRoom } from "@/lib/realtime";
 import { WorkspaceEvent } from "@/types/realtime";
+import { revalidatePath } from "next/cache";
 
 type State = { error?: string; success?: boolean }
 
@@ -97,6 +98,8 @@ export async function updateBoard(
             payload: board
         } satisfies WorkspaceEvent
     )
+
+    revalidatePath(`/dashboard/boards/${board.id}`)
 
     return {
         success: true

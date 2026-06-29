@@ -126,7 +126,10 @@ const BoardSpace = ({ board, lists }: BoardSpaceInterface) => {
                 </div>
                 {
                     (board?.type === "grid" && lists) &&
-                    <ListItems lists={lists} />
+                    <ListItems
+                        board={board}
+                        lists={lists}
+                    />
                 }
             </div>
             <ListForm

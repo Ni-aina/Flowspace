@@ -3,7 +3,6 @@ import { getCardsGroupedByListId } from "@/actions/cards/card.action";
 import { getListsByBoardId } from "@/actions/lists/list.action";
 import { findWorkspaceMember } from "@/actions/workspaces/member.action";
 import BoardSpace from "@/components/boards/spaces";
-import StoreBoard from "@/components/boards/store-board";
 import StoreCards from "@/components/cards/store-card";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
 import { RoleType } from "@/stores/zustands/use-role";
@@ -41,10 +40,6 @@ const BoardPage = async ({ params }: BoardPageProps) => {
                     workspaceId={workspaceMember.workspaceId}
                     role={workspaceMember.role as RoleType}
                 />
-            }
-
-            {
-                board && <StoreBoard board={board} />
             }
 
             <StoreCards cardsByList={cardsByList} />
