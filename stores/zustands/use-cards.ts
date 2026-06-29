@@ -1,12 +1,12 @@
-import { Card } from "@prisma/client";
+import { CardWithAssignees } from "@/actions/cards/details.action";
 import { create } from "zustand";
 
 interface CardsState {
-    cardsByList: Record<string, Card[]>
-    setCardsByList: (cardsByList: Record<string, Card[]>) => void
-    addCard: (listId: string, card: Card) => void
+    cardsByList: Record<string, CardWithAssignees[]>
+    setCardsByList: (cardsByList: Record<string, CardWithAssignees[]>) => void
+    addCard: (listId: string, card: CardWithAssignees) => void
     removeCard: (listId: string, cardId: string) => void
-    setCardsForList: (listId: string, cards: Card[]) => void
+    setCardsForList: (listId: string, cards: CardWithAssignees[]) => void
 }
 
 export const useCards = create<CardsState>((set) => ({

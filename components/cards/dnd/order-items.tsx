@@ -6,11 +6,11 @@ import {
     verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card } from "@prisma/client";
 import { HTMLAttributes, ReactNode } from "react";
+import { CardWithAssignees } from "@/actions/cards/details.action";
 
 export interface OrderItem {
-    card: Card
+    card: CardWithAssignees
 }
 
 interface SortableItemProps {

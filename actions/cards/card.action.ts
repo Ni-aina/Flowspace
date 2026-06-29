@@ -5,6 +5,7 @@ import { getAuthorizedUser } from "../auth.action";
 import { Card } from "@prisma/client";
 import { emitToRoom } from "@/lib/realtime";
 import { WorkspaceEvent } from "@/types/realtime";
+import { CardWithAssignees } from "./details.action";
 
 type State = { error?: string; success?: boolean }
 
@@ -25,6 +26,16 @@ const getCardWithAccess = async (cardId: string, userId: string) => {
         include: {
             list: {
                 include: { board: true }
+            },
+            assignees: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
             }
         }
     })
@@ -85,6 +96,18 @@ export const createCard = async (
             description: description || null,
             dueDate: dueDate ? new Date(dueDate) : null,
             position
+        },
+        include: {
+            assignees: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            }
         }
     })
 
@@ -132,6 +155,18 @@ export const updateCard = async (
             description: description ?? existing.description,
             dueDate: dueDate ? new Date(dueDate) : existing.dueDate,
             position: position ? +position : existing.position
+        },
+        include: {
+            assignees: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            }
         }
     })
 
@@ -175,7 +210,7 @@ export const deleteCard = async (cardId: string): Promise<{ success: boolean }> 
     return { success: true }
 }
 
-export const getCardsGroupedByListId = async (boardId: string): Promise<Record<string, Card[]>> => {
+export const getCardsGroupedByListId = async (boardId: string): Promise<Record<string, CardWithAssignees[]>> => {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized")
@@ -194,6 +229,18 @@ export const getCardsGroupedByListId = async (boardId: string): Promise<Record<s
                 }
             }
         },
+        include: {
+            assignees: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            }
+        },
         orderBy: { position: "asc" }
     })
 
@@ -204,7 +251,7 @@ export const getCardsGroupedByListId = async (boardId: string): Promise<Record<s
         acc[card.listId].push(card)
 
         return acc
-    }, {} as Record<string, Card[]>)
+    }, {} as Record<string, CardWithAssignees[]>)
 }
 
 export const setCardPositions = async (
@@ -220,7 +267,19 @@ export const setCardPositions = async (
         cardIds.map((id, position) =>
             prisma.card.update({
                 where: { id },
-                data: { position }
+                data: { position },
+                include: {
+                    assignees: {
+                        include: {
+                            user: {
+                                select: {
+                                    id: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
+                }
             })
         )
     )
@@ -267,7 +326,19 @@ export const moveCard = async (cardId: string, targetListId: string): Promise<{ 
 
     const card = await prisma.card.update({
         where: { id: cardId },
-        data: { listId: targetListId, position }
+        data: { listId: targetListId, position },
+        include: {
+            assignees: {
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            }
+        }
     })
 
     emitToRoom(

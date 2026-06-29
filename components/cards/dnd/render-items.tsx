@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import CardItem from "../card-item";
 
 interface RenderItemsProps {
+    listColor: string;
     initialItems: OrderItem[];
 }
 
 const RenderItems = ({
+    listColor,
     initialItems
 }: RenderItemsProps) => {
     const pathname = usePathname();
@@ -27,6 +29,7 @@ const RenderItems = ({
                     }
                 >
                     <CardItem
+                        listColor={listColor}
                         card={item.card}
                     />
                 </div>

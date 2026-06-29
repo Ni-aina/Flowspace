@@ -1,15 +1,19 @@
 "use client";
 
-import { Card } from "@prisma/client";
 import { CalendarIcon, Eye, GripVertical } from "lucide-react";
 import { useState } from "react";
 import CardForm from "./card-forms/card-form";
+import { CardWithAssignees } from "@/actions/cards/details.action";
 
 interface CardItemProps {
-    card: Card
+    listColor: string
+    card: CardWithAssignees
 }
 
-const CardItem = ({ card }: CardItemProps) => {
+const CardItem = ({
+    listColor,
+    card
+}: CardItemProps) => {
     const [open, setOpen] = useState(false);
     const isOverdue = card.dueDate && new Date(card.dueDate) < new Date();
 
@@ -20,7 +24,26 @@ const CardItem = ({ card }: CardItemProps) => {
                     <div className="text-muted-foreground shrink-0 cursor-grab">
                         <GripVertical size={14} />
                     </div>
-                    <p className="text-xs truncate">{card.title}</p>
+                    <div className="flex items-center gap-1">
+                        <p className="text-xs truncate">{card.title}</p>
+                        <div className="flex items-center">
+                            {
+                                card.assignees?.map(assign =>
+                                    <div
+                                        key={assign.user.id}
+                                        className="grid place-items-center w-3 h-3 rounded-full"
+                                        style={{
+                                            backgroundColor: listColor
+                                        }}
+                                    >
+                                        <span className="text-white text-[8px] font-bold leading-none">
+                                            {assign.user.name.charAt(0)}
+                                        </span>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                     {

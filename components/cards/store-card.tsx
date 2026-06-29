@@ -1,11 +1,11 @@
 "use client";
 
+import { CardWithAssignees } from "@/actions/cards/details.action";
 import { useCards } from "@/stores/zustands/use-cards";
-import { Card } from "@prisma/client";
 import { useEffect } from "react";
 
 interface StoreCardsProps {
-    cardsByList: Record<string, Card[]>;
+    cardsByList: Record<string, CardWithAssignees[]>;
 }
 
 const StoreCards = ({ cardsByList }: StoreCardsProps) => {

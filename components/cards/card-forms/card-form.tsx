@@ -88,14 +88,14 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
                         initialDescription={description}
                         initialDueDate={dueDate}
                     />
-                    <AssigneesSection
-                        cardId={initialData?.id}
-                        members={members}
-                        assignedIds={assignedIds}
-                        onChange={setAssignedIds}
-                    />
                     {isEdit &&
                         <>
+                            <AssigneesSection
+                                cardId={initialData?.id}
+                                members={members}
+                                assignedIds={assignedIds}
+                                onChange={setAssignedIds}
+                            />
                             <CommentsSection cardId={initialData.id} initialComments={comments} />
                             <AttachmentsSection attachments={attachments} />
                             <Separator />

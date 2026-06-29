@@ -5,19 +5,20 @@ import { useRealtime } from "@/hooks/use-realtime";
 import RenderItems from "./dnd/render-items";
 import { useCards } from "@/stores/zustands/use-cards";
 import { useDroppable, useDndContext } from "@dnd-kit/core";
+import { List } from "@prisma/client";
 
 interface CardListProps {
-    listId: string
+    list: List
 }
 
-const CardList = ({ listId }: CardListProps) => {
+const CardList = ({ list }: CardListProps) => {
     const { workspace } = useWorkspace()
     const workspaceId = workspace?.id ?? null
     const cardsByList = useCards(state => state.cardsByList)
-    const cards = cardsByList[listId] || []
+    const cards = cardsByList[list.id] || []
 
     const realtimeCards = useRealtime<"card">({
-        room: workspaceId ? `workspace:${workspaceId}:list:${listId}` : null,
+        room: workspaceId ? `workspace:${workspaceId}:list:${list.id}` : null,
         entity: "card",
         initialData: cards
     })
@@ -26,11 +27,11 @@ const CardList = ({ listId }: CardListProps) => {
     const activeCardListId = active?.data.current?.card?.listId
 
     const { isOver, setNodeRef } = useDroppable({
-        id: `list:${listId}`,
-        disabled: activeCardListId === listId,
+        id: `list:${list.id}`,
+        disabled: activeCardListId === list.id,
         data: {
             type: "list",
-            listId
+            listId: list.id
         }
     })
 
@@ -43,6 +44,7 @@ const CardList = ({ listId }: CardListProps) => {
         >
             {realtimeCards.length ?
                 <RenderItems
+                    listColor={list.color}
                     initialItems={realtimeCards.map(card => ({ card }))}
                 />
                 :

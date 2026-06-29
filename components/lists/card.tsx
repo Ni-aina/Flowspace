@@ -15,10 +15,10 @@ interface ListCardProps {
     dragHandleProps?: HTMLAttributes<HTMLDivElement>;
 }
 
-const ListCard = ({ 
-    board, 
-    list, 
-    dragHandleProps 
+const ListCard = ({
+    board,
+    list,
+    dragHandleProps
 }: ListCardProps) => {
 
     const boardId = board.id;
@@ -107,7 +107,7 @@ const ListCard = ({
                         }
                     </div>
                 </div>
-                <CardList listId={list.id} />
+                <CardList list={list} />
                 <div className="p-1">
                     <button
                         onClick={() => setCardFormOpen(true)}

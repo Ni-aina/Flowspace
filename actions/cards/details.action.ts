@@ -2,7 +2,16 @@
 
 import prisma from "@/lib/prisma";
 import { getAuthorizedUser } from "../auth.action";
-import { Comment, Attachment } from "@prisma/client";
+import { Card, Comment, Attachment } from "@prisma/client";
+
+export type CardWithAssignees = Card & {
+    assignees: {
+        user: {
+            id: string;
+            name: string;
+        }
+    }[]
+}
 
 export type CommentWithAuthor = Comment & {
     author: { id: string; name: string; avatarUrl: string | null }
