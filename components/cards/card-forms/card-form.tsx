@@ -5,8 +5,6 @@ import { Separator } from "@/components/ui/separator";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createCard, updateCard, deleteCard } from "@/actions/cards/card.action";
-import { getCardComments, getCardAttachments, getCardAssignees } from "@/actions/cards/details.action";
-import { getWorkspaceMembers } from "@/actions/workspaces/member.action";
 import { useActionState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Attachment } from "@prisma/client";
@@ -27,9 +25,22 @@ interface CardFormProps {
         dueDate: Date | null;
         position: number;
     }
+    initialAssignedIds: string[];
+    members: MemberInterface[];
+    comments: CommentWithAuthor[];
+    attachments: Attachment[];
 }
 
-const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
+const CardForm = ({
+    isOpen,
+    onClose,
+    listId,
+    initialData,
+    initialAssignedIds,
+    members,
+    comments,
+    attachments
+}: CardFormProps) => {
     const isEdit = !!initialData;
     const { workspace } = useWorkspace();
 
@@ -41,11 +52,7 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
     const [dueDate, setDueDate] = useState(
         initialData?.dueDate ? new Date(initialData.dueDate).toISOString().slice(0, 16) : ""
     )
-
-    const [members, setMembers] = useState<{ id: string; name: string; avatarUrl: string | null }[]>([]);
-    const [assignedIds, setAssignedIds] = useState<string[]>([]);
-    const [comments, setComments] = useState<CommentWithAuthor[]>([]);
-    const [attachments, setAttachments] = useState<Attachment[]>([]);
+    const [assignedIds, setAssignedIds] = useState<string[]>(initialAssignedIds);
 
     useEffect(() => {
         if (state?.success) onClose();
@@ -56,11 +63,6 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
         setTitle(initialData?.title ?? "");
         setDescription(initialData?.description ?? "");
         setDueDate(initialData?.dueDate ? new Date(initialData.dueDate).toISOString().slice(0, 16) : "")
-        getWorkspaceMembers(workspace.id).then(ms => setMembers(ms));
-        if (!initialData?.id) return;
-        getCardAssignees(initialData.id).then(a => setAssignedIds(a.map(a => a.userId)));
-        getCardComments(initialData.id).then(setComments);
-        getCardAttachments(initialData.id).then(setAttachments);
     }, [isOpen])
 
     const handleDelete = async () => {
@@ -88,15 +90,18 @@ const CardForm = ({ isOpen, onClose, listId, initialData }: CardFormProps) => {
                         initialDescription={description}
                         initialDueDate={dueDate}
                     />
+                    <AssigneesSection
+                        cardId={initialData?.id}
+                        members={members}
+                        assignedIds={assignedIds}
+                        onChange={setAssignedIds}
+                    />
                     {isEdit &&
                         <>
-                            <AssigneesSection
-                                cardId={initialData?.id}
-                                members={members}
-                                assignedIds={assignedIds}
-                                onChange={setAssignedIds}
+                            <CommentsSection
+                                cardId={initialData.id}
+                                initialComments={comments}
                             />
-                            <CommentsSection cardId={initialData.id} initialComments={comments} />
                             <AttachmentsSection attachments={attachments} />
                             <Separator />
                         </>

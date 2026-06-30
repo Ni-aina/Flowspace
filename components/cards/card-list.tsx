@@ -8,10 +8,11 @@ import { useDroppable, useDndContext } from "@dnd-kit/core";
 import { List } from "@prisma/client";
 
 interface CardListProps {
+    members: MemberInterface[];
     list: List
 }
 
-const CardList = ({ list }: CardListProps) => {
+const CardList = ({ members, list }: CardListProps) => {
     const { workspace } = useWorkspace()
     const workspaceId = workspace?.id ?? null
     const cardsByList = useCards(state => state.cardsByList)
@@ -38,12 +39,12 @@ const CardList = ({ list }: CardListProps) => {
     return (
         <div
             ref={setNodeRef}
-            className={`flex flex-col gap-2 p-1 min-h-12.5 rounded-md transition-colors ${
-                isOver ? "bg-primary/5 border border-dashed border-primary/20" : ""
-            }`}
+            className={`flex flex-col gap-2 p-1 min-h-12.5 rounded-md transition-colors ${isOver ? "bg-primary/5 border border-dashed border-primary/20" : ""
+                }`}
         >
             {realtimeCards.length ?
                 <RenderItems
+                    members={members}
                     listColor={list.color}
                     initialItems={realtimeCards.map(card => ({ card }))}
                 />

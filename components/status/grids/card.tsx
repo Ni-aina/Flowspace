@@ -10,12 +10,14 @@ import CardForm from "../../cards/card-forms/card-form";
 import CardList from "../../cards/card-list";
 
 interface ListCardProps {
+    members: MemberInterface[];
     board: Board;
     list: List;
     dragHandleProps?: HTMLAttributes<HTMLDivElement>;
 }
 
 const ListCard = ({
+    members,
     board,
     list,
     dragHandleProps
@@ -107,7 +109,10 @@ const ListCard = ({
                         }
                     </div>
                 </div>
-                <CardList list={list} />
+                <CardList
+                    members={members}
+                    list={list}
+                />
                 <div className="p-1">
                     <button
                         onClick={() => setCardFormOpen(true)}
@@ -137,6 +142,10 @@ const ListCard = ({
                 isOpen={cardFormOpen}
                 onClose={() => setCardFormOpen(false)}
                 listId={list.id}
+                members={members}
+                initialAssignedIds={[]}
+                comments={[]}
+                attachments={[]}
             />
         </>
     )

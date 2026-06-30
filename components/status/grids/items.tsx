@@ -26,11 +26,12 @@ import {
 } from "@dnd-kit/sortable";
 
 interface ListItemsProps {
-    board: Board
-    lists: List[]
+    members: MemberInterface[];
+    board: Board;
+    lists: List[];
 }
 
-const ListItems = ({ board, lists }: ListItemsProps) => {
+const ListItems = ({ members, board, lists }: ListItemsProps) => {
     const [listsState, setListsState] = useState<List[]>(lists)
     const { workspace } = useWorkspace()
     const workspaceId = workspace?.id
@@ -183,6 +184,7 @@ const ListItems = ({ board, lists }: ListItemsProps) => {
                         items={realtimeLists.map(list => ({ list }))}
                         renderItem={(item, dragHandleProps) =>
                             <ListCard
+                                members={members}
                                 board={board}
                                 list={item.list}
                                 dragHandleProps={dragHandleProps}

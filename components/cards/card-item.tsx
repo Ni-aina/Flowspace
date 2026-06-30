@@ -6,11 +6,13 @@ import CardForm from "./card-forms/card-form";
 import { CardWithAssignees } from "@/actions/cards/details.action";
 
 interface CardItemProps {
+    members: MemberInterface[];
     listColor: string
     card: CardWithAssignees
 }
 
 const CardItem = ({
+    members,
     listColor,
     card
 }: CardItemProps) => {
@@ -76,6 +78,10 @@ const CardItem = ({
                     dueDate: card.dueDate,
                     position: card.position
                 }}
+                members={members}
+                initialAssignedIds={card.assignees.map(assignee => assignee.user.id)}
+                comments={[]}
+                attachments={[]}
             />
         </>
     )

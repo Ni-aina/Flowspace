@@ -1,7 +1,7 @@
 import { getBoardById, getBoardsByWorkspaceId } from "@/actions/boards/board.action";
 import { getCardsGroupedByListId } from "@/actions/cards/card.action";
 import { getListsByBoardId } from "@/actions/lists/list.action";
-import { findWorkspaceMember } from "@/actions/workspaces/member.action";
+import { findWorkspaceMember, getWorkspaceMembers } from "@/actions/workspaces/member.action";
 import BoardSpace from "@/components/status/grids/spaces";
 import StoreCards from "@/components/cards/store-card";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
@@ -19,11 +19,13 @@ const BoardPage = async ({ params }: BoardPageProps) => {
 
     const [
         workspaceMember,
+        members,
         boards,
         lists,
         cardsByList
     ] = await Promise.all([
         findWorkspaceMember(board.workspaceId),
+        getWorkspaceMembers(board.workspaceId),
         getBoardsByWorkspaceId(board.workspaceId),
         getListsByBoardId(board.id),
         getCardsGroupedByListId(board.id)
@@ -45,6 +47,11 @@ const BoardPage = async ({ params }: BoardPageProps) => {
             <StoreCards cardsByList={cardsByList} />
 
             <BoardSpace
+                members={members.map(member => ({
+                    id: member.id,
+                    name: member.name,
+                    avatarUrl: member.avatarUrl
+                }))}
                 board={board}
                 lists={lists}
             />
