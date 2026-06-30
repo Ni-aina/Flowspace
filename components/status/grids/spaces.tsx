@@ -2,15 +2,15 @@
 
 import { useRealtime } from "@/hooks/use-realtime";
 import { useBoards, useLoadingBoards } from "@/stores/zustands/use-boards";
-import RenderItems from "./dnd/render-items";
-import { OrderItem } from "./dnd/order-items";
+import RenderItems from "../../boards/dnd/render-items";
+import { OrderItem } from "../../boards/dnd/order-items";
 import { setBoardPositions } from "@/actions/boards/board.action";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Board, List } from "@prisma/client";
 import { Filter, Plus, Search } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
-import ListItems from "../lists/items";
-import ListForm from "../lists/list-form";
+import ListItems from "./items";
+import ListForm from "../list-form";
 
 interface BoardSpaceInterface {
     board: Board;
@@ -95,7 +95,7 @@ const BoardSpace = ({ board, lists }: BoardSpaceInterface) => {
                         >
                             <Plus size={14} />
                             <span className="text-sm">
-                                List
+                                Status
                             </span>
                         </button>
                         <button

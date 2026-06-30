@@ -1,4 +1,4 @@
-import BoardSpace from "@/components/boards/spaces";
+import BoardSpace from "@/components/status/grids/spaces";
 import CardLoading from "@/components/card-loading";
 import { Board } from "@prisma/client";
 
