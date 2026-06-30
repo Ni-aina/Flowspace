@@ -1,17 +1,27 @@
-const WelcomeDashboard = () => {
+interface WelcomeDashboardInterface {
+    workspaceCount: number;
+    boardCountByUser: number;
+    cardCount: number;
+}
+
+const WelcomeDashboard = ({
+    workspaceCount,
+    boardCountByUser,
+    cardCount
+}: WelcomeDashboardInterface) => {
 
     const stats = [
         {
-            label: "Active Projects",
-            value: "12"
+            label: "Workspaces",
+            value: workspaceCount
         },
         {
-            label: "Tasks Completed",
-            value: "148"
+            label: "Boards",
+            value: boardCountByUser
         },
         {
-            label: "Storage Used",
-            value: "68GB"
+            label: "Tasks",
+            value: cardCount
         }
     ]
 
@@ -72,10 +82,6 @@ const WelcomeDashboard = () => {
                                     <h2 className="text-4xl font-semibold tracking-tight">
                                         {item.value}
                                     </h2>
-
-                                    <div className="rounded-xl bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
-                                        +12%
-                                    </div>
                                 </div>
                             </div>
                         ))

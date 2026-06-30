@@ -229,3 +229,9 @@ export const setBoardPositions = async (workspaceId: string, boardIds: string[])
 
     return boards;
 }
+
+export const getBoardCountByUser = async (): Promise<number> => {
+    const user = await getAuthorizedUser();
+    if (!user) throw new Error("Unauthorized");
+    return prisma.board.count({ where: { workspace: { members: { some: { userId: user.id } } } } })
+}

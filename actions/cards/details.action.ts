@@ -41,3 +41,9 @@ export const getCardAttachments = async (cardId: string): Promise<Attachment[]> 
     if (!user) throw new Error("Unauthorized");
     return prisma.attachment.findMany({ where: { cardId } })
 }
+
+export const getCardCountByUser = async (): Promise<number> => {
+    const user = await getAuthorizedUser();
+    if (!user) throw new Error("Unauthorized");
+    return prisma.cardAssignee.count({ where: { userId: user.id } })
+}

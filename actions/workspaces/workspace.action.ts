@@ -62,3 +62,21 @@ export async function getWorkspaceById(id: string): Promise<Workspace | null> {
 
     return workspace;
 }
+
+export async function getWorkspaceCountByUser(): Promise<number> {
+    const user = await getAuthorizedUser();
+
+    if (!user) return 0;
+
+    const count = await prisma.workspace.count({
+        where: {
+            members: {
+                some: {
+                    userId: user.id
+                }
+            }
+        }
+    })
+
+    return count;
+}
