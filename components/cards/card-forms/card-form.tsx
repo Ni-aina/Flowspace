@@ -91,7 +91,6 @@ const CardForm = ({
                         initialDueDate={dueDate}
                     />
                     <AssigneesSection
-                        cardId={initialData?.id}
                         members={members}
                         assignedIds={assignedIds}
                         onChange={setAssignedIds}

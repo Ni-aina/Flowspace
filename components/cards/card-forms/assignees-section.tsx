@@ -2,7 +2,6 @@
 
 import { Users } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { assignCard, unassignCard } from "@/actions/cards/card.action";
 
 interface User {
     id: string;
@@ -11,19 +10,16 @@ interface User {
 }
 
 interface AssigneesSectionProps {
-    cardId?: string;
     members: User[];
     assignedIds: string[];
     onChange: (ids: string[]) => void;
 }
 
-const AssigneesSection = ({ cardId, members, assignedIds, onChange }: AssigneesSectionProps) => {
+const AssigneesSection = ({ members, assignedIds, onChange }: AssigneesSectionProps) => {
 
     const toggle = async (userId: string) => {
         const isAssigned = assignedIds.includes(userId);
         onChange(isAssigned ? assignedIds.filter(id => id !== userId) : [...assignedIds, userId])
-        if (!cardId) return;
-        isAssigned ? await unassignCard(cardId, userId) : await assignCard(cardId, userId)
     }
 
     return (
@@ -34,6 +30,8 @@ const AssigneesSection = ({ cardId, members, assignedIds, onChange }: AssigneesS
                     Assignees
                 </span>
             </Label>
+            <input type="hidden" name="members" value={members.map(member => member.id).join(",")} />
+            <input type="hidden" name="assignedIds" value={assignedIds} />
             <div className="flex flex-wrap gap-1.5">
                 {members.map(member =>
                     <button
