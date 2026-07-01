@@ -42,8 +42,22 @@ export const getCardAttachments = async (cardId: string): Promise<Attachment[]> 
     return prisma.attachment.findMany({ where: { cardId } })
 }
 
-export const getCardCountByUser = async (): Promise<number> => {
+export const getCardCountByUser = async (workspaceId: string): Promise<number> => {
     const user = await getAuthorizedUser();
     if (!user) throw new Error("Unauthorized");
-    return prisma.cardAssignee.count({ where: { userId: user.id } })
+
+    if (!workspaceId) throw new Error("Workspace id is required");
+
+    return prisma.cardAssignee.count({
+        where: {
+            card: {
+                list: {
+                    board: {
+                        workspaceId
+                    }
+                }
+            },
+            userId: user.id
+        }
+    })
 }

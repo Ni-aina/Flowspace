@@ -13,15 +13,15 @@ interface WorkspaceProps {
 const Workspace = async ({ params }: WorkspaceProps) => {
     const { workspaceId } = await params;
     const [
-        workspaceMember,
         workspaceCount,
-        boardCountByUser,
+        workspaceMember,
+        boardCount,
         cardCount
     ] = await Promise.all([
-        findWorkspaceMember(workspaceId),
         getWorkspaceCountByUser(),
-        getBoardCountByUser(),
-        getCardCountByUser()
+        findWorkspaceMember(workspaceId),
+        getBoardCountByUser(workspaceId),
+        getCardCountByUser(workspaceId)
     ])
 
 
@@ -37,7 +37,7 @@ const Workspace = async ({ params }: WorkspaceProps) => {
             }
             <WelcomeDashboard
                 workspaceCount={workspaceCount}
-                boardCountByUser={boardCountByUser}
+                boardCount={boardCount}
                 cardCount={cardCount}
             />
         </>

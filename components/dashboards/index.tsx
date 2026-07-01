@@ -1,12 +1,12 @@
 interface WelcomeDashboardInterface {
     workspaceCount: number;
-    boardCountByUser: number;
+    boardCount: number;
     cardCount: number;
 }
 
 const WelcomeDashboard = ({
     workspaceCount,
-    boardCountByUser,
+    boardCount,
     cardCount
 }: WelcomeDashboardInterface) => {
 
@@ -17,7 +17,7 @@ const WelcomeDashboard = ({
         },
         {
             label: "Boards",
-            value: boardCountByUser
+            value: boardCount
         },
         {
             label: "Tasks",

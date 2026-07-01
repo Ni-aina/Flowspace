@@ -230,8 +230,22 @@ export const setBoardPositions = async (workspaceId: string, boardIds: string[])
     return boards;
 }
 
-export const getBoardCountByUser = async (): Promise<number> => {
+export const getBoardCountByUser = async (workspaceId: string): Promise<number> => {
     const user = await getAuthorizedUser();
     if (!user) throw new Error("Unauthorized");
-    return prisma.board.count({ where: { workspace: { members: { some: { userId: user.id } } } } })
+
+    if (!workspaceId) throw new Error("Workspace id is required");
+
+    return prisma.board.count({
+        where: {
+            workspace: {
+                id: workspaceId,
+                members: {
+                    some: {
+                        userId: user.id
+                    }
+                }
+            }
+        }
+    })
 }
