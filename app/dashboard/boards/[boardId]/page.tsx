@@ -2,7 +2,7 @@ import { getBoardById, getBoardsByWorkspaceId } from "@/actions/boards/board.act
 import { getCardsGroupedByListId } from "@/actions/cards/card.action";
 import { getListsByBoardId } from "@/actions/lists/list.action";
 import { findWorkspaceMember, getWorkspaceMembers } from "@/actions/workspaces/member.action";
-import BoardSpace from "@/components/status/grids/spaces";
+import BoardSpace from "@/components/boards/spaces";
 import StoreCards from "@/components/cards/store-card";
 import { StoreInitializer } from "@/components/workspaces/store-initializer";
 import { RoleType } from "@/stores/zustands/use-role";
