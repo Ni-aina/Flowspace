@@ -12,9 +12,15 @@ interface BoardCardProps {
     item: OrderItem;
     isActive?: boolean;
     dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
+    direction: "horizontal" | "vertical";
 }
 
-const BoardCard = ({ item, isActive, dragHandleProps }: BoardCardProps) => {
+const BoardCard = ({
+    item,
+    isActive,
+    dragHandleProps,
+    direction
+}: BoardCardProps) => {
     const [open, setOpen] = useState(false);
     const [onEdit, setOnEdit] = useState(false);
     const [boardId, setBoardId] = useState("");
@@ -43,10 +49,11 @@ const BoardCard = ({ item, isActive, dragHandleProps }: BoardCardProps) => {
         <>
             <div
                 className={`
-                flex  w-full min-w-50 max-w-60 items-center gap-2 hover:bg-primary/5
-                rounded-full px-3 py-1
-                ${isActive ? 'bg-primary/5' : ''}
-            `}
+                    flex items-center rounded-full gap-2 px-3 py-1
+                    ${direction === "horizontal" ? 'w-60 sm:w-50' : 'w-full'}
+                    hover:bg-primary/5
+                    ${isActive ? 'bg-primary/5' : ''}
+                `}
             >
                 <div
                     className="flex items-center gap-2 cursor-grab"

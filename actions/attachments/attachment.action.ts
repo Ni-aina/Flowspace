@@ -59,7 +59,7 @@ export const addAttachments = async (items: CreateAttachmentInput[]): Promise<At
     return { attachments }
 }
 
-export const deleteAttachment = async (attachmentId: string): Promise<{ success: boolean }> => {
+export const deleteAttachment = async (attachmentId: string) => {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized")
@@ -105,6 +105,4 @@ export const deleteAttachment = async (attachmentId: string): Promise<{ success:
             id: attachmentId
         }
     })
-
-    return { success: true }
 }

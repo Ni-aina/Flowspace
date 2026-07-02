@@ -71,16 +71,16 @@ const BoardSpace = ({ members, board, lists }: BoardSpaceInterface) => {
 
     return (
         <>
-            <div className="max-w-screen p-4 lg:p-8 space-y-4 lg:space-y-8">
+            <div className="p-4 lg:p-8 space-y-4 lg:space-y-8">
                 <div className="flex flex-wrap justify-between items-center gap-5">
                     {
                         loading ?
-                            <div className="flex item-center gap-2">
+                            <div className="flex flex-wrap item-center gap-2">
                                 <div className="w-48 h-8 bg-primary/5 rounded-full animate-pulse"></div>
                                 <div className="w-48 h-8 bg-primary/5 rounded-full animate-pulse"></div>
                             </div>
                             :
-                            <div className="flex items-center overflow-x-auto gap-1">
+                            <div className="flex flex-wrap items-center gap-1">
                                 <RenderItems
                                     initialItems={initialItems}
                                     handleReorder={handleReorder}

@@ -5,9 +5,9 @@ import { getAuthorizedUser } from "../auth.action";
 import { getCardWithAccess } from "../cards/card.action";
 import { CommentWithAuthor } from "../cards/details.action";
 
-type State = { 
+type State = {
     comment?: CommentWithAuthor;
-    error?: string; 
+    error?: string;
 }
 
 export const addComment = async (
@@ -40,7 +40,7 @@ export const addComment = async (
     return { comment }
 }
 
-export const deleteComment = async (commentId: string): Promise<{ success: boolean }> => {
+export const deleteComment = async (commentId: string) => {
     const user = await getAuthorizedUser();
 
     if (!user) throw new Error("Unauthorized")
@@ -59,6 +59,4 @@ export const deleteComment = async (commentId: string): Promise<{ success: boole
     if (comment.authorId !== user.id) throw new Error("Unauthorized")
 
     await prisma.comment.delete({ where: { id: commentId } })
-
-    return { success: true }
 }

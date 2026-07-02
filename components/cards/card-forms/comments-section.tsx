@@ -34,10 +34,11 @@ const CommentsSection = ({ cardId }: CommentsSectionProps) => {
     }
 
     const handleDelete = async (commentId: string) => {
-        setComments(prev => prev.filter(c => c.id !== commentId))
-        const result = await deleteComment(commentId);
-        if (!result.success) {
-            setComments(comments)
+        try {
+            setComments(prev => prev.filter(c => c.id !== commentId))
+            await deleteComment(commentId);
+        } catch {
+            setComments(comments);
         }
     }
 
@@ -76,7 +77,7 @@ const CommentsSection = ({ cardId }: CommentsSectionProps) => {
                     comments.length ?
                         <div className="flex flex-col gap-2">
                             {comments.map(comment =>
-                                <div key={comment.id} className="flex flex-col gap-1 p-2 rounded-md border border-input bg-muted/20">
+                                <div key={comment.id} className="flex flex-col p-2 rounded-md border border-input bg-muted/20">
                                     <div className="flex items-center justify-between">
                                         <span className="text-xs font-medium">{comment.author.name}</span>
                                         <button

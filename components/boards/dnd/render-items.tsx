@@ -42,6 +42,7 @@ const RenderItems = ({
                     item={item}
                     isActive={lastPath === item.id}
                     dragHandleProps={dragHandleProps}
+                    direction={direction}
                 />
             }
             direction={direction}

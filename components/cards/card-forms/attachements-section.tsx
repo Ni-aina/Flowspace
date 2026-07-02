@@ -49,19 +49,14 @@ const AttachmentsSection = ({ cardId }: AttachmentsSectionProps) => {
     }
 
     const handleDelete = async (attachmentId: string) => {
-        const previousAttachments = attachments;
         setAttachments(prev => prev.filter(attachment => attachment.id !== attachmentId))
 
         try {
-            const result = await deleteAttachment(attachmentId);
-
-            if (!result.success) {
-                setAttachments(previousAttachments)
-            }
+            await deleteAttachment(attachmentId);
         } catch (deleteError) {
             const message = deleteError instanceof Error ? deleteError.message : "Failed to delete attachment";
             setError(message);
-            setAttachments(previousAttachments)
+            setAttachments(attachments)
         }
     }
 
@@ -111,7 +106,7 @@ const AttachmentsSection = ({ cardId }: AttachmentsSectionProps) => {
             />
             {error && <p className="text-xs text-destructive">{error}</p>}
             {loading
-                ? <div className="h-8 rounded-md bg-primary/20 animate-pulse" />
+                ? <div className="h-8 rounded-sm bg-primary/20 animate-pulse" />
                 : attachments.length === 0
                     ? <p className="text-xs text-muted-foreground">No attachments yet.</p>
                     : <div className="flex flex-col gap-1.5">

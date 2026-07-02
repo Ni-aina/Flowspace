@@ -1,17 +1,19 @@
 "use client";
 
 import { CalendarIcon, Eye, GripVertical } from "lucide-react";
-import { useState } from "react";
+import { HTMLAttributes, useState } from "react";
 import CardForm from "./card-forms/card-form";
 import { CardWithAssignees } from "@/actions/cards/details.action";
 
 interface CardItemProps {
+    dragHandleProps: HTMLAttributes<HTMLElement>;
     members: MemberInterface[];
     listColor: string
     card: CardWithAssignees
 }
 
 const CardItem = ({
+    dragHandleProps,
     members,
     listColor,
     card
@@ -23,7 +25,10 @@ const CardItem = ({
         <>
             <div className="flex justify-between items-center gap-5 w-full">
                 <div className="flex items-center gap-2 overflow-hidden flex-1">
-                    <div className="text-muted-foreground shrink-0 cursor-grab">
+                    <div
+                        className="text-muted-foreground shrink-0 cursor-grab"
+                        {...dragHandleProps}
+                    >
                         <GripVertical size={14} />
                     </div>
                     <div className="flex items-center gap-1">
