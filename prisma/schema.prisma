@@ -131,6 +131,7 @@ model Attachment {
   id         String @id @default(uuid()) @db.Uuid
   cardId     String @map("card_id") @db.Uuid
   url        String
+  uploadKey  String? @map("upload_key")
   filename   String
   sizeBytes  Int    @map("size_bytes")
   uploadedBy String @map("uploaded_by") @db.Uuid
@@ -138,6 +139,7 @@ model Attachment {
   card     Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
   uploader User @relation(fields: [uploadedBy], references: [id])
 
+  @@unique([uploadKey])
   @@map("attachments")
 }
 
