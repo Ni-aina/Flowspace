@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 import { createCard, updateCard, deleteCard } from "@/actions/cards/card.action";
 import { useActionState } from "react";
 import { useWorkspace } from "@/stores/zustands/use-workspace";
-import { Attachment } from "@prisma/client";
-import { CommentWithAuthor } from "@/actions/cards/details.action";
 import AssigneesSection from "./assignees-section";
 import CommentsSection from "./comments-section";
 import AttachmentsSection from "./attachements-section";
@@ -25,10 +23,8 @@ interface CardFormProps {
         dueDate: Date | null;
         position: number;
     }
-    initialAssignedIds: string[];
     members: MemberInterface[];
-    comments: CommentWithAuthor[];
-    attachments: Attachment[];
+    initialAssignedIds: string[];
 }
 
 const CardForm = ({
@@ -37,9 +33,7 @@ const CardForm = ({
     listId,
     initialData,
     initialAssignedIds,
-    members,
-    comments,
-    attachments
+    members
 }: CardFormProps) => {
     const isEdit = !!initialData;
     const { workspace } = useWorkspace();
@@ -97,11 +91,8 @@ const CardForm = ({
                     />
                     {isEdit &&
                         <>
-                            <CommentsSection
-                                cardId={initialData.id}
-                                initialComments={comments}
-                            />
-                            <AttachmentsSection attachments={attachments} />
+                            <CommentsSection cardId={initialData.id} />
+                            <AttachmentsSection cardId={initialData.id} />
                             <Separator />
                         </>
                     }

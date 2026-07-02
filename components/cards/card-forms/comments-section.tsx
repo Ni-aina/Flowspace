@@ -9,11 +9,10 @@ import { useState, useTransition } from "react";
 
 interface CommentsSectionProps {
     cardId: string;
-    initialComments: CommentWithAuthor[];
 }
 
-const CommentsSection = ({ cardId, initialComments }: CommentsSectionProps) => {
-    const [comments, setComments] = useState(initialComments);
+const CommentsSection = ({ cardId }: CommentsSectionProps) => {
+    const [comments, setComments] = useState<CommentWithAuthor[]>([]);
     const [body, setBody] = useState("");
     const [isPending, startTransition] = useTransition();
 

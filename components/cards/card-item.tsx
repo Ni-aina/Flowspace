@@ -80,8 +80,6 @@ const CardItem = ({
                 }}
                 members={members}
                 initialAssignedIds={card.assignees.map(assignee => assignee.user.id)}
-                comments={[]}
-                attachments={[]}
             />
         </>
     )

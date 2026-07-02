@@ -144,8 +144,6 @@ const ListCard = ({
                 listId={list.id}
                 members={members}
                 initialAssignedIds={[]}
-                comments={[]}
-                attachments={[]}
             />
         </>
     )
