@@ -2,7 +2,7 @@ import { getBoardsByWorkspaceId } from "@/actions/boards/board.action";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-    request: NextRequest,
+    _request: NextRequest,
     { params }: { params: Promise<{ workspaceId: string }> }
 ) {
     try {
@@ -13,6 +13,7 @@ export async function GET(
         }
 
         const boards = await getBoardsByWorkspaceId(workspaceId);
+        
         return NextResponse.json({ status: 200, data: boards })
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Unknow error";

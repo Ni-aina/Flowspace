@@ -9,7 +9,7 @@ import { CardWithAssignees } from "./details.action";
 
 type State = { error?: string; success?: boolean }
 
-const getCardWithAccess = async (cardId: string, userId: string) => {
+export const getCardWithAccess = async (cardId: string, userId: string) => {
     return prisma.card.findUnique({
         where: {
             id: cardId,
@@ -387,76 +387,6 @@ export const moveCard = async (cardId: string, targetListId: string): Promise<{ 
             action: "deleted",
             room: `workspace:${existing.list.board.workspaceId}:list:${existing.listId}`,
             payload: card
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const addComment = async (
-    _previousState: State | null,
-    formData: FormData
-): Promise<State> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) return { error: "Unauthorized" }
-
-    const cardId = formData.get("cardId") as string;
-    const body = formData.get("body") as string;
-
-    if (!cardId) return { error: "Card ID is required" }
-    if (!body) return { error: "Comment body is required" }
-
-    const card = await getCardWithAccess(cardId, user.id);
-
-    if (!card) return { error: "Card not found" }
-
-    const comment = await prisma.comment.create({
-        data: { cardId, authorId: user.id, body }
-    })
-
-    emitToRoom(
-        `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "updated",
-            room: `workspace:${card.list.board.workspaceId}:list:${card.listId}`,
-            payload: comment
-        } satisfies WorkspaceEvent
-    )
-
-    return { success: true }
-}
-
-export const deleteComment = async (commentId: string): Promise<{ success: boolean }> => {
-    const user = await getAuthorizedUser();
-
-    if (!user) throw new Error("Unauthorized")
-    if (!commentId) throw new Error("Comment ID is required")
-
-    const comment = await prisma.comment.findUnique({
-        where: { id: commentId },
-        include: {
-            card: {
-                include: { list: { include: { board: true } } }
-            }
-        }
-    })
-
-    if (!comment) throw new Error("Comment not found")
-    if (comment.authorId !== user.id) throw new Error("Unauthorized")
-
-    await prisma.comment.delete({ where: { id: commentId } })
-
-    emitToRoom(
-        `workspace:${comment.card.list.board.workspaceId}:list:${comment.card.listId}`,
-        "workspace:event",
-        {
-            entity: "card",
-            action: "updated",
-            room: `workspace:${comment.card.list.board.workspaceId}:list:${comment.card.listId}`,
-            payload: comment
         } satisfies WorkspaceEvent
     )
 

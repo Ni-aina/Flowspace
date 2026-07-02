@@ -3,9 +3,10 @@
 import { MessageSquare, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { addComment, deleteComment } from "@/actions/cards/card.action";
+import { addComment, deleteComment } from "@/actions/comments/comment.action";
 import { CommentWithAuthor } from "@/actions/cards/details.action";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { Separator } from "@/components/ui/separator";
 
 interface CommentsSectionProps {
     cardId: string;
@@ -13,6 +14,7 @@ interface CommentsSectionProps {
 
 const CommentsSection = ({ cardId }: CommentsSectionProps) => {
     const [comments, setComments] = useState<CommentWithAuthor[]>([]);
+    const [loading, setLoading] = useState(true);
     const [body, setBody] = useState("");
     const [isPending, startTransition] = useTransition();
 
@@ -23,18 +25,38 @@ const CommentsSection = ({ cardId }: CommentsSectionProps) => {
         formData.set("body", body);
         startTransition(async () => {
             const result = await addComment(null, formData);
-            if (result?.success) {
+            if (result?.comment) {
+                const { comment } = result;
+                setComments(prev => [...prev, comment])
                 setBody("");
             }
         })
     }
 
-    const handleDelete = (commentId: string) => {
-        startTransition(async () => {
-            await deleteComment(commentId);
-            setComments(prev => prev.filter(c => c.id !== commentId))
-        })
+    const handleDelete = async (commentId: string) => {
+        setComments(prev => prev.filter(c => c.id !== commentId))
+        const result = await deleteComment(commentId);
+        if (!result.success) {
+            setComments(comments)
+        }
     }
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await fetch(`/api/protected/cards/comments/${cardId}`);
+                const result = await response.json();
+
+                if (result.status !== 200) throw new Error(`${result.error}`)
+                const { data } = result;
+                setComments(data);
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setLoading(false);
+            }
+        })()
+    }, [cardId])
 
     return (
         <div className="flex flex-col gap-2">
@@ -44,28 +66,44 @@ const CommentsSection = ({ cardId }: CommentsSectionProps) => {
                     Comments
                 </span>
             </Label>
-            <div className="flex flex-col gap-2">
-                {comments.map(comment =>
-                    <div key={comment.id} className="flex flex-col gap-1 p-2 rounded-md border border-input bg-muted/20">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium">{comment.author.name}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="text-[10px] text-muted-foreground">
-                                    {new Date(comment.createdAt).toLocaleDateString()}
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={() => handleDelete(comment.id)}
-                                    className="text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
-                                >
-                                    <Trash2 size={11} />
-                                </button>
-                            </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{comment.body}</p>
+            {
+                loading ?
+                    <div className="flex-1 space-y-2 animate-pulse py-2">
+                        <div className="h-4 w-1/2 rounded-full bg-primary/20" />
+                        <div className="h-3 w-1/3 rounded-full bg-primary/20" />
                     </div>
-                )}
-            </div>
+                    :
+                    comments.length ?
+                        <div className="flex flex-col gap-2">
+                            {comments.map(comment =>
+                                <div key={comment.id} className="flex flex-col gap-1 p-2 rounded-md border border-input bg-muted/20">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-medium">{comment.author.name}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete(comment.id)}
+                                            className="text-red-500 hover:text-red-700 transition-colors cursor-pointer"
+                                        >
+                                            <Trash2 size={11} />
+                                        </button>
+                                    </div>
+                                    <div className="flex justify-between gap-2">
+                                        <p className="text-xs text-muted-foreground">
+                                            {comment.body}
+                                        </p>
+                                        <span className="text-[10px] text-muted-foreground">
+                                            {new Date(comment.createdAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        :
+                        <div className="flex flex-col gap-2 pb-2">
+                            <Separator />
+                            <p className="text-sm text-muted-foreground">No comments yet</p>
+                        </div>
+            }
             <Textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
