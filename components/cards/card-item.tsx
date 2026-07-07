@@ -38,7 +38,7 @@ const CardItem = ({
                                 card.assignees?.map(assign =>
                                     <div
                                         key={assign.user.id}
-                                        className="grid place-items-center w-3 h-3 rounded-full"
+                                        className="grid place-items-center w-4 h-4 rounded-full"
                                         style={{
                                             backgroundColor: listColor
                                         }}

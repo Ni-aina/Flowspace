@@ -9,7 +9,9 @@ import { useWorkspace } from "@/stores/zustands/use-workspace";
 import { Board, List } from "@prisma/client";
 import { Filter, Plus, Search } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
-import ListItems from "../status/grids/items";
+import ListGrids from "../status/grids/items";
+import ListTables from "../status/tables/items";
+import ListLists from "../status/lists/items";
 import ListForm from "../status/list-form";
 
 interface BoardSpaceInterface {
@@ -126,8 +128,24 @@ const BoardSpace = ({ members, board, lists }: BoardSpaceInterface) => {
                     </div>
                 </div>
                 {
-                    (board?.type === "grid" && lists) &&
-                    <ListItems
+                    board?.type === "grid" && lists &&
+                    <ListGrids
+                        members={members}
+                        board={board}
+                        lists={lists}
+                    />
+                }
+                {
+                    board?.type === "table" && lists &&
+                    <ListTables
+                        members={members}
+                        board={board}
+                        lists={lists}
+                    />
+                }
+                {
+                    board?.type === "list" && lists &&
+                    <ListLists
                         members={members}
                         board={board}
                         lists={lists}

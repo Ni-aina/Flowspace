@@ -39,8 +39,10 @@ const CardList = ({ members, list }: CardListProps) => {
     return (
         <div
             ref={setNodeRef}
-            className={`flex flex-col gap-2 p-1 min-h-12.5 rounded-md transition-colors ${isOver ? "bg-primary/5 border border-dashed border-primary/20" : ""
-                }`}
+            className={`
+                flex flex-col gap-2 p-1.5 min-h-12.5 rounded-md transition-colors 
+                ${isOver ? "bg-primary/5 border border-dashed border-primary/20" : ""}`
+            }
         >
             {realtimeCards.length ?
                 <RenderItems
