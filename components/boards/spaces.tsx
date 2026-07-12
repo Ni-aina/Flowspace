@@ -13,6 +13,7 @@ import ListGrids from "../status/grids/items";
 import ListTables from "../status/tables/items";
 import ListLists from "../status/lists/items";
 import ListForm from "../status/list-form";
+import BoardForm from "./board-form";
 
 interface BoardSpaceInterface {
     members: MemberInterface[];
@@ -30,7 +31,10 @@ const BoardSpace = ({ members, board, lists }: BoardSpaceInterface) => {
     const handleShowInputSearch = () => setShowInputSearch(prev => !prev);
     const inputSearchRef = useRef<HTMLDivElement>(null);
 
+    const [onNewBoard, setOnNewBoard] = useState(false);
     const [onNewList, setOnNewList] = useState(false);
+
+    const handleShowBoard = () => setOnNewBoard(prev => !prev);
 
     const realtimeBoards = useRealtime<"board">({
         room: workspaceId ? `workspace:${workspaceId}:board` : null,
@@ -82,50 +86,67 @@ const BoardSpace = ({ members, board, lists }: BoardSpaceInterface) => {
                                 <div className="w-48 h-8 bg-primary/5 rounded-full animate-pulse"></div>
                             </div>
                             :
-                            <div className="flex flex-wrap items-center gap-1">
-                                <RenderItems
-                                    initialItems={initialItems}
-                                    handleReorder={handleReorder}
-                                    direction="horizontal"
-                                />
+                            <div className="flex items-center gap-5">
+                                <div className="flex flex-wrap items-center gap-1">
+                                    <RenderItems
+                                        initialItems={initialItems}
+                                        handleReorder={handleReorder}
+                                        direction="horizontal"
+                                    />
+                                </div>
+                                <div className="self-stretch items-start">
+                                    <button
+                                        onClick={handleShowBoard}
+                                        className="bg-primary/5 rounded-full p-1 shadow-2xl cursor-pointer hover:bg-primary/10"
+                                        title="Add Board"
+                                    >
+                                        <Plus size={16} />
+                                    </button>
+                                </div>
                             </div>
                     }
-                    <div className="flex items-center gap-5">
-                        <button
-                            className="flex items-center gap-1 px-3 py-1 bg-transparent text-primary cursor-pointer hover:bg-primary/5
-                            rounded-full transition-colors border border-primary/5 hover:border-transparent"
-                            onClick={() => setOnNewList(true)}
-                        >
-                            <Plus size={14} />
-                            <span className="text-sm">
-                                Status
-                            </span>
-                        </button>
-                        <button
-                            className="text-gray-400 hover:scale-105 cursor-pointer"
-                        >
-                            <Filter size={16} />
-                        </button>
-                        {
-                            showInputSearch ?
-                                <div
-                                    ref={inputSearchRef}
-                                    className="flex items-center rounded-full gap-3 border 
-                                    border-gray-300 px-3 py-0.5 animate-in fade-in zoom-in"
+                    {
+                        showInputSearch ?
+                            <div
+                                ref={inputSearchRef}
+                                className="flex items-center rounded-full gap-3 border 
+                                border-gray-300 px-3 py-1 animate-in fade-in zoom-in"
+                            >
+                                <input
+                                    type="text"
+                                    className="w-full outline-none text-sm"
+                                    placeholder="Search ..."
+                                />
+                                <Search size={16} className="text-gray-400" />
+                            </div>
+                            :
+                            <div className="flex items-center gap-5">
+                                <button
+                                    className="flex items-center gap-1 px-3 py-1 bg-transparent text-primary cursor-pointer hover:bg-primary/5
+                                    rounded-full transition-colors border border-primary/5 hover:border-transparent"
+                                    onClick={() => setOnNewList(true)}
                                 >
-                                    <input type="text" className="w-full outline-none" />
-                                    <Search size={16} className="text-gray-400" />
-                                </div>
-                                :
+                                    <Plus size={14} />
+                                    <span className="text-sm">
+                                        Status
+                                    </span>
+                                </button>
+                                <button
+                                    className="text-gray-400 hover:scale-105 cursor-pointer"
+                                    title="Filter"
+                                >
+                                    <Filter size={16} />
+                                </button>
                                 <button
                                     className="text-gray-400 hover:scale-105 cursor-pointer 
                                     animate-in fade-in zoom-in"
                                     onClick={handleShowInputSearch}
+                                    title="Search"
                                 >
                                     <Search size={16} className="text-gray-400" />
                                 </button>
-                        }
-                    </div>
+                            </div>
+                    }
                 </div>
                 {
                     board?.type === "grid" && lists &&
@@ -152,6 +173,10 @@ const BoardSpace = ({ members, board, lists }: BoardSpaceInterface) => {
                     />
                 }
             </div>
+            <BoardForm
+                isOpen={onNewBoard}
+                setOpen={setOnNewBoard}
+            />
             <ListForm
                 isOpen={onNewList}
                 onClose={() => setOnNewList(false)}

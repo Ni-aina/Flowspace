@@ -50,11 +50,12 @@ const BoardItems = () => {
 
     return (
         <div className="px-1 space-y-2">
-            <div className="my-2 flex justify-between items-center gap-2">
+            <div className="mt-2 mb-3 flex justify-between items-center gap-2">
                 <span>Boards</span>
                 <button
                     onClick={handleShowBoard}
                     className="cursor-pointer hover:scale-105"
+                    title="Add Board"
                 >
                     <Plus size={16} />
                 </button>
